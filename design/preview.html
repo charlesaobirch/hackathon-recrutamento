@@ -1,0 +1,858 @@
+<!doctype html>
+<html lang="pt">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>TalentFlow · Esboço de aplicação</title>
+<style>
+  * { box-sizing: border-box; }
+  :root {
+    --bg: #f5f7fa; --surface: #fff; --ink: #0f172a; --muted: #64748b; --faint: #94a3b8;
+    --border: #e2e8f0; --soft: #f1f5f9; --sidebar: #0b1220; --sidebar-active: #1e293b;
+    --primary: #2563eb; --primary-soft: #dbeafe; --success: #16a34a; --success-soft: #dcfce7;
+    --warning: #d97706; --warning-soft: #fef3c7; --danger: #dc2626; --danger-soft: #fee2e2;
+    --violet: #7c3aed; --violet-soft: #ede9fe;
+  }
+  body {
+    margin: 0; padding: 46px 28px 90px;
+    background: radial-gradient(1200px 620px at 18% -12%, #172554 0%, #0b1220 52%, #060b14 100%);
+    color: #e2e8f0; font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page-head { max-width: 1500px; margin: 0 auto 34px; display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; flex-wrap: wrap; }
+  .eyebrow { font-size: 11px; letter-spacing: 2.6px; color: #60a5fa; font-weight: 700; }
+  .page-head h1 { font-size: 40px; margin: 8px 0 6px; letter-spacing: -1.4px; line-height: 1.05; }
+  .page-head h1 span { color: #94a3b8; font-weight: 500; }
+  .page-head p { margin: 0; color: #94a3b8; font-size: 14px; }
+  .legend { display: flex; gap: 14px; font-size: 11px; color: #94a3b8; flex-wrap: wrap; }
+  .legend i { display: inline-block; width: 9px; height: 9px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+  #screens { max-width: 1500px; margin: 0 auto; display: flex; flex-direction: column; gap: 58px; }
+  .frame-label { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 11px; color: #94a3b8; letter-spacing: .4px; }
+  .frame-label b { color: #fff; font-size: 13px; letter-spacing: 0; }
+  .screen-scroll { overflow-x: auto; padding-bottom: 6px; }
+  .screen {
+    width: 1440px; height: 1024px; flex: none; display: flex; overflow: hidden;
+    background: var(--bg); color: var(--ink); border-radius: 18px;
+    border: 1px solid rgba(148,163,184,.18); box-shadow: 0 30px 80px rgba(0,0,0,.45);
+  }
+
+  /* ---------------- sidebar ---------------- */
+  .sidebar { width: 248px; flex: none; background: var(--sidebar); padding: 24px 18px; display: flex; flex-direction: column; gap: 4px; color: #fff; }
+  .brand { display: flex; align-items: center; gap: 10px; height: 40px; }
+  .logo { width: 34px; height: 34px; border-radius: 10px; background: var(--primary); display: grid; place-items: center; font-weight: 800; font-size: 17px; }
+  .brand-name { font-size: 18px; font-weight: 700; letter-spacing: -.3px; }
+  .nav-section { height: 30px; display: flex; align-items: flex-end; padding: 0 12px 8px; font-size: 9.5px; letter-spacing: 1.4px; font-weight: 700; color: #475569; }
+  .nav { height: 40px; display: flex; align-items: center; gap: 10px; padding: 0 12px; border-radius: 9px; color: #94a3b8; font-size: 13px; font-weight: 500; }
+  .nav.active { background: var(--sidebar-active); color: #fff; font-weight: 600; }
+  .nav-ico { width: 18px; height: 18px; display: grid; place-items: center; }
+  .nav-ico i { width: 12px; height: 12px; border-radius: 3px; background: #64748b; display: block; }
+  .nav.active .nav-ico i { background: #fff; }
+  .sidebar .spacer { flex: 1; }
+  .sidebar-foot { height: 60px; border-radius: 10px; background: #111c2e; display: flex; align-items: center; gap: 10px; padding: 10px; }
+  .sidebar-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--primary-soft); color: var(--primary); display: grid; place-items: center; font-size: 11px; font-weight: 800; }
+  .sidebar-user { font-size: 11.5px; font-weight: 600; }
+  .sidebar-role { font-size: 9.5px; color: #64748b; }
+
+  /* ---------------- content ---------------- */
+  .content { flex: 1; min-width: 0; padding: 26px 32px; display: flex; flex-direction: column; gap: 18px; height: 1024px; }
+  .topbar { height: 56px; flex: none; display: flex; justify-content: space-between; align-items: center; gap: 24px; }
+  .h1 { font-size: 24px; font-weight: 700; letter-spacing: -.5px; margin: 0; line-height: 1.15; }
+  .sub { font-size: 12.5px; color: var(--muted); margin-top: 4px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .topbar-actions { display: flex; align-items: center; gap: 10px; }
+  .search { width: 260px; height: 38px; border: 1px solid var(--border); background: #fff; border-radius: 9px; display: flex; align-items: center; gap: 8px; padding: 0 12px; color: var(--faint); font-size: 12px; }
+  .icon-btn { width: 38px; height: 38px; border: 1px solid var(--border); background: #fff; border-radius: 9px; display: grid; place-items: center; color: var(--muted); }
+  .avatar { width: 38px; height: 38px; border-radius: 50%; background: var(--primary-soft); color: var(--primary); display: grid; place-items: center; font-size: 11px; font-weight: 800; }
+
+  /* ---------------- primitives ---------------- */
+  .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; flex: none; }
+  .kpi { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 14px 16px; min-height: 104px; display: flex; flex-direction: column; gap: 6px; }
+  .kpi-label { font-size: 11.5px; color: var(--muted); font-weight: 500; }
+  .kpi-value-row { display: flex; align-items: center; gap: 8px; }
+  .kpi-value { font-size: 28px; font-weight: 700; letter-spacing: -.8px; line-height: 1; }
+  .kpi-foot { font-size: 10.5px; color: var(--faint); margin-top: auto; }
+  .badge { display: inline-flex; align-items: center; justify-content: center; height: 22px; padding: 0 8px; border-radius: 999px; font-size: 10.5px; font-weight: 600; white-space: nowrap; }
+  .b-danger { background: var(--danger-soft); color: #b91c1c; }
+  .b-warning { background: var(--warning-soft); color: #b45309; }
+  .b-success { background: var(--success-soft); color: #15803d; }
+  .b-info { background: var(--primary-soft); color: #1d4ed8; }
+  .b-neutral { background: var(--soft); color: #475569; }
+  .b-violet { background: var(--violet-soft); color: #6d28d9; }
+  .btn { height: 38px; padding: 0 14px; border-radius: 9px; border: 1px solid transparent; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-size: 12px; font-weight: 600; font-family: inherit; white-space: nowrap; }
+  .btn-primary { background: var(--primary); color: #fff; }
+  .btn-ghost { background: #fff; border-color: var(--border); color: var(--ink); }
+  .btn-danger { background: var(--danger); color: #fff; }
+  .btn-block { width: 100%; }
+  .card { background: #fff; border: 1px solid var(--border); border-radius: 14px; }
+  .card-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .card-title { font-size: 14px; font-weight: 700; }
+  .muted { color: var(--muted); }
+  .faint { color: var(--faint); }
+  .tiny { font-size: 10.5px; }
+  .small { font-size: 11.5px; }
+
+  /* ---------------- table ---------------- */
+  .table-wrap { background: #fff; border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+  .table-head { height: 34px; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; }
+  .table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 11.5px; }
+  .table th { height: 38px; background: #f8fafc; color: var(--faint); font-size: 9.5px; font-weight: 700; letter-spacing: .5px; text-align: left; padding: 0 14px; border-bottom: 1px solid var(--border); }
+  .table td { height: 54px; padding: 8px 14px; border-top: 1px solid var(--border); vertical-align: middle; }
+  .table tbody tr:first-child td { border-top: 0; }
+  .cell-main { font-weight: 500; }
+  .cell-main.bold { font-weight: 700; }
+  .cell-sub { font-size: 9.5px; color: var(--faint); margin-top: 1px; }
+  .cell-link { color: var(--primary); font-weight: 600; }
+
+  /* ---------------- control tower ---------------- */
+  .tower-main { display: grid; grid-template-columns: 780px 332px; gap: 16px; height: 520px; flex: none; }
+  .signals-card { height: 210px; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+  .signal { display: flex; gap: 10px; align-items: center; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+  .signal-title { font-size: 11.5px; font-weight: 600; line-height: 1.25; }
+  .signal-sub { font-size: 10px; color: var(--muted); }
+  .cycle-card { height: 170px; padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+  .big-value { font-size: 36px; font-weight: 700; letter-spacing: -1.2px; line-height: 1; }
+  .seg-bar { display: flex; gap: 3px; height: 10px; }
+  .seg-bar > span { height: 10px; border-radius: 5px; display: block; }
+  .quick-card { height: 116px; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+  .quick-row { display: flex; gap: 8px; }
+  .tower-bottom { display: grid; grid-template-columns: 556px 556px; gap: 16px; height: 200px; flex: none; }
+  .cycle-detail { padding: 16px 18px; display: flex; flex-direction: column; gap: 12px; }
+  .cycle-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; }
+  .cycle-cell b { display: block; font-size: 16px; font-weight: 700; }
+  .cycle-cell span { display: block; font-size: 9.5px; color: var(--faint); line-height: 1.25; }
+  .funnel { padding: 16px 18px; display: flex; flex-direction: column; gap: 4px; }
+  .funnel-row { height: 38px; display: flex; align-items: center; justify-content: space-between; }
+  .funnel-right { display: flex; align-items: center; gap: 10px; }
+  .funnel-right b { font-size: 16px; }
+
+  /* ---------------- kanban ---------------- */
+  .filters { height: 40px; display: flex; align-items: center; gap: 8px; flex: none; }
+  .chip { height: 32px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--border); background: #fff; color: var(--muted); font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; }
+  .chip.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .filters .grow { flex: 1; }
+  .kanban { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; height: 780px; flex: none; }
+  .col { background: #eef2f7; border-radius: 14px; padding: 12px; display: flex; flex-direction: column; gap: 10px; min-height: 0; }
+  .col-head { height: 28px; display: flex; align-items: center; justify-content: space-between; }
+  .col-title { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; }
+  .kanban-card { background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 12px; height: 120px; display: flex; flex-direction: column; gap: 5px; }
+  .kanban-name { font-size: 12.5px; font-weight: 700; }
+  .kanban-role { font-size: 10.5px; color: var(--muted); line-height: 1.25; }
+  .kanban-foot { margin-top: auto; display: flex; align-items: center; justify-content: space-between; }
+  .kanban-more { height: 28px; display: grid; place-items: center; font-size: 10.5px; color: var(--faint); }
+
+  /* ---------------- detail ---------------- */
+  .sla-banner { height: 64px; flex: none; background: var(--danger-soft); border: 1px solid #fca5a5; border-radius: 12px; display: flex; align-items: center; gap: 12px; padding: 0 18px; }
+  .sla-title { font-size: 13px; font-weight: 700; color: #991b1b; }
+  .sla-sub { font-size: 11px; color: #b91c1c; margin-top: 2px; }
+  .detail-main { display: grid; grid-template-columns: 720px 392px; gap: 16px; height: 816px; flex: none; }
+  .timeline-card { padding: 20px; display: flex; flex-direction: column; gap: 6px; }
+  .timeline { display: flex; flex-direction: column; height: 550px; }
+  .tl-item { display: flex; gap: 14px; height: 110px; }
+  .tl-rail { width: 24px; display: flex; flex-direction: column; align-items: center; flex: none; }
+  .tl-dot { width: 24px; height: 24px; border-radius: 50%; background: var(--primary); color: #fff; display: grid; place-items: center; font-size: 9.5px; font-weight: 700; flex: none; }
+  .tl-dot.danger { background: var(--danger); }
+  .tl-line { width: 2px; flex: 1; background: var(--border); }
+  .tl-title { font-size: 13px; font-weight: 600; }
+  .tl-title.danger { color: #b91c1c; }
+  .tl-meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .tl-note { font-size: 10.5px; color: var(--faint); margin-top: 2px; }
+  .note-box { height: 130px; background: var(--soft); border-radius: 10px; padding: 14px 16px; }
+  .side-col { display: flex; flex-direction: column; gap: 12px; }
+  .side-card { padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+  .side-action { height: 240px; }
+  .side-band { height: 240px; }
+  .side-signals { height: 312px; }
+  .band-viz { position: relative; height: 54px; margin-top: 2px; }
+  .band-track { position: absolute; left: 0; right: 0; top: 22px; height: 10px; border-radius: 5px; background: var(--soft); }
+  .band-range { position: absolute; top: 22px; height: 10px; border-radius: 5px; background: var(--primary-soft); }
+  .band-marker { position: absolute; top: 21px; width: 12px; height: 12px; border-radius: 50%; }
+  .legend-row { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 5px; font-size: 9.5px; color: var(--faint); }
+  .legend-item i { width: 8px; height: 8px; border-radius: 50%; display: block; }
+  .signal-line { height: 40px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+
+  /* ---------------- salary ---------------- */
+  .salary-main { display: grid; grid-template-columns: 680px 432px; gap: 16px; height: 660px; flex: none; }
+  .form-card { padding: 20px 16px; display: flex; flex-direction: column; gap: 14px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field-label { font-size: 10.5px; font-weight: 600; color: var(--muted); }
+  .input { height: 40px; border: 1px solid var(--border); border-radius: 9px; background: #fff; padding: 0 12px; display: flex; align-items: center; font-size: 13px; }
+  .input.bold { font-weight: 600; }
+  .input.alert { border-color: var(--danger); background: var(--danger-soft); color: #991b1b; font-weight: 600; }
+  .help { font-size: 10px; color: var(--faint); }
+  .help.alert { color: var(--danger); }
+  .textarea { height: 84px; border: 1px solid var(--border); border-radius: 9px; background: #fff; padding: 10px 12px; font-size: 11.5px; color: var(--muted); line-height: 1.5; }
+  .form-actions { display: flex; gap: 10px; }
+  .salary-side { display: flex; flex-direction: column; gap: 12px; }
+  .band-card { height: 260px; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+  .alerts-card { height: 220px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+  .decision-card { height: 156px; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+  .alert-line { display: flex; gap: 10px; align-items: center; }
+  .alert-title { font-size: 11.5px; font-weight: 600; }
+  .alert-sub { font-size: 10px; color: var(--muted); line-height: 1.35; }
+  .rules-card { height: 200px; padding: 16px 18px; display: flex; flex-direction: column; gap: 8px; }
+  .rule-row { height: 30px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .rule-left { display: flex; align-items: center; gap: 8px; }
+  .rule-left b { font-size: 11.5px; font-weight: 600; }
+  .rule-left span { font-size: 10.5px; color: var(--faint); }
+
+  /* ---------------- quality / clients ---------------- */
+  .quality-note { height: 90px; background: var(--danger-soft); display: flex; align-items: center; gap: 12px; padding: 0 18px; }
+  .clients-note { height: 90px; background: var(--soft); display: flex; align-items: center; gap: 12px; padding: 0 18px; }
+  .risk-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; height: 150px; flex: none; }
+  .risk-card { padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+  .risk-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .risk-id { font-size: 16px; font-weight: 700; }
+  .risk-sector { font-size: 10.5px; color: var(--faint); margin-top: 2px; }
+  .risk-metrics { display: flex; gap: 24px; }
+  .risk-metric b { display: block; font-size: 20px; font-weight: 700; letter-spacing: -.5px; }
+  .risk-metric span { display: block; font-size: 9.5px; color: var(--faint); }
+
+  /* ---------------- cover ---------------- */
+  .screen.cover { background: var(--sidebar); color: #fff; display: block; padding: 64px 80px; }
+  .cover-top { display: grid; grid-template-columns: 680px 540px; gap: 60px; height: 500px; }
+  .cover-eyebrow { font-size: 11px; letter-spacing: 2.4px; color: #60a5fa; font-weight: 700; }
+  .cover-title { font-size: 68px; font-weight: 800; letter-spacing: -2.5px; margin: 10px 0 6px; line-height: 1; }
+  .cover-sub { font-size: 28px; font-weight: 600; color: #e2e8f0; letter-spacing: -.4px; }
+  .cover-desc { font-size: 15px; color: #94a3b8; line-height: 1.6; max-width: 620px; margin-top: 16px; }
+  .cover-stats { display: flex; gap: 36px; margin-top: 26px; }
+  .cover-stat b { display: block; font-size: 28px; font-weight: 700; letter-spacing: -.8px; }
+  .cover-stat span { display: block; font-size: 10.5px; color: #64748b; }
+  .system-card { background: #111c2e; border: 1px solid #1e293b; border-radius: 18px; padding: 26px; display: flex; flex-direction: column; gap: 16px; }
+  .system-title { font-size: 13px; font-weight: 700; }
+  .system-sub { font-size: 11.5px; color: #94a3b8; }
+  .palette { display: flex; gap: 8px; }
+  .swatch { width: 46px; height: 46px; border-radius: 10px; border: 1px solid #1e293b; }
+  .system-type { font-size: 18px; font-weight: 600; }
+  .system-type-sub { font-size: 11px; color: #64748b; }
+  .system-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .system-row .btn-ghost { background: transparent; border-color: #334155; color: #e2e8f0; }
+  .modules { margin-top: 28px; }
+  .modules-title { font-size: 13px; font-weight: 700; margin-bottom: 12px; }
+  .modules-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
+  .module { background: #111c2e; border: 1px solid #1e293b; border-radius: 14px; padding: 18px 16px; height: 232px; display: flex; flex-direction: column; gap: 10px; }
+  .module-num { font-size: 11px; font-weight: 700; color: #60a5fa; letter-spacing: 1px; }
+  .module-title { font-size: 15px; font-weight: 600; line-height: 1.2; }
+  .module-sub { font-size: 11.5px; color: #94a3b8; line-height: 1.45; }
+  .module-list { margin: auto 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .module-list li { font-size: 10.5px; color: #94a3b8; display: flex; gap: 6px; line-height: 1.3; }
+  .module-list li::before { content: "·"; color: #60a5fa; font-weight: 700; }
+  .mini-kpi { border: 1px solid #1e293b; border-radius: 12px; padding: 12px 14px; background: #0b1220; }
+  .mini-kpi-label { font-size: 10px; color: #64748b; }
+  .mini-kpi-row { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
+  .mini-kpi-row b { font-size: 24px; font-weight: 700; letter-spacing: -.6px; }
+  .mini-row { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid #1e293b; padding-top: 10px; font-size: 11px; color: #cbd5e1; }
+  .mini-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: auto; }
+  .mini-stat { background: var(--soft); border-radius: 9px; padding: 10px 12px; }
+  .mini-stat span { display: block; font-size: 9.5px; color: var(--faint); }
+  .mini-stat b { display: block; font-size: 16px; font-weight: 700; margin-top: 2px; }
+  .cover-foot { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 26px; }
+  .cover-foot-item { border-top: 1px solid #1e293b; padding-top: 14px; }
+  .cover-foot-item b { display: block; font-size: 11px; color: #e2e8f0; margin-bottom: 4px; }
+  .cover-foot-item span { font-size: 10.5px; color: #64748b; line-height: 1.45; }
+
+  footer { max-width: 1500px; margin: 48px auto 0; color: #64748b; font-size: 11.5px; line-height: 1.6; border-top: 1px solid #1e293b; padding-top: 18px; }
+</style>
+</head>
+<body>
+  <header class="page-head">
+    <div>
+      <div class="eyebrow">HACKATHON · RECRUTAMENTO</div>
+      <h1>TalentFlow <span>· esboço de aplicação</span></h1>
+      <p>Baseado no RELATORIO.md · 11 tabelas · 79 963 registos · 262 contratações · 25/11/2026</p>
+    </div>
+    <div class="legend">
+      <span><i style="background:#2563eb"></i>Primário</span>
+      <span><i style="background:#16a34a"></i>Sucesso</span>
+      <span><i style="background:#d97706"></i>Atenção</span>
+      <span><i style="background:#dc2626"></i>Risco</span>
+      <span><i style="background:#7c3aed"></i>Info</span>
+    </div>
+  </header>
+
+  <main id="screens"></main>
+
+  <footer>
+    Esboço visual para discussão de produto. Os números vêm do relatório de análise; os nomes de candidatos e IDs de candidatura são exemplos ilustrativos.
+  </footer>
+
+  <script>
+    const ICONS = {
+      grid: '<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
+      kanban: '<rect x="3" y="4" width="5" height="16" rx="1.5"/><rect x="10" y="4" width="5" height="11" rx="1.5"/><rect x="17" y="4" width="4" height="14" rx="1.5"/>',
+      users: '<circle cx="9" cy="8" r="3.2"/><path d="M3.5 20c0-3.3 2.5-5.5 5.5-5.5s5.5 2.2 5.5 5.5"/><path d="M16 5.5a3 3 0 0 1 0 5.8"/><path d="M17.5 14.5c2 .6 3.5 2.4 3.5 5.5"/>',
+      file: '<path d="M6 3h8l4 4v14H6z"/><path d="M14 3v5h5"/>',
+      building: '<path d="M4 21V6l8-3 8 3v15"/><path d="M9 21v-5h6v5"/><path d="M8 9h1M12 9h1M16 9h1M8 13h1M12 13h1M16 13h1"/>',
+      shield: '<path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="M9 12l2 2 4-4"/>',
+      search: '<circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/>',
+      bell: '<path d="M18 15H6l1.5-2.5V9a4.5 4.5 0 0 1 9 0v3.5z"/><path d="M10 18a2 2 0 0 0 4 0"/>',
+      alert: '<path d="M12 3l9 17H3z"/><path d="M12 9v5"/><circle cx="12" cy="17.5" r=".7" fill="currentColor" stroke="none"/>',
+      arrow: '<path d="M5 12h14"/><path d="M13 6l6 6-6 6"/>',
+      clock: '<circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/>',
+      check: '<path d="M5 12l4 4L19 6"/>',
+      wallet: '<rect x="3" y="6" width="18" height="13" rx="2.5"/><path d="M3 10h18"/><circle cx="16.5" cy="14.5" r="1"/>',
+      spark: '<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/>'
+    };
+    const icon = (name, size = 16) =>
+      `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ICONS[name] || ""}</svg>`;
+
+    const badge = (text, tone = "neutral") => `<span class="badge b-${tone}">${text}</span>`;
+    const btn = (text, variant = "primary", block = false) =>
+      `<button class="btn btn-${variant}${block ? " btn-block" : ""}">${text}</button>`;
+    const chip = (text, active = false) => `<span class="chip${active ? " active" : ""}">${text}</span>`;
+
+    const NAV = [
+      ["Visão geral", "grid"],
+      ["Pipeline", "kanban"],
+      ["Candidaturas", "users"],
+      ["Propostas", "file"],
+      ["Clientes", "building"],
+      ["Qualidade", "shield"]
+    ];
+
+    function sidebar(active) {
+      return `<aside class="sidebar">
+        <div class="brand"><div class="logo">T</div><div class="brand-name">TalentFlow</div></div>
+        <div class="nav-section">OPERAÇÃO</div>
+        ${NAV.map(
+          ([label, ic]) =>
+            `<div class="nav${label === active ? " active" : ""}"><span class="nav-ico">${icon(ic, 16)}</span>${label}</div>`
+        ).join("")}
+        <div class="spacer"></div>
+        <div class="sidebar-foot"><div class="sidebar-avatar">AC</div><div><div class="sidebar-user">Ana Costa</div><div class="sidebar-role">Recrutamento</div></div></div>
+      </aside>`;
+    }
+
+    function topbar(title, subtitle, actions) {
+      const defaultActions = `<div class="search">${icon("search", 14)}<span>Pesquisar candidato, vaga, cliente…</span></div><div class="icon-btn">${icon("bell", 15)}</div><div class="avatar">AC</div>`;
+      return `<div class="topbar">
+        <div><h2 class="h1">${title}</h2><div class="sub">${subtitle}</div></div>
+        <div class="topbar-actions">${actions || defaultActions}</div>
+      </div>`;
+    }
+
+    function kpis(items) {
+      return `<div class="kpis">${items
+        .map(
+          (it) => `<div class="kpi">
+            <div class="kpi-label">${it.label}</div>
+            <div class="kpi-value-row"><div class="kpi-value">${it.value}</div>${it.badge ? badge(it.badge[0], it.badge[1]) : ""}</div>
+            <div class="kpi-foot">${it.foot}</div>
+          </div>`
+        )
+        .join("")}</div>`;
+    }
+
+    function table(cols, rows) {
+      const colgroup = `<colgroup>${cols.map((c) => `<col style="width:${c.w}px">`).join("")}</colgroup>`;
+      const head = `<thead><tr>${cols.map((c) => `<th>${c.label}</th>`).join("")}</tr></thead>`;
+      const body = `<tbody>${rows
+        .map(
+          (r) => `<tr>${r
+            .map((v) => {
+              if (v == null) return "<td></td>";
+              if (typeof v === "string") return `<td><div class="cell-main">${v}</div></td>`;
+              let html = "";
+              if (v.text) html += `<div class="cell-main${v.bold ? " bold" : ""}"${v.color ? ` style="color:${v.color}"` : ""}>${v.text}</div>`;
+              if (v.sub) html += `<div class="cell-sub">${v.sub}</div>`;
+              if (v.badge) html += badge(v.badge[0], v.badge[1]);
+              return `<td>${html}</td>`;
+            })
+            .join("")}</tr>`
+        )
+        .join("")}</tbody>`;
+      return `<table class="table">${colgroup}${head}${body}</table>`;
+    }
+
+    function tableCard(title, count, cols, rows, height = 700) {
+      return `<div class="table-wrap" style="height:${height}px">
+        <div class="table-head"><div class="card-title">${title}</div>${count ? badge(count[0], count[1]) : ""}</div>
+        ${table(cols, rows)}
+      </div>`;
+    }
+
+    function frame(label, tag, inner, cls = "") {
+      return `<section class="frame">
+        <div class="frame-label"><b>${label}</b><span>${tag}</span></div>
+        <div class="screen-scroll"><div class="screen ${cls}">${inner}</div></div>
+      </section>`;
+    }
+
+    function segBar(segments, width = 520) {
+      const total = segments.reduce((a, s) => a + s[1], 0);
+      const gap = 3;
+      const usable = width - gap * (segments.length - 1);
+      return `<div class="seg-bar" style="width:${width}px">${segments
+        .map((s) => `<span style="width:${Math.max(8, Math.round((s[1] / total) * usable))}px;background:${s[2]}"></span>`)
+        .join("")}</div>`;
+    }
+
+    const signal = (t, s, c) =>
+      `<div class="signal"><span class="dot" style="background:${c}"></span><div><div class="signal-title">${t}</div><div class="signal-sub">${s}</div></div></div>`;
+
+    /* ------------------------------ cover -------------------------------- */
+    function cover() {
+      const inner = `<div class="cover-top">
+        <div>
+          <div class="cover-eyebrow">HACKATHON · RECRUTAMENTO</div>
+          <div class="cover-title">TalentFlow</div>
+          <div class="cover-sub">Torre de controlo para recrutamento</div>
+          <div class="cover-desc">Esboço de produto construído a partir do RELATORIO.md: a espera entre a última entrevista e a proposta consome 27 dos 40 dias do ciclo, 20,4% das propostas ficam fora da banda e 8 dos 11 ficheiros não são fiáveis para decisões de gestão.</div>
+          <div class="cover-stats">
+            <div class="cover-stat"><b>40 d</b><span>ciclo médio</span></div>
+            <div class="cover-stat"><b>27 d</b><span>espera até proposta</span></div>
+            <div class="cover-stat"><b>20,4%</b><span>fora da banda</span></div>
+            <div class="cover-stat"><b>262</b><span>contratações</span></div>
+          </div>
+        </div>
+        <div class="system-card">
+          <div><div class="system-title">Sistema visual</div><div class="system-sub">Cores, tipografia e componentes reutilizáveis.</div></div>
+          <div class="palette">
+            <div class="swatch" style="background:#2563eb"></div>
+            <div class="swatch" style="background:#16a34a"></div>
+            <div class="swatch" style="background:#d97706"></div>
+            <div class="swatch" style="background:#dc2626"></div>
+            <div class="swatch" style="background:#7c3aed"></div>
+            <div class="swatch" style="background:#0b1220"></div>
+          </div>
+          <div><div class="system-type">Aa &nbsp;Inter · 12 / 14 / 18 / 28</div><div class="system-type-sub">Regular · Medium · Semi Bold · Bold</div></div>
+          <div class="system-row">${btn("Ação primária", "primary")}${btn("Secundária", "ghost")}</div>
+          <div class="system-row">${badge("SLA +6 d", "danger")}${badge("No prazo", "success")}${badge("Atenção", "warning")}${badge("Info", "info")}</div>
+          <div class="mini-kpi"><div class="mini-kpi-label">Candidaturas paradas</div><div class="mini-kpi-row"><b>34</b>${badge("+6", "danger")}</div></div>
+          <div class="mini-row"><span>Inês Carvalho · V0184</span>${badge("+6 d", "danger")}</div>
+          <div class="mini-row" style="border-top:0;padding-top:0"><span>Tiago Mendes · V0231</span>${badge("+3 d", "danger")}</div>
+          <div class="mini-row" style="border-top:0;padding-top:0"><span>Ana Ribeiro · V0098</span>${badge("+2 d", "warning")}</div>
+          <div class="tiny" style="color:#64748b;line-height:1.5">Amostra da fila de prioridade. A vista completa está no ecrã 01.</div>
+        </div>
+      </div>
+      <div class="modules">
+        <div class="modules-title">Módulos do MVP</div>
+        <div class="modules-grid">
+          ${[
+            ["01", "Torre de Controlo", "Candidaturas paradas, SLA e próxima ação", ["Fila por SLA", "Dias sem ação", "Próxima intervenção"]],
+            ["02", "Validação Salarial", "Oferta vs. banda vs. expectativa", ["Alerta fora da banda", "Expectativa excedida", "Justificação formal"]],
+            ["03", "Qualidade de Dados", "Anomalias P0–P3 e regras de validação", ["V999 e datas mistas", "Scores fora do domínio", "Estados recalculados"]],
+            ["04", "Pipeline", "Fases derivadas das entrevistas", ["Kanban por fase real", "Conversão por etapa", "Espera por fase"]],
+            ["05", "Clientes", "Retenção, substituições e risco", ["Health score", "Plano 30/60/90", "Custo da má colocação"]],
+            ["06", "Copiloto (fase 2)", "Perguntas em linguagem natural", ["Só após dados limpos", "Consultas auditáveis", "Sem decisão automática"]]
+          ]
+            .map(
+              (m) => `<div class="module"><div class="module-num">${m[0]}</div><div class="module-title">${m[1]}</div><div class="module-sub">${m[2]}</div><ul class="module-list">${m[3].map((x) => `<li>${x}</li>`).join("")}</ul></div>`
+            )
+            .join("")}
+        </div>
+      </div>
+      <div class="cover-foot">
+        <div class="cover-foot-item"><b>Princípio 1 · Uma ação por ecrã</b><span>Cada vista responde a uma pergunta operacional e termina numa ação concreta.</span></div>
+        <div class="cover-foot-item"><b>Princípio 2 · Números rastreáveis</b><span>Todos os valores vêm do relatório; dados suspeitos aparecem marcados, não escondidos.</span></div>
+        <div class="cover-foot-item"><b>Princípio 3 · Dados antes do copiloto</b><span>A IA só entra depois de P0/P1 corrigidos, com respostas auditáveis.</span></div>
+      </div>`;
+      return frame("00 · Capa e sistema", "Design system", inner, "cover");
+    }
+
+    /* --------------------------- control tower --------------------------- */
+    function tower() {
+      const cols = [
+        { label: "CANDIDATO", w: 150 },
+        { label: "VAGA", w: 80 },
+        { label: "CLIENTE", w: 70 },
+        { label: "RECRUTADOR", w: 80 },
+        { label: "ÚLTIMA ENTREVISTA", w: 100 },
+        { label: "DIAS", w: 70 },
+        { label: "SLA", w: 80 },
+        { label: "PRÓXIMA AÇÃO", w: 150 }
+      ];
+      const rows = [
+        [{ text: "Inês Carvalho", bold: true, sub: "AP004821" }, "V0184", "CL09", "R07", "12/11/2026", "13 d", { badge: ["+6 d", "danger"] }, { text: "Enviar proposta", bold: true, color: "#2563eb" }],
+        [{ text: "Tiago Mendes", bold: true, sub: "AP003190" }, "V0231", "CL06", "R02", "15/11/2026", "10 d", { badge: ["+3 d", "danger"] }, { text: "Validar salário", bold: true, color: "#2563eb" }],
+        [{ text: "Ana Ribeiro", bold: true, sub: "AP005012" }, "V0098", "CL05", "R04", "16/11/2026", "9 d", { badge: ["+2 d", "warning"] }, { text: "Contactar cliente", bold: true, color: "#2563eb" }],
+        [{ text: "Bruno Silva", bold: true, sub: "AP001744" }, "V0310", "CL01", "R01", "18/11/2026", "7 d", { badge: ["+1 d", "warning"] }, { text: "Aguardar feedback", bold: true, color: "#2563eb" }],
+        [{ text: "Marta Lopes", bold: true, sub: "AP004400" }, "V0122", "CL03", "R06", "19/11/2026", "6 d", { badge: ["No prazo", "success"] }, { text: "Agendar final", bold: true, color: "#2563eb" }],
+        [{ text: "Rui Costa", bold: true, sub: "AP002981" }, "V0076", "CL02", "R05", "20/11/2026", "5 d", { badge: ["No prazo", "success"] }, { text: "Preparar proposta", bold: true, color: "#2563eb" }],
+        [{ text: "Sofia Alves", bold: true, sub: "AP005233" }, "V0145", "CL08", "R03", "21/11/2026", "4 d", { badge: ["No prazo", "success"] }, { text: "Triagem", bold: true, color: "#2563eb" }]
+      ];
+
+      const inner = `${sidebar("Visão geral")}<div class="content">
+        ${topbar("Torre de Controlo", "Onde o processo está parado e qual é a próxima ação")}
+        ${kpis([
+          { label: "Candidaturas paradas", value: "34", badge: ["+6", "danger"], foot: "SLA ultrapassado em 12" },
+          { label: "Espera até proposta", value: "27 d", badge: ["68%", "warning"], foot: "do ciclo total de 40 dias" },
+          { label: "Propostas fora da banda", value: "207", badge: ["20,4%", "danger"], foot: "abaixo do mínimo ou acima do máximo" },
+          { label: "Contratações no mês", value: "28", badge: ["+12%", "success"], foot: "vs. outubro de 2025" }
+        ])}
+        <div class="tower-main">
+          <div class="table-wrap" style="height:520px">
+            <div class="table-head"><div class="card-title">Fila de prioridade</div><div style="display:flex;align-items:center;gap:8px">${badge("34 paradas", "danger")}<span class="tiny faint">Ordenado por SLA</span></div></div>
+            ${table(cols, rows)}
+          </div>
+          <div class="side-col">
+            <div class="card signals-card">
+              <div class="card-title">Sinais do dia</div>
+              ${signal("3 propostas acima do máximo da banda", "Requer justificação antes do envio", "#dc2626")}
+              ${signal("CL09 com retenção de 62,5% aos 90 dias", "Pior cliente do portefólio", "#dc2626")}
+              ${signal("V999: 330 candidaturas sem vaga", "Bloquear relatórios oficiais", "#d97706")}
+            </div>
+            <div class="card cycle-card">
+              <div class="card-title">Ciclo médio</div>
+              <div style="display:flex;align-items:flex-end;gap:6px"><span class="big-value">40</span><span class="small muted" style="margin-bottom:4px">dias</span></div>
+              <div class="tiny muted" style="line-height:1.4">27 dias são espera entre a última entrevista e a proposta (68%).</div>
+              ${segBar([["", 3, "#dbeafe"], ["", 6, "#bfdbfe"], ["", 27, "#fca5a5"], ["", 3, "#bbf7d0"]], 300)}
+            </div>
+            <div class="card quick-card">
+              <div class="card-title">Ação rápida</div>
+              <div class="quick-row">${btn("Abrir candidatura", "primary")}${btn("Ver qualidade", "ghost")}</div>
+            </div>
+          </div>
+        </div>
+        <div class="tower-bottom">
+          <div class="card cycle-detail">
+            <div><div class="card-title">Ciclo do processo</div><div class="tiny faint">Candidatura → contratação · mediana 40 dias</div></div>
+            ${segBar([["", 3, "#dbeafe"], ["", 6, "#bfdbfe"], ["", 27, "#fca5a5"], ["", 3, "#bbf7d0"]], 520)}
+            <div class="cycle-grid">
+              <div class="cycle-cell"><b>3 d</b><span>1ª entrevista</span></div>
+              <div class="cycle-cell"><b>6 d</b><span>entrevistas</span></div>
+              <div class="cycle-cell"><b>27 d</b><span>espera até proposta</span></div>
+              <div class="cycle-cell"><b>3 d</b><span>proposta → contratação</span></div>
+            </div>
+          </div>
+          <div class="card funnel">
+            <div class="card-title">Funil de conversão</div>
+            ${[["Candidaturas", "5 962", "100%", "neutral"], ["Propostas", "1 065", "17,9%", "warning"], ["Contratações", "262", "24,6%", "success"]]
+              .map((f) => `<div class="funnel-row"><span class="small muted">${f[0]}</span><div class="funnel-right"><b>${f[1]}</b>${badge(f[2], f[3])}</div></div>`)
+              .join("")}
+          </div>
+        </div>
+      </div>`;
+      return frame("01 · Torre de Controlo", "Visão geral", inner);
+    }
+
+    /* ----------------------------- pipeline ------------------------------ */
+    function pipeline() {
+      const cols = [
+        ["Triagem", 18, [
+          { name: "Sofia Alves", role: "Data Analyst · V0145", client: "CL08", days: "4 d", tone: "success" },
+          { name: "Miguel Pinto", role: "Backend · V0220", client: "CL02", days: "3 d", tone: "success" },
+          { name: "Rita Nunes", role: "QA · V0190", client: "CL04", days: "2 d", tone: "success" },
+          { name: "André Faria", role: "DevOps · V0261", client: "CL01", days: "2 d", tone: "success" },
+          { name: "Tiago Reis", role: "Analytics · V0272", client: "CL10", days: "1 d", tone: "success" }
+        ]],
+        ["Entrevista técnica", 12, [
+          { name: "Rui Costa", role: "Data Engineer · V0076", client: "CL02", days: "5 d", tone: "success" },
+          { name: "Pedro Matos", role: "Frontend · V0301", client: "CL07", days: "4 d", tone: "success" },
+          { name: "Carla Dias", role: "Product · V0088", client: "CL01", days: "3 d", tone: "success" },
+          { name: "Hugo Nunes", role: "SRE · V0119", client: "CL06", days: "3 d", tone: "success" },
+          { name: "Sofia Matos", role: "Mobile · V0188", client: "CL05", days: "2 d", tone: "success" }
+        ]],
+        ["Entrevista cliente", 9, [
+          { name: "Inês Carvalho", role: "Senior Data Eng. · V0184", client: "CL09", days: "+6 d", tone: "danger" },
+          { name: "Ana Ribeiro", role: "Product Manager · V0098", client: "CL05", days: "+2 d", tone: "warning" },
+          { name: "João Freitas", role: "Analyst · V0250", client: "CL10", days: "7 d", tone: "success" },
+          { name: "Beatriz Lima", role: "Designer · V0210", client: "CL09", days: "4 d", tone: "success" },
+          { name: "Paulo Gomes", role: "Data · V0236", client: "CL02", days: "3 d", tone: "success" }
+        ]],
+        ["Entrevista final", 7, [
+          { name: "Marta Lopes", role: "Engineering Mgr · V0122", client: "CL03", days: "6 d", tone: "success" },
+          { name: "Nuno Reis", role: "Data Scientist · V0160", client: "CL06", days: "5 d", tone: "success" },
+          { name: "Lara Pinto", role: "Recruiter · V0299", client: "CL03", days: "4 d", tone: "success" },
+          { name: "Diogo Melo", role: "Architect · V0042", client: "CL07", days: "3 d", tone: "success" },
+          { name: "Carla Sousa", role: "Product · V0104", client: "CL10", days: "2 d", tone: "success" }
+        ]],
+        ["Proposta", 5, [
+          { name: "Tiago Mendes", role: "Data Engineer · V0231", client: "CL06", days: "+3 d", tone: "danger" },
+          { name: "Hugo Sousa", role: "Backend · V0175", client: "CL01", days: "8 d", tone: "warning" },
+          { name: "Sara Gomes", role: "Product · V0133", client: "CL04", days: "6 d", tone: "success" },
+          { name: "Vasco Rocha", role: "QA Lead · V0247", client: "CL08", days: "5 d", tone: "success" },
+          { name: "Rita Alves", role: "Design · V0288", client: "CL07", days: "4 d", tone: "success" }
+        ]]
+      ];
+
+      const inner = `${sidebar("Pipeline")}<div class="content">
+        ${topbar("Pipeline", "Fase real derivada das entrevistas, não da etapa_atual")}
+        <div class="filters">
+          ${["Todas", "CL09", "R07", "SLA ultrapassado", "+ Filtros"].map((f, i) => chip(f, i === 0)).join("")}
+          <div class="grow"></div>
+          <span class="tiny faint">5 962 candidaturas · 10 clientes · 10 recrutadores</span>
+        </div>
+        <div class="kanban">
+          ${cols
+            .map(
+              (c) => `<div class="col">
+                <div class="col-head"><div class="col-title">${c[0]}${badge(String(c[1]), "neutral")}</div></div>
+                ${c[2]
+                  .map(
+                    (k) => `<div class="kanban-card"><div class="kanban-name">${k.name}</div><div class="kanban-role">${k.role}</div><div class="kanban-foot"><span class="tiny faint">${k.client}</span>${badge(k.days, k.tone)}</div></div>`
+                  )
+                  .join("")}
+                <div class="kanban-more">+ ${c[1] - c[2].length} candidaturas</div>
+              </div>`
+            )
+            .join("")}
+        </div>
+      </div>`;
+      return frame("02 · Pipeline", "Candidaturas", inner);
+    }
+
+    /* -------------------------- candidate detail ------------------------- */
+    function timelineItem(num, title, meta, note, danger = false, last = false) {
+      return `<div class="tl-item">
+        <div class="tl-rail"><div class="tl-dot${danger ? " danger" : ""}">${num}</div>${last ? "" : '<div class="tl-line"></div>'}</div>
+        <div><div class="tl-title${danger ? " danger" : ""}">${title}</div><div class="tl-meta">${meta}</div>${note ? `<div class="tl-note">${note}</div>` : ""}</div>
+      </div>`;
+    }
+
+    function detail() {
+      const inner = `${sidebar("Candidaturas")}<div class="content">
+        ${topbar(
+          "Inês Carvalho",
+          "AP004821 · Senior Data Engineer · V0184 · CL09",
+          `${btn("Contactar recrutador", "ghost")}${btn("Abrir validação salarial", "primary")}`
+        )}
+        <div class="sla-banner">
+          <span class="dot" style="background:#dc2626"></span>
+          <div><div class="sla-title">13 dias sem ação desde a última entrevista</div><div class="sla-sub">SLA de 48 h ultrapassado há 6 dias · última interação em 12/11/2026</div></div>
+        </div>
+        <div class="detail-main">
+          <div class="card timeline-card">
+            <div><div class="card-title">Percurso da candidatura</div><div class="tiny faint">Fase real derivada das entrevistas registadas</div></div>
+            <div class="timeline">
+              ${timelineItem("1", "Candidatura recebida", "02/10/2026 · canal LinkedIn", "Score do currículo 78/100")}
+              ${timelineItem("2", "Triagem concluída", "05/10/2026 · recrutador R07", "Aprovado para entrevista técnica")}
+              ${timelineItem("3", "Entrevista técnica", "09/10/2026 · 4,2/5 · R07", "Score técnico 88/100")}
+              ${timelineItem("4", "Entrevista cliente", "12/11/2026 · 4,5/5 · CL09", "Feedback positivo, sem reservas")}
+              ${timelineItem("5", "Proposta por enviar", "13 dias sem decisão · SLA 48 h ultrapassado", "Bloqueio: oferta €76 500 acima do máximo da banda (€74 000)", true, true)}
+            </div>
+            <div class="note-box">
+              <div class="tiny" style="font-weight:600;color:#64748b">Nota do recrutador</div>
+              <div class="small" style="margin-top:6px;line-height:1.5">Cliente pediu exceção salarial para não perder a candidata. Sem resposta desde 12/11. Próximo passo: validar banda e enviar proposta ou registar justificação formal.</div>
+            </div>
+          </div>
+          <div class="side-col">
+            <div class="card side-card side-action">
+              <div class="card-title">Próxima ação</div>
+              <div class="small muted" style="line-height:1.4">Enviar proposta ou justificar a exceção salarial antes de avançar.</div>
+              ${btn("Abrir validação salarial", "primary", true)}
+              ${btn("Contactar recrutador", "ghost", true)}
+              ${btn("Marcar intervenção", "ghost", true)}
+            </div>
+            <div class="card side-card side-band">
+              <div class="card-title">Banda salarial</div>
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+                <span class="small" style="font-weight:600">€62 000 – €74 000</span>${badge("Expectativa €78 500", "warning")}
+              </div>
+              <div class="band-viz">
+                <div class="band-track"></div>
+                <div class="band-range" style="left:36px;width:216px"></div>
+                <div class="band-marker" style="left:291px;background:#dc2626"></div>
+                <div class="band-marker" style="left:327px;background:#d97706"></div>
+              </div>
+              <div class="legend-row">
+                <span class="legend-item"><i style="background:#dbeafe"></i>Banda</span>
+                <span class="legend-item"><i style="background:#dc2626"></i>Oferta</span>
+                <span class="legend-item"><i style="background:#d97706"></i>Expectativa</span>
+              </div>
+            </div>
+            <div class="card side-card side-signals">
+              <div class="card-title">Sinais</div>
+              <div class="signal-line"><span class="small muted">Score técnico</span>${badge("88/100", "success")}</div>
+              <div class="signal-line"><span class="small muted">Entrevista cliente</span>${badge("4,5/5", "success")}</div>
+              <div class="signal-line"><span class="small muted">Dias sem interação</span>${badge("9 dias", "warning")}</div>
+              <div class="signal-line"><span class="small muted">Propostas anteriores do cliente</span>${badge("4 abaixo do mínimo", "danger")}</div>
+            </div>
+          </div>
+        </div>
+      </div>`;
+      return frame("03 · Candidatura", "Detalhe e SLA", inner);
+    }
+
+    /* ----------------------------- salary -------------------------------- */
+    function field(label, value, bold = false, alert = false, help = "") {
+      return `<div class="field">
+        <div class="field-label">${label}</div>
+        <div class="input${bold ? " bold" : ""}${alert ? " alert" : ""}">${value}</div>
+        ${help ? `<div class="help${alert ? " alert" : ""}">${help}</div>` : ""}
+      </div>`;
+    }
+
+    function alertLine(title, sub, tone) {
+      const colors = { danger: "#dc2626", warning: "#d97706", info: "#2563eb" };
+      return `<div class="alert-line"><span class="dot" style="background:${colors[tone]}"></span><div><div class="alert-title" style="color:${colors[tone]}">${title}</div><div class="alert-sub">${sub}</div></div></div>`;
+    }
+
+    function salary() {
+      const inner = `${sidebar("Propostas")}<div class="content">
+        ${topbar("Validação Salarial", "Comparar oferta, banda da vaga e expectativa antes de enviar")}
+        <div class="salary-main">
+          <div class="card form-card">
+            <div style="display:flex;justify-content:space-between;align-items:center"><div class="card-title">Dados da proposta</div>${badge("Fora da banda", "danger")}</div>
+            <div class="form-row">${field("Candidato", "Inês Carvalho", true)}${field("Vaga", "V0184 · Senior Data Engineer")}</div>
+            <div class="form-row">${field("Cliente", "CL09 · Saúde")}${field("Recrutador", "R07 · Produto")}</div>
+            <div class="form-row">${field("Expectativa do candidato", "€78 500", true)}${field("Banda da vaga", "€62 000 – €74 000")}</div>
+            ${field("Oferta", "€76 500", true, true, "Acima do máximo da banda em €2 500 e abaixo da expectativa em €2 000.")}
+            <div class="field">
+              <div class="field-label">Justificação da exceção</div>
+              <div class="textarea">Cliente aceita pagar acima do máximo para funções críticas. Necessária aprovação do gestor de recrutamento.</div>
+            </div>
+            <div class="form-actions">${btn("Ajustar para €72 000", "primary")}${btn("Justificar exceção", "ghost")}${btn("Enviar proposta", "ghost")}</div>
+            <div class="mini-stats">
+              <div class="mini-stat"><span>Posição na banda</span><b>108%</b></div>
+              <div class="mini-stat"><span>Acima do máximo</span><b>+€2 500</b></div>
+              <div class="mini-stat"><span>Abaixo da expectativa</span><b>−€2 000</b></div>
+            </div>
+          </div>
+          <div class="salary-side">
+            <div class="card band-card">
+              <div class="card-title">Posição na banda</div>
+              <div style="display:flex;justify-content:space-between;align-items:center"><span class="tiny faint">Mín. €62 000</span><span class="tiny faint">Máx. €74 000</span></div>
+              <div class="band-viz" style="height:70px">
+                <div class="band-track" style="top:28px;height:12px"></div>
+                <div class="band-range" style="left:40px;width:240px;top:28px;height:12px"></div>
+                <div class="band-marker" style="left:323px;top:27px;width:14px;height:14px;background:#dc2626"></div>
+                <div class="band-marker" style="left:363px;top:27px;width:14px;height:14px;background:#d97706"></div>
+              </div>
+              <div class="legend-row">
+                <span class="legend-item"><i style="background:#dbeafe"></i>Banda €62k–€74k</span>
+                <span class="legend-item"><i style="background:#dc2626"></i>Oferta €76,5k</span>
+                <span class="legend-item"><i style="background:#d97706"></i>Expectativa €78,5k</span>
+              </div>
+            </div>
+            <div class="card alerts-card">
+              <div class="card-title">Alertas</div>
+              ${alertLine("Oferta acima do máximo", "+€2 500 face ao topo da banda (€74 000).", "danger")}
+              ${alertLine("Expectativa acima do máximo", "Candidata pede €78 500; +€4 500 face ao topo.", "warning")}
+              ${alertLine("Sem negociação registada", "Salário final = salário oferecido em 100% das contratações.", "info")}
+            </div>
+            <div class="card decision-card">
+              <div class="card-title">Decisão</div>
+              ${btn("Corrigir oferta para €72 000", "primary", true)}
+              ${btn("Registar exceção com aprovação", "ghost", true)}
+            </div>
+          </div>
+        </div>
+        <div class="card rules-card">
+          <div class="card-title">Regras aplicadas</div>
+          ${[
+            ["Oferta dentro da banda", "€62 000 ≤ oferta ≤ €74 000", "Falhou", "danger"],
+            ["Expectativa dentro do máximo", "expectativa ≤ €74 000", "Falhou", "danger"],
+            ["Oferta ≥ expectativa − 5%", "€76 500 ≥ €74 575", "Passou", "success"],
+            ["Justificação obrigatória em exceção", "campo preenchido", "Passou", "success"]
+          ]
+            .map(
+              (r) => `<div class="rule-row"><div class="rule-left"><b>${r[0]}</b><span>${r[1]}</span></div>${badge(r[2], r[3])}</div>`
+            )
+            .join("")}
+        </div>
+      </div>`;
+      return frame("04 · Validação Salarial", "Propostas", inner);
+    }
+
+    /* ----------------------------- quality ------------------------------- */
+    function quality() {
+      const cols = [
+        { label: "SEVERIDADE", w: 100 },
+        { label: "ANOMALIA", w: 300 },
+        { label: "ONDE", w: 170 },
+        { label: "QUANTIFICAÇÃO", w: 300 },
+        { label: "AÇÃO", w: 258 }
+      ];
+      const rows = [
+        [{ badge: ["P0", "danger"] }, { text: "Contratação sem passar pela entrevista final", bold: true }, "candidaturas × entrevistas", "2 782 na fase final, 0 contratações", { text: "Rever regra de negócio", color: "#2563eb", bold: true }],
+        [{ badge: ["P0", "danger"] }, { text: "Estado do candidato desligado da realidade", bold: true }, "candidatos", "864 'contratado' vs. 254 reais", { text: "Recalcular a partir de contratações", color: "#2563eb", bold: true }],
+        [{ badge: ["P0", "danger"] }, { text: "Candidaturas para vaga inexistente", bold: true }, "candidaturas", "330 registos em V999", { text: "Remapear ou bloquear por FK", color: "#2563eb", bold: true }],
+        [{ badge: ["P0", "danger"] }, { text: "Etapa atual aleatória", bold: true }, "candidaturas", "16,7% de coincidência com a fase real", { text: "Derivar de entrevistas", color: "#2563eb", bold: true }],
+        [{ badge: ["P1", "warning"] }, { text: "Datas em dois formatos", bold: true }, "entrevistas", "3 831 registos (20%) em dd/mm/aaaa", { text: "Normalizar para ISO 8601", color: "#2563eb", bold: true }],
+        [{ badge: ["P1", "warning"] }, { text: "Score técnico fora do domínio", bold: true }, "entrevistas", "533 registos > 100, máximo 125", { text: "Invalidar ou aplicar clip", color: "#2563eb", bold: true }],
+        [{ badge: ["P1", "warning"] }, { text: "Proposta respondida após a contratação", bold: true }, "propostas × contratações", "191 de 262 casos", { text: "Validar sequência temporal", color: "#2563eb", bold: true }],
+        [{ badge: ["P2", "info"] }, { text: "Duplicados exatos", bold: true }, "contratações", "5 linhas (1,9%)", { text: "Deduplicar por id", color: "#2563eb", bold: true }]
+      ];
+
+      const inner = `${sidebar("Qualidade")}<div class="content">
+        ${topbar("Qualidade de Dados", "Anomalias priorizadas antes de qualquer dashboard")}
+        ${kpis([
+          { label: "P0 · Críticas", value: "4", badge: ["Bloqueia", "danger"], foot: "invalidam análises" },
+          { label: "P1 · Altas", value: "6", badge: ["Distorce", "warning"], foot: "distorcem decisões" },
+          { label: "P2 · Médias", value: "5", badge: ["Tratar", "info"], foot: "tratamento obrigatório" },
+          { label: "P3 · Baixas", value: "2", badge: ["Limpeza", "neutral"], foot: "cosmético" }
+        ])}
+        <div class="filters">
+          ${["Todas (17)", "P0 (4)", "P1 (6)", "P2 (5)", "P3 (2)"].map((f, i) => chip(f, i === 0)).join("")}
+          <div class="grow"></div>
+          <span class="tiny faint">Última validação: 25/11/2026 · 09:42</span>
+        </div>
+        <div class="table-wrap" style="height:700px">
+          <div class="table-head"><div class="card-title">Registo de anomalias</div>${badge("17 abertas", "danger")}</div>
+          ${table(cols, rows)}
+          <div class="quality-note"><span class="dot" style="background:#dc2626"></span><div><div class="small" style="font-weight:600;color:#991b1b">P0 bloqueia relatórios oficiais até correção</div><div class="tiny" style="color:#b91c1c">P1 distorce decisões de gestão; P2 exige tratamento; P3 é limpeza cosmética.</div></div></div>
+        </div>
+      </div>`;
+      return frame("05 · Qualidade de Dados", "Guardião dos dados", inner);
+    }
+
+    /* ----------------------------- clients ------------------------------- */
+    function riskCard(d) {
+      return `<div class="card risk-card">
+        <div class="risk-top"><div><div class="risk-id">${d.id}</div><div class="risk-sector">${d.sector}</div></div>${badge(d.risk, d.tone)}</div>
+        <div class="risk-metrics">
+          <div class="risk-metric"><b>${d.ret}</b><span>Retenção</span></div>
+          <div class="risk-metric"><b>${d.sat}</b><span>Satisfação</span></div>
+          <div class="risk-metric"><b>${d.subs}</b><span>Substituições</span></div>
+        </div>
+      </div>`;
+    }
+
+    function clients() {
+      const cols = [
+        { label: "CLIENTE", w: 80 },
+        { label: "SETOR", w: 90 },
+        { label: "VAGAS", w: 60 },
+        { label: "CONTRATAÇÕES", w: 100 },
+        { label: "RETENÇÃO 90D", w: 95 },
+        { label: "SATISFAÇÃO", w: 95 },
+        { label: "SUBSTITUIÇÕES", w: 105 },
+        { label: "MODELO", w: 100 },
+        { label: "CUSTO", w: 95 },
+        { label: "SAÚDE", w: 120 },
+        { label: "AÇÃO", w: 188 }
+      ];
+      const rows = [
+        ["CL01", "Saúde", "48", "27", "90%", "3,48", "4/27", "Partilhado", "€4 391", { badge: ["82 Saudável", "success"] }, { text: "Rever plano", bold: true, color: "#2563eb" }],
+        ["CL02", "Energia", "51", "30", "90%", "3,37", "3/30", "Partilhado", "€4 561", { badge: ["80 Saudável", "success"] }, { text: "Monitorizar", bold: true, color: "#2563eb" }],
+        ["CL03", "Retalho", "44", "24", "86,7%", "3,83", "2/24", "Partilhado", "€5 148", { badge: ["84 Saudável", "success"] }, { text: "Manter", bold: true, color: "#2563eb" }],
+        ["CL04", "Retalho", "44", "22", "90,5%", "3,36", "1/22", "Exclusivo", "€4 515", { badge: ["79 Saudável", "success"] }, { text: "Manter", bold: true, color: "#2563eb" }],
+        ["CL05", "Tecnologia", "54", "27", "75%", "3,59", "4/27", "Exclusivo", "€3 981", { badge: ["66 Atenção", "warning"] }, { text: "Plano 30/60/90", bold: true, color: "#2563eb" }],
+        ["CL06", "Energia", "50", "30", "77,3%", "3,70", "6/30", "Contingência", "€4 789", { badge: ["61 Risco", "danger"] }, { text: "Rever contrato", bold: true, color: "#2563eb" }],
+        ["CL07", "Banca", "49", "25", "89,5%", "3,28", "2/25", "Partilhado", "€4 562", { badge: ["78 Saudável", "success"] }, { text: "Manter", bold: true, color: "#2563eb" }],
+        ["CL08", "Banca", "44", "28", "86,4%", "3,32", "2/28", "Partilhado", "€4 396", { badge: ["77 Saudável", "success"] }, { text: "Manter", bold: true, color: "#2563eb" }],
+        ["CL09", "Saúde", "46", "21", "62,5%", "3,19", "4/21", "Exclusivo", "€4 835", { badge: ["52 Risco", "danger"] }, { text: "Plano de retenção", bold: true, color: "#2563eb" }],
+        ["CL10", "Energia", "50", "28", "87%", "3,61", "4/28", "Contingência", "€4 474", { badge: ["74 Saudável", "success"] }, { text: "Monitorizar", bold: true, color: "#2563eb" }]
+      ];
+
+      const inner = `${sidebar("Clientes")}<div class="content">
+        ${topbar("Clientes", "Radar de retenção, substituições e satisfação")}
+        <div class="risk-row">
+          ${riskCard({ id: "CL09", sector: "Saúde · exclusivo · recente", risk: "Risco alto", tone: "danger", ret: "62,5%", sat: "3,19", subs: "4/21" })}
+          ${riskCard({ id: "CL06", sector: "Energia · contingência · longo", risk: "Risco alto", tone: "danger", ret: "77,3%", sat: "3,70", subs: "6/30" })}
+          ${riskCard({ id: "CL05", sector: "Tecnologia · exclusivo · recente", risk: "Risco médio", tone: "warning", ret: "75%", sat: "3,59", subs: "4/27" })}
+        </div>
+        <div class="table-wrap" style="height:710px">
+          <div class="table-head"><div class="card-title">Radar de clientes</div>${badge("10 clientes", "neutral")}</div>
+          ${table(cols, rows)}
+          <div class="clients-note"><span class="dot" style="background:#2563eb"></span><div><div class="small" style="font-weight:600">Satisfação declarada não é KPI suficiente</div><div class="tiny muted">Usar retenção a 90/180 dias, substituições e desempenho. 32 substituições ≈ €146 mil de custo direto.</div></div></div>
+        </div>
+      </div>`;
+      return frame("06 · Clientes", "Retenção e risco", inner);
+    }
+
+    /* ------------------------------ render ------------------------------- */
+    document.getElementById("screens").innerHTML = [
+      cover(),
+      tower(),
+      pipeline(),
+      detail(),
+      salary(),
+      quality(),
+      clients()
+    ].join("");
+  </script>
+</body>
+</html>
