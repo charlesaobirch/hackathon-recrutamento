@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "skills": {
+    "data-analysis": {
+      "source": "JPeetz/agent-skills",
+      "commit": "26db0773f65ad616095ab36013211cbaf1068051",
+      "sourceType": "github",
+      "skillPath": "skills/data/data-analysis/SKILL.md",
+      "computedHash": "76fff33bb0cfb025f8bc206ee0cd750b9eb2df170d34c55663f5a570e2c1222e"
+    },
+    "exploratory-data-analysis": {
+      "source": "JPeetz/agent-skills",
+      "commit": "26db0773f65ad616095ab36013211cbaf1068051",
+      "sourceType": "github",
+      "skillPath": "skills/data/exploratory-data-analysis/SKILL.md",
+      "computedHash": "ee6764f0428082a704db7fa771ce1cedfe12c1e14afda4f155a6bad4cf76da63"
+    }
+  }
+}
