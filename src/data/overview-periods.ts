@@ -1,5 +1,7 @@
-// Agregados calculados a partir de analise/dados, com data de referência 03 jan. 2026.
-// Contratações únicas = registos deduplicados por id_candidatura.
+// Agregados calculados a partir de analise/dados, com data de referência 03 jan. 2026
+// (data mais recente observada nos conjuntos usados, coerente com "jan. 2026" no cabeçalho).
+// Janelas móveis: data >= referência menos N meses e data <= referência.
+// Contratações únicas = registos deduplicados por id_candidatura (262 no total).
 
 export const periodOptions = [
   { value: "1m", label: "Último mês", shortLabel: "1 mês" },
@@ -15,19 +17,19 @@ export type PeriodValue = {
 };
 
 export const candidaturasByPeriod: Record<PeriodKey, PeriodValue> = {
-  "1m": { value: "227", note: "227 de 5 962 no total" },
-  "3m": { value: "909", note: "909 de 5 962 no total" },
-  "6m": { value: "1 807", note: "1 807 de 5 962 no total" },
+  "1m": { value: "235", note: "235 de 5 962 no total" },
+  "3m": { value: "929", note: "929 de 5 962 no total" },
+  "6m": { value: "1 816", note: "1 816 de 5 962 no total" },
 };
 
 export const propostasByPeriod: Record<PeriodKey, PeriodValue> = {
-  "1m": { value: "43", note: "43 de 1 065 no total" },
+  "1m": { value: "44", note: "44 de 1 065 no total" },
   "3m": { value: "212", note: "212 de 1 065 no total" },
   "6m": { value: "349", note: "349 de 1 065 no total" },
 };
 
 export const contratacoesByPeriod = [
   { label: "1 mês", value: 14 },
-  { label: "3 meses", value: 63 },
+  { label: "3 meses", value: 64 },
   { label: "6 meses", value: 94 },
 ] as const;

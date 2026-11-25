@@ -47,11 +47,13 @@ export function Metric({
   value,
   note,
   tone = "neutral",
+  footer,
 }: {
   label: string;
   value: string;
   note: string;
   tone?: "neutral" | "danger" | "warning" | "positive";
+  footer?: ReactNode;
 }) {
   return (
     <section className="metric">
@@ -69,6 +71,7 @@ export function Metric({
         ) : null}
       </div>
       <span className="metric-note">{note}</span>
+      {footer}
     </section>
   );
 }

@@ -458,6 +458,145 @@ summary:focus-visible {
   line-height: 1.45;
 }
 
+.period-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  min-width: 0;
+  margin: 12px 0 0;
+  padding: 0;
+  border: 0;
+}
+.period-filter button {
+  min-height: 26px;
+  padding: 0 9px;
+  border: 1px solid rgba(31, 41, 12, 0.3);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.46);
+  color: var(--primitive-charcoal-950);
+  font-size: 12px;
+  font-weight: 650;
+  cursor: pointer;
+  transition:
+    background 120ms ease,
+    color 120ms ease,
+    border-color 120ms ease;
+}
+.period-filter button:hover {
+  background: rgba(255, 255, 255, 0.8);
+}
+.period-filter button.is-active {
+  border-color: var(--primitive-charcoal-950);
+  background: var(--primitive-charcoal-900);
+  color: var(--primitive-white);
+}
+.period-filter button:focus-visible {
+  outline: 2px solid var(--primitive-charcoal-950);
+  outline-offset: 2px;
+}
+
+.chart-block--trend {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border);
+}
+.chart-subhead {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--color-fg-secondary);
+  font-size: 13px;
+  font-weight: 700;
+}
+.trend-chart {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr);
+  gap: 8px;
+  margin-top: 20px;
+}
+.trend-axis-y {
+  position: relative;
+  height: 120px;
+}
+.trend-axis-y span {
+  position: absolute;
+  right: 0;
+  color: var(--color-fg-muted);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  transform: translateY(-50%);
+}
+.trend-axis-y span:nth-child(1) {
+  top: 0;
+}
+.trend-axis-y span:nth-child(2) {
+  top: 25%;
+}
+.trend-axis-y span:nth-child(3) {
+  top: 50%;
+}
+.trend-axis-y span:nth-child(4) {
+  top: 75%;
+}
+.trend-axis-y span:nth-child(5) {
+  top: 100%;
+}
+.trend-plot {
+  position: relative;
+  min-width: 0;
+}
+.trend-grid {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 120px;
+  border-bottom: 1px solid var(--color-border-strong);
+  background-image: repeating-linear-gradient(
+    to bottom,
+    var(--color-border) 0 1px,
+    transparent 1px 30px
+  );
+}
+.trend-columns {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+.trend-column {
+  min-width: 0;
+}
+.trend-bar-area {
+  position: relative;
+  height: 120px;
+}
+.trend-bar {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: min(56%, 44px);
+  border-radius: 6px 6px 0 0;
+  background: var(--color-success);
+  transform: translateX(-50%);
+}
+.trend-value {
+  position: absolute;
+  left: 50%;
+  color: var(--color-fg-primary);
+  font-size: 12px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  transform: translateX(-50%);
+}
+.trend-label {
+  display: block;
+  margin-top: 7px;
+  color: var(--color-fg-secondary);
+  font-size: 12px;
+  text-align: center;
+}
+
 .panel {
   min-width: 0;
   padding: 16px;

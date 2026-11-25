@@ -2,9 +2,15 @@ import Link from "next/link";
 import { DatasetExplorer } from "@/components/dataset-explorer";
 import {
   HiringConversionChart,
+  HiringTrendChart,
   WaitTimeChart,
 } from "@/components/overview-charts";
-import { Badge, Metric, Notice, PageHeader, Panel } from "@/components/ui";
+import { PeriodMetric } from "@/components/period-metric";
+import { Badge, Notice, PageHeader, Panel } from "@/components/ui";
+import {
+  candidaturasByPeriod,
+  propostasByPeriod,
+} from "@/data/overview-periods";
 
 export default function OverviewPage() {
   return (
@@ -19,15 +25,21 @@ export default function OverviewPage() {
         }
       />
       <div className="metric-grid spotlight-grid two-metrics">
-        <Metric
+        <PeriodMetric
           label="Candidaturas"
-          value="5 962"
-          note="3 500 candidatos no conjunto analisado"
+          total={{
+            value: "5 962",
+            note: "3 500 candidatos no conjunto analisado",
+          }}
+          byPeriod={candidaturasByPeriod}
         />
-        <Metric
+        <PeriodMetric
           label="Propostas emitidas"
-          value="1 065"
-          note="25,4% sem resposta registada"
+          total={{
+            value: "1 065",
+            note: "25,4% sem resposta registada",
+          }}
+          byPeriod={propostasByPeriod}
           tone="warning"
         />
       </div>
@@ -38,6 +50,7 @@ export default function OverviewPage() {
           className="chart-panel chart-panel--hires"
         >
           <HiringConversionChart />
+          <HiringTrendChart />
         </Panel>
         <Panel
           title="Espera até à proposta"

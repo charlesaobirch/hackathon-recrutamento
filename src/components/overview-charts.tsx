@@ -1,6 +1,9 @@
+import { contratacoesByPeriod } from "@/data/overview-periods";
+
 const APPLICATIONS = 5962;
 const HIRES = 262;
 const HIRED_CELLS = 4;
+const TREND_MAX = 100;
 
 export function HiringConversionChart() {
   return (
@@ -32,6 +35,61 @@ export function HiringConversionChart() {
           Restante: <b>5 700</b> (95,6%)
         </span>
       </figcaption>
+    </figure>
+  );
+}
+
+export function HiringTrendChart() {
+  const description = contratacoesByPeriod
+    .map((point) => `${point.label}: ${point.value}`)
+    .join(", ");
+
+  return (
+    <figure className="chart-block chart-block--trend">
+      <figcaption className="chart-subhead">
+        Evolução das contratações únicas
+      </figcaption>
+      <div
+        className="trend-chart"
+        role="img"
+        aria-label={`Contratações únicas por janela móvel até 3 jan. 2026. ${description}.`}
+      >
+        <div className="trend-axis-y" aria-hidden="true">
+          <span>100</span>
+          <span>75</span>
+          <span>50</span>
+          <span>25</span>
+          <span>0</span>
+        </div>
+        <div className="trend-plot">
+          <div className="trend-grid" aria-hidden="true" />
+          <div className="trend-columns">
+            {contratacoesByPeriod.map((point) => (
+              <div className="trend-column" key={point.label}>
+                <div className="trend-bar-area">
+                  <div
+                    className="trend-bar"
+                    style={{ height: `${(point.value / TREND_MAX) * 100}%` }}
+                  />
+                  <span
+                    className="trend-value"
+                    style={{
+                      bottom: `calc(${(point.value / TREND_MAX) * 100}% + 4px)`,
+                    }}
+                  >
+                    {point.value}
+                  </span>
+                </div>
+                <span className="trend-label">{point.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+      <p className="chart-note">
+        Janelas móveis até 3 jan. 2026, deduplicadas por candidato. A tendência
+        cresce com o período observado, não com o ritmo de contratação.
+      </p>
     </figure>
   );
 }
