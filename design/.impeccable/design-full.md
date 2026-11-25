@@ -55,7 +55,9 @@ e séries de tempo — nunca como cor de marca.
 
 ## Typography / Tipografia
 
-Inter, com escala fixa e números tabulares em dados.
+Instrument Sans para leitura da interface e Bricolage Grotesque para títulos e KPIs.
+Texto nunca abaixo de 12 px; tabelas a 13 px e cabeçalhos a 12 px, sem caixa alta.
+Os valores e as colunas numéricas usam algarismos tabulares e alinhamento à direita.
 
 | Token | px | Uso |
 |---|---|---|
@@ -63,19 +65,18 @@ Inter, com escala fixa e números tabulares em dados.
 | `--text-2xl` | 28 | valor de KPI |
 | `--text-xl` | 24 | título de ecrã |
 | `--text-lg` | 18 | valor secundário, módulo |
-| `--text-md` | 14 | título de cartão |
-| `--text-base` | 13 | corpo e tabelas |
-| `--text-sm` | 12 | metadados, botões |
-| `--text-xs` | 11 | etiquetas, notas |
-| `--text-2xs` | 10 | cabeçalhos de tabela, legendas |
+| `--text-md` | 15 | título de cartão |
+| `--text-base` | 15 | corpo da interface |
+| `--text-sm` | 12 | metadados e botões |
+| `--text-xs` | 12 | etiquetas e notas |
+| `--text-2xs` | 12 | cabeçalhos e legendas |
 
 Pesos: 400 corpo, 500 dados, 600 ênfase, 700 títulos e valores.
 `letter-spacing` mínimo de `-0.03em`; valores e colunas numéricas usam
 `font-variant-numeric: tabular-nums`.
 
-Inter mantém-se deliberadamente: é a face do sistema existente, garante paridade com o
-plugin Figma e privilegia familiaridade numa ferramenta de uso diário. A personalidade vem
-da composição, da densidade e do tratamento de dados, não de uma face de display.
+Bricolage Grotesque dá personalidade aos títulos e KPIs; Instrument Sans preserva a
+legibilidade em navegação, filtros e tabelas densas.
 
 ### Espaço, forma e movimento
 

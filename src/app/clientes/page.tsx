@@ -1,139 +1,143 @@
-import { DatasetExplorer } from "@/components/dataset-explorer";
-import { Badge, Metric, Notice, PageHeader, Panel } from "@/components/ui";
-import { clientSignals } from "@/lib/recruitment";
+import { Badge, Metric, PageHeader, Panel } from "@/components/ui";
+import { humanizeValue } from "@/lib/format";
+import { getClientData } from "@/lib/operational-data";
+
+function percentage(value: number | null) {
+  return value === null
+    ? "—"
+    : new Intl.NumberFormat("pt-PT", {
+        style: "percent",
+        maximumFractionDigits: 1,
+      }).format(value);
+}
+
+function rating(value: number | null) {
+  return value === null
+    ? "—"
+    : new Intl.NumberFormat("pt-PT", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }).format(value);
+}
 
 export default function ClientsPage() {
+  const data = getClientData();
+  const clients = [...data.clients].sort(
+    (first, second) =>
+      (first.retention90 ?? 2) - (second.retention90 ?? 2) ||
+      second.replacements - first.replacements,
+  );
+  const replacementRate = data.clientTotals.feedbackCount
+    ? data.clientTotals.replacements / data.clientTotals.feedbackCount
+    : null;
+
   return (
     <div className="page-content">
       <PageHeader
         title="Clientes e retenção"
-        subtitle="Acompanhar a qualidade das colocações com retenção e substituições, não só satisfação declarada."
-        action={<Badge tone="warning">Agregados exploratórios</Badge>}
+        subtitle="Comparar retenção, desempenho e substituições; satisfação é contexto."
       />
-      <Notice title="Retenção com limitações conhecidas" tone="warning">
-        O relatório identificou retenções incoerentes e feedbacks desalinhados
-        no tempo. Usa estes indicadores para priorizar revisão, não para avaliar
-        contratos isoladamente.
-      </Notice>
       <div className="metric-grid three-metrics">
         <Metric
-          label="Retenção global · 90 dias"
-          value="83,8%"
-          note="Há 31 contratações com saída e retenção positiva"
+          label="Retenção aos 90 dias"
+          value={percentage(data.clientTotals.retention90)}
+          note={`${data.clientTotals.retentionKnown.toLocaleString("pt-PT")} contratações com retenção conhecida`}
           tone="warning"
         />
         <Metric
-          label="Retenção global · 180 dias"
-          value="65,5%"
-          note="35,6% das flags têm valores nulos estruturais"
+          label="Desempenho médio"
+          value={`${rating(data.clientTotals.performance)} / 5`}
+          note={`${data.clientTotals.hires.toLocaleString("pt-PT")} candidaturas contratadas`}
         />
         <Metric
           label="Substituições"
-          value="32"
-          note="12,2% das contratações únicas reportadas"
+          value={data.clientTotals.replacements.toLocaleString("pt-PT")}
+          note={`${percentage(replacementRate)} dos feedbacks com substituição registada`}
           tone="danger"
         />
       </div>
       <Panel
-        title="Clientes para acompanhar"
-        meta={
-          <span className="muted">Retenção · desempenho · substituições</span>
-        }
+        title="Comparação por cliente"
+        meta={<Badge tone="info">{clients.length} clientes</Badge>}
       >
         <div className="table-scroll">
-          <table className="data-table">
+          <table className="data-table client-table">
             <thead>
               <tr>
                 <th>Cliente</th>
-                <th>Setor</th>
-                <th>Estado do contrato</th>
-                <th>Retenção 90 d</th>
-                <th>Desempenho médio</th>
+                <th>Contratações</th>
+                <th>Retenção · 90 dias</th>
+                <th>Desempenho · 90 dias</th>
                 <th>Substituições</th>
-                <th>Sinal</th>
+                <th>Satisfação · contexto</th>
+                <th>Acompanhamento</th>
               </tr>
             </thead>
             <tbody>
-              {clientSignals.map((signal) => {
-                return (
-                  <tr key={signal.id}>
-                    <td>
-                      <b>{signal.id}</b>
-                      <small>Cliente fictício · {signal.sector}</small>
-                    </td>
-                    <td>{signal.sector}</td>
-                    <td>
-                      {signal.id === "CL06" ? (
-                        <Badge tone="warning">Em revisão</Badge>
-                      ) : (
-                        <Badge tone="positive">Ativo</Badge>
-                      )}
-                    </td>
-                    <td>
-                      <b>{signal.ret90}</b>
-                    </td>
-                    <td>{signal.performance}</td>
-                    <td>{signal.replacements}</td>
-                    <td className="client-note">{signal.note}</td>
-                  </tr>
-                );
-              })}
+              {clients.map((client) => (
+                <tr key={client.id}>
+                  <td>
+                    <b>{client.name || client.id}</b>
+                    <small>
+                      {client.id} · {client.sector}
+                    </small>
+                  </td>
+                  <td className="num">
+                    {client.hires.toLocaleString("pt-PT")}
+                  </td>
+                  <td className="num">
+                    <b>{percentage(client.retention90)}</b>
+                    <small>
+                      {client.retentionKnown.toLocaleString("pt-PT")} valores
+                      válidos
+                    </small>
+                  </td>
+                  <td className="num">
+                    {rating(client.performance)} / 5
+                  </td>
+                  <td className="num">
+                    <b>{client.replacements.toLocaleString("pt-PT")}</b>
+                    <small>
+                      em {client.feedbackCount.toLocaleString("pt-PT")} feedbacks
+                    </small>
+                  </td>
+                  <td className="num">
+                    {rating(client.satisfaction)} / 5
+                    <small>{client.feedbackCount} respostas</small>
+                  </td>
+                  <td>
+                    <details className="client-plan">
+                      <summary>Plano 30/60/90</summary>
+                      <ol>
+                        <li>
+                          <b>30 dias</b> — alinhar perfil de sucesso e
+                          expectativas das vagas.
+                        </li>
+                        <li>
+                          <b>60 dias</b> — rever shortlist, entrevistas e
+                          feedback recente.
+                        </li>
+                        <li>
+                          <b>90 dias</b> — avaliar retenção, desempenho e
+                          substituições.
+                        </li>
+                      </ol>
+                      <span>
+                        Estado do contrato:{" "}
+                        {humanizeValue("estado", client.contractStatus)}
+                      </span>
+                    </details>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
         <p className="source-note">
-          Indicadores por cliente reproduzidos do relatório; 21 contratações com
-          feedback para CL09 e não o universo de 262 contratações.
+          Retenção usa apenas valores conhecidos; satisfação não é usada como
+          medida isolada de qualidade. Os totais derivam das contratações e
+          feedbacks ligados.
         </p>
-      </Panel>
-      <div className="client-insight-grid">
-        <Panel title="CL09 · rever adequação">
-          <strong className="client-highlight">62,5%</strong>
-          <p className="panel-copy">
-            Menor retenção aos 90 dias e pior satisfação média do conjunto.
-            Quatro substituições em 21 feedbacks (19%).
-          </p>
-          <span className="signal-line">
-            <i className="signal-bad" /> Prioridade de revisão
-          </span>
-        </Panel>
-        <Panel title="CL06 · volume de substituições">
-          <strong className="client-highlight">
-            6 <small>substituições</small>
-          </strong>
-          <p className="panel-copy">
-            Maior volume absoluto. Retenção de 77,3%; contrato em revisão no
-            registo do cliente.
-          </p>
-          <span className="signal-line">
-            <i className="signal-warn" /> Rever causas por vaga
-          </span>
-        </Panel>
-        <Panel title="CL03 · referência positiva">
-          <strong className="client-highlight">
-            3,88 <small>/ 5</small>
-          </strong>
-          <p className="panel-copy">
-            Melhor desempenho médio observado, com 86,7% de retenção aos 90
-            dias.
-          </p>
-          <span className="signal-line">
-            <i className="signal-good" /> Acompanhar a duração do ciclo
-          </span>
-        </Panel>
-      </div>
-      <Panel title="Como ler estes sinais">
-        <p className="panel-copy">
-          A satisfação isolada não garante qualidade: seis contratações com nota
-          5/5 exigiram substituição. Para decidir, considera retenção,
-          desempenho e substituições em conjunto.
-        </p>
-      </Panel>
-      <Panel
-        title="Todos os clientes"
-        meta={<Badge tone="positive">10 registos completos</Badge>}
-      >
-        <DatasetExplorer initialTable="clientes" />
       </Panel>
     </div>
   );

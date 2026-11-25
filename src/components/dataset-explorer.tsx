@@ -7,6 +7,11 @@ import {
   type DatasetName,
   type DatasetRow,
 } from "@/lib/dataset-config";
+import {
+  formatDate,
+  humanizeValue,
+  isNumericField,
+} from "@/lib/format";
 
 type DatasetResponse = {
   table: DatasetName;
@@ -19,11 +24,11 @@ type DatasetResponse = {
   error?: string;
 };
 
-function formatCell(value: unknown) {
+function formatCell(field: string, value: unknown) {
   if (value == null || value === "") return "—";
-  if (typeof value === "boolean") return value ? "Sim" : "Não";
   if (typeof value === "object") return JSON.stringify(value);
-  return String(value);
+  if (/^data(_|$)/.test(field)) return formatDate(value);
+  return humanizeValue(field, value);
 }
 
 function fieldLabel(field: string) {
@@ -189,9 +194,17 @@ export function DatasetExplorer({
           <table className="data-table dataset-table">
             <thead>
               <tr>
-                {(result?.fields ?? []).map((field) => (
-                  <th key={field}>{fieldLabel(field)}</th>
-                ))}
+                {(result?.fields ?? []).map((field) => {
+                  const sample = result?.rows[0]?.[field];
+                  return (
+                    <th
+                      className={isNumericField(field, sample) ? "num" : undefined}
+                      key={field}
+                    >
+                      {fieldLabel(field)}
+                    </th>
+                  );
+                })}
               </tr>
             </thead>
             <tbody>
@@ -200,9 +213,14 @@ export function DatasetExplorer({
                 return (
                   <tr key={`${String(row.id ?? "registo")}-${rowIndex}`}>
                     {result.fields.map((field) => {
-                      const value = formatCell(row[field]);
+                      const value = formatCell(field, row[field]);
                       return (
-                        <td key={field}>
+                        <td
+                          className={
+                            isNumericField(field, row[field]) ? "num" : undefined
+                          }
+                          key={field}
+                        >
                           {href && field === "id" ? (
                             <Link className="dataset-record-link" href={href}>
                               {value}

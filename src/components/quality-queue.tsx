@@ -2,34 +2,63 @@
 
 import { useMemo, useState } from "react";
 import { Badge, Panel } from "@/components/ui";
-import { qualityIssues } from "@/lib/recruitment";
+import type { QualityIssue } from "@/lib/operational-data";
 
-type State = "Por tratar" | "Em correção" | "Resolvido (demo)";
-const next: Record<State, State> = {
-  "Por tratar": "Em correção",
-  "Em correção": "Resolvido (demo)",
-  "Resolvido (demo)": "Por tratar",
-};
+type CorrectionState = "Por tratar" | "Em correção" | "Resolvido (demo)";
 
-export function QualityQueue() {
+const states: CorrectionState[] = [
+  "Por tratar",
+  "Em correção",
+  "Resolvido (demo)",
+];
+
+export function QualityQueue({ issues }: { issues: QualityIssue[] }) {
   const [filter, setFilter] = useState("Todos");
-  const [statuses, setStatuses] = useState<Record<string, State>>({});
+  const [statuses, setStatuses] = useState<Record<string, CorrectionState>>({});
   const visible = useMemo(
     () =>
-      qualityIssues.filter(
+      issues.filter(
         (issue) => filter === "Todos" || issue.priority === filter,
       ),
-    [filter],
+    [filter, issues],
   );
-  const openP0 = qualityIssues.filter(
+  const resolved = issues.filter(
+    (issue) => statuses[issue.id] === "Resolvido (demo)",
+  ).length;
+  const openP0 = issues.filter(
     (issue) =>
       issue.priority === "P0" && statuses[issue.id] !== "Resolvido (demo)",
   ).length;
+  const progress = issues.length ? (resolved / issues.length) * 100 : 0;
+
   return (
     <>
+      <div className="quality-progress-panel">
+        <div>
+          <strong>
+            {resolved} de {issues.length} resolvidas
+          </strong>
+          <span>
+            {openP0
+              ? `${openP0} regras P0 continuam por validar`
+              : "P0 marcados como resolvidos nesta demonstração"}
+          </span>
+        </div>
+        <div
+          className="quality-progress-track"
+          role="progressbar"
+          aria-label="Correções marcadas como resolvidas"
+          aria-valuemin={0}
+          aria-valuemax={issues.length}
+          aria-valuenow={resolved}
+        >
+          <span style={{ width: `${progress}%` }} />
+        </div>
+      </div>
+
       <div className="quality-controls">
         <fieldset className="priority-filter">
-          <legend className="sr-only">Filtrar por prioridade</legend>
+          <legend className="sr-only">Filtrar por severidade</legend>
           <div className="filter-pills">
             {["Todos", "P0", "P1", "P2"].map((priority) => (
               <button
@@ -50,35 +79,29 @@ export function QualityQueue() {
           {visible.length} regras prioritárias visíveis
         </span>
       </div>
+
       <Panel
         title="Anomalias prioritárias"
         meta={
           <Badge tone={openP0 ? "danger" : "warning"}>
-            {openP0 ? `${openP0} P0 por tratar` : "P0 revistos na demo"}
+            {openP0 ? `${openP0} P0 por validar` : "P0 revistos na demo"}
           </Badge>
         }
       >
-        {openP0 ? (
-          <p className="report-blocked">
-            <b>Reporting oficial bloqueado.</b> Marcar uma regra como resolvida
-            nesta demonstração não corrige nem valida o ficheiro de origem.
-          </p>
-        ) : (
-          <p className="report-blocked cleared">
-            <b>P0 revistos na demonstração.</b> A origem continua por corrigir e
-            validar.
-          </p>
-        )}
+        <p className="report-blocked">
+          <b>Reporting oficial bloqueado.</b> Alterar estados nesta fila não
+          corrige a origem; o bloqueio só pode ser removido após corrigir e
+          validar os dados fonte.
+        </p>
         <div className="table-scroll">
           <table className="data-table quality-table">
             <thead>
               <tr>
-                <th>Prioridade</th>
-                <th>Problema identificado</th>
+                <th>Severidade</th>
+                <th>Anomalia</th>
                 <th>Área</th>
-                <th>Estado da demo</th>
-                <th>Correção recomendada</th>
-                <th></th>
+                <th>Estado da correção</th>
+                <th>Próxima ação</th>
               </tr>
             </thead>
             <tbody>
@@ -101,40 +124,40 @@ export function QualityQueue() {
                     </td>
                     <td>
                       <b>{issue.title}</b>
-                      <small>{issue.id}</small>
+                      <small>
+                        {issue.count.toLocaleString("pt-PT")} registos ·{" "}
+                        {issue.id}
+                      </small>
                     </td>
                     <td>{issue.area}</td>
                     <td>
-                      <Badge
-                        tone={
-                          status === "Resolvido (demo)"
-                            ? "positive"
-                            : status === "Em correção"
-                              ? "warning"
-                              : "neutral"
-                        }
+                      <label className="sr-only" htmlFor={`quality-${issue.id}`}>
+                        Estado da correção para {issue.id}
+                      </label>
+                      <select
+                        id={`quality-${issue.id}`}
+                        className="quality-status-select"
+                        value={status}
+                        onChange={(event) => {
+                          const nextState = states.find(
+                            (value) => value === event.target.value,
+                          );
+                          if (nextState) {
+                            setStatuses((current) => ({
+                              ...current,
+                              [issue.id]: nextState,
+                            }));
+                          }
+                        }}
                       >
-                        {status}
-                      </Badge>
+                        {states.map((value) => (
+                          <option key={value} value={value}>
+                            {value}
+                          </option>
+                        ))}
+                      </select>
                     </td>
                     <td>{issue.action}</td>
-                    <td>
-                      <button
-                        className="table-action"
-                        type="button"
-                        onClick={() =>
-                          setStatuses((previous) => ({
-                            ...previous,
-                            [issue.id]:
-                              next[previous[issue.id] ?? "Por tratar"],
-                          }))
-                        }
-                      >
-                        {status === "Resolvido (demo)"
-                          ? "Reabrir"
-                          : "Avançar estado"}
-                      </button>
-                    </td>
                   </tr>
                 );
               })}

@@ -115,12 +115,36 @@ function ShellFrame({
               </Link>
             ))}
           </nav>
-          <div className="profile">
-            <span className="avatar">AC</span>
-            <span className="profile-copy">
-              <b>Ana Costa</b>
-              <small>Recrutamento</small>
-            </span>
+          <div className="header-actions">
+            <form action="/candidaturas" method="get" className="global-search">
+              <label className="sr-only" htmlFor="global-search">
+                Pesquisar em todos os registos de candidatura
+              </label>
+              <span className="search-icon" aria-hidden="true">
+                ⌕
+              </span>
+              <input
+                id="global-search"
+                name="q"
+                type="search"
+                placeholder="Pesquisar registos…"
+              />
+            </form>
+            <details className="exploration-disclosure">
+              <summary>
+                <span className="exploration-dot" />
+                Modo exploratório
+              </summary>
+              <div className="exploration-popover">
+                <b>Limitações dos dados e ações</b>
+                <ul>
+                  <li>Os nomes apresentados são fictícios.</li>
+                  <li>As etapas e métricas são derivadas dos eventos de origem.</li>
+                  <li>Correções e validações nesta interface não alteram os JSON.</li>
+                  <li>Relatórios oficiais exigem correção e validação das regras P0.</li>
+                </ul>
+              </div>
+            </details>
           </div>
         </header>
         <main className="workspace">{children}</main>

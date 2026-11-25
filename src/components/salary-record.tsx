@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { SalaryChecker } from "@/components/salary-checker";
 import { Badge, Notice, PageHeader, Panel } from "@/components/ui";
 import type { DatasetRow } from "@/lib/dataset-config";
+import { formatDate, formatMoney } from "@/lib/format";
 
 type RecordResult = { rows: DatasetRow[]; error?: string };
 
@@ -17,24 +18,13 @@ async function getRecord(table: string, id: string, signal?: AbortSignal) {
   return result.rows[0] ?? null;
 }
 
-function formatAmount(value: unknown) {
-  const amount = Number(value);
-  return Number.isFinite(amount)
-    ? new Intl.NumberFormat("pt-PT", {
-        style: "currency",
-        currency: "EUR",
-        maximumFractionDigits: 0,
-      }).format(amount)
-    : "Sem valor registado";
-}
-
 export function SalaryRecord({ id: initialId }: { id?: string }) {
   const [id, setId] = useState(initialId ?? "");
   const [records, setRecords] = useState<{
     offer: DatasetRow;
     application: DatasetRow;
-    candidate: DatasetRow;
-    vacancy: DatasetRow;
+    candidate: DatasetRow | null;
+    vacancy: DatasetRow | null;
   } | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -95,10 +85,6 @@ export function SalaryRecord({ id: initialId }: { id?: string }) {
           ),
           getRecord("vagas", String(application.id_vaga), controller.signal),
         ]);
-        if (!candidate || !vacancy)
-          throw new Error(
-            "Falta o candidato ou a vaga ligada a esta proposta; consulta a anomalia na página Qualidade.",
-          );
         if (!controller.signal.aborted)
           setRecords({ offer, application, candidate, vacancy });
       } catch (cause) {
@@ -116,7 +102,9 @@ export function SalaryRecord({ id: initialId }: { id?: string }) {
     return () => controller.abort();
   }, [id]);
 
-  const candidateName = String(records?.candidate.nome_ficticio ?? "proposta");
+  const candidateName = String(
+    records?.candidate?.nome_ficticio ?? "Candidato não associado",
+  );
   if (loading && !records)
     return (
       <div className="page-content">
@@ -153,44 +141,64 @@ export function SalaryRecord({ id: initialId }: { id?: string }) {
       </div>
       <PageHeader
         title="Validação salarial"
-        subtitle={`${candidateName} · ${String(records.vacancy.titulo)}`}
-        action={<Badge tone="info">Registo original</Badge>}
+        subtitle={`${candidateName} · ${String(records.vacancy?.titulo ?? records.application.id_vaga)}`}
+        action={
+          <Badge
+            tone={records.candidate && records.vacancy ? "info" : "danger"}
+          >
+            {records.candidate && records.vacancy
+              ? "Registo completo"
+              : "Ligação em falta"}
+          </Badge>
+        }
       />
-      <Notice title="Valores provenientes dos quatro JSON ligados" tone="info">
-        Expectativa, oferta, candidatura e banda da vaga são lidas dos ficheiros
-        completos. Os controlos são locais: não alteram os registos nem enviam
-        propostas.
-      </Notice>
+      {!records.candidate || !records.vacancy ? (
+        <Notice title="Validação bloqueada por falta de dados" tone="warning">
+          {!records.candidate ? "O candidato associado não existe. " : ""}
+          {!records.vacancy ? "A vaga associada não existe. " : ""}
+          Sem estes valores não é possível validar a oferta; consulta a fila de
+          Qualidade.
+        </Notice>
+      ) : null}
       <Panel title="Contexto da proposta">
         <div className="offer-context">
           <div>
             <span>Candidato</span>
             <b>{candidateName}</b>
-            <small>{String(records.candidate.id)}</small>
+            <small>{String(records.candidate?.id ?? records.application.id_candidato)}</small>
           </div>
           <div>
             <span>Cliente · vaga</span>
             <b>
-              {String(records.vacancy.id_cliente)} ·{" "}
-              {String(records.vacancy.id)}
+              {String(records.vacancy?.id_cliente ?? "—")} ·{" "}
+              {String(records.vacancy?.id ?? records.application.id_vaga)}
             </b>
-            <small>{String(records.vacancy.titulo)}</small>
+            <small>{String(records.vacancy?.titulo ?? "Vaga não encontrada")}</small>
           </div>
           <div>
             <span>Oferta original</span>
-            <b>{formatAmount(records.offer.salario_oferecido)}</b>
+            <b>{formatMoney(records.offer.salario_oferecido)}</b>
             <small>
-              {String(records.offer.data_proposta ?? "Data não registada")}
+              {formatDate(records.offer.data_proposta)}
             </small>
           </div>
         </div>
       </Panel>
-      <SalaryChecker
-        minimum={Number(records.vacancy.salario_min)}
-        maximum={Number(records.vacancy.salario_max)}
-        expectation={Number(records.candidate.expectativa_salarial)}
-        initialOffer={Number(records.offer.salario_oferecido)}
-      />
+      {records.candidate && records.vacancy ? (
+        <SalaryChecker
+          minimum={Number(records.vacancy.salario_min)}
+          maximum={Number(records.vacancy.salario_max)}
+          expectation={Number(records.candidate.expectativa_salarial)}
+          initialOffer={Number(records.offer.salario_oferecido)}
+        />
+      ) : (
+        <Panel title="Regras de decisão">
+          <p className="panel-copy">
+            O envio permanece bloqueado enquanto a candidatura não tiver
+            candidato e vaga associados.
+          </p>
+        </Panel>
+      )}
     </div>
   );
 }

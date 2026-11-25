@@ -85,7 +85,9 @@ Os valores vivem em [`tokens.css`](tokens.css), em três camadas (primitiva → 
 componente); [`DESIGN.md`](DESIGN.md) documenta o racional e os estados de cada componente.
 O plugin Figma replica os mesmos valores em código.
 
-- Tipografia **Inter**, escala 10 / 11 / 12 / 13 / 14 / 18 / 24 / 28 / 40, números tabulares.
+- Tipografia: **Bricolage Grotesque** em títulos e KPIs; **Instrument Sans** na interface.
+  Texto nunca abaixo de 12 px; tabelas a 13 px, cabeçalhos a 12 px sem maiúsculas e
+  números tabulares alinhados à direita.
 - Shell grafite, tela marfim, superfícies claras, navegação superior em cápsulas e aba ativa com ligação curva à página.
 - Ação/seleção lima `#C9F522` · sucesso `#15803D` · atenção `#B45309` · risco `#B91C1C` · informação `#1D4ED8`.
 - Sem navegação inferior; texto sobre cartões escuros usa variantes de alto contraste.
