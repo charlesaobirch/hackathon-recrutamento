@@ -1,0 +1,21 @@
+{
+  "hook": {
+    "enabled": true,
+    "limits": {
+      "maxFindings": 5,
+      "maxChars": 8000
+    }
+  },
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "overused-font",
+        "value": "inter",
+        "createdAt": "2026-11-25T20:02:27.861Z",
+        "reason": "Agent: Inter is explicitly documented as the established typeface and appears in both supplied reference SVGs."
+      }
+    ]
+  }
+}
