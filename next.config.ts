@@ -15,6 +15,9 @@ const nextConfig: NextConfig = {
       },
     },
   },
+  outputFileTracingIncludes: {
+    "/api/datasets": ["src/data/source/*.json"],
+  },
 };
 
 export default nextConfig;
