@@ -38,8 +38,23 @@
   --primitive-red-700: #b91c1c;
   --primitive-red-800: #991b1b;
 
-  --primitive-violet-100: #ede9fe;
-  --primitive-violet-700: #6d28d9;
+
+  /* Materiais da interface inspirados na referência aprovada. */
+  --primitive-charcoal-950: #262824;
+  --primitive-charcoal-900: #292b26;
+  --primitive-charcoal-850: #34362f;
+  --primitive-charcoal-800: #41433c;
+  --primitive-charcoal-700: #4b4d44;
+  --primitive-warm-50: #f8f8f2;
+  --primitive-warm-100: #eeefe7;
+  --primitive-warm-200: #e6e5dc;
+  --primitive-warm-300: #d8d9cf;
+  --primitive-warm-500: #77796f;
+  --primitive-warm-700: #67695f;
+  --primitive-lime-100: #eff8c9;
+  --primitive-lime-400: #c9f522;
+  --primitive-lime-500: #b6df18;
+  --primitive-olive-700: #526412;
 
   --primitive-space-1: 4px;
   --primitive-space-2: 8px;
@@ -70,31 +85,32 @@
 
   /* ---------------------------- 2. semânticas ---------------------------- */
   /* superfícies */
-  --color-bg-canvas: var(--primitive-canvas);
-  --color-bg-surface: var(--primitive-white);
-  --color-bg-subtle: var(--primitive-slate-50);
-  --color-bg-muted: var(--primitive-slate-100);
-  --color-bg-inverse: var(--primitive-ink-950);
-  --color-bg-inverse-raised: #111c2e;
+  --color-bg-canvas: var(--primitive-warm-200);
+  --color-bg-surface: var(--primitive-warm-50);
+  --color-bg-subtle: var(--primitive-warm-100);
+  --color-bg-muted: var(--primitive-warm-200);
+  --color-bg-inverse: var(--primitive-charcoal-900);
+  --color-bg-inverse-raised: var(--primitive-charcoal-850);
 
   /* texto */
-  --color-fg-primary: var(--primitive-ink-900);
-  --color-fg-secondary: var(--primitive-slate-600);
-  --color-fg-muted: var(--primitive-slate-500);
-  --color-fg-subtle: var(--primitive-slate-500);
+  --color-fg-primary: var(--primitive-charcoal-900);
+  --color-fg-secondary: var(--primitive-warm-700);
+  --color-fg-muted: var(--primitive-warm-500);
+  --color-fg-subtle: var(--primitive-warm-500);
   --color-fg-on-inverse: #ffffff;
-  --color-fg-on-inverse-muted: var(--primitive-slate-400);
+  --color-fg-on-inverse-muted: #e1e2d9;
+  --color-fg-accent: var(--primitive-olive-700);
 
   /* linhas */
-  --color-border: var(--primitive-slate-200);
-  --color-border-strong: var(--primitive-slate-300);
-  --color-border-inverse: var(--primitive-ink-800);
+  --color-border: var(--primitive-warm-300);
+  --color-border-strong: var(--primitive-warm-500);
+  --color-border-inverse: var(--primitive-charcoal-700);
 
   /* acento e estados */
-  --color-accent: var(--primitive-blue-600);
-  --color-accent-hover: var(--primitive-blue-700);
-  --color-accent-soft: var(--primitive-blue-100);
-  --color-focus: var(--primitive-blue-600);
+  --color-accent: var(--primitive-lime-400);
+  --color-accent-hover: var(--primitive-lime-500);
+  --color-accent-soft: var(--primitive-lime-100);
+  --color-focus: var(--primitive-olive-700);
 
   --color-success: var(--primitive-green-700);
   --color-success-soft: var(--primitive-green-100);
@@ -104,8 +120,6 @@
   --color-danger-soft: var(--primitive-red-100);
   --color-info: var(--primitive-blue-700);
   --color-info-soft: var(--primitive-blue-100);
-  --color-violet: var(--primitive-violet-700);
-  --color-violet-soft: var(--primitive-violet-100);
 
   /* espaço e forma */
   --space-1: var(--primitive-space-1);
@@ -134,16 +148,16 @@
   --text-2xl: var(--primitive-text-2xl);
   --text-3xl: var(--primitive-text-3xl);
 
-  --shadow-frame: 0 24px 60px -24px rgba(2, 6, 23, 0.65), 0 8px 24px -12px rgba(2, 6, 23, 0.45);
+  --shadow-frame: 0 20px 55px -25px rgba(9, 10, 8, 0.72), 0 8px 20px -12px rgba(9, 10, 8, 0.55);
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --duration-fast: 140ms;
 
   /* --------------------------- 3. componentes ---------------------------- */
   --button-height: 38px;
-  --button-radius: var(--radius-sm);
+  --button-radius: var(--radius-pill);
   --button-bg-primary: var(--color-accent);
   --button-bg-primary-hover: var(--color-accent-hover);
-  --button-fg-primary: #ffffff;
+  --button-fg-primary: var(--primitive-charcoal-900);
   --button-bg-ghost: var(--color-bg-surface);
   --button-border-ghost: var(--color-border);
   --button-fg-ghost: var(--color-fg-primary);
@@ -161,14 +175,12 @@
   --badge-bg-info: var(--color-info-soft);
   --badge-fg-neutral: var(--color-fg-secondary);
   --badge-bg-neutral: var(--color-bg-muted);
-  --badge-fg-violet: var(--primitive-violet-700);
-  --badge-bg-violet: var(--color-violet-soft);
 
-  --nav-item-height: 40px;
-  --nav-item-radius: var(--radius-md);
-  --nav-item-fg: var(--primitive-slate-400);
-  --nav-item-fg-active: #ffffff;
-  --nav-item-bg-active: var(--primitive-ink-800);
+  --nav-item-height: 48px;
+  --nav-item-radius: var(--radius-pill);
+  --nav-item-fg: #e0e1d8;
+  --nav-item-fg-active: var(--color-fg-primary);
+  --nav-item-bg-active: var(--color-bg-canvas);
 
   --table-border: var(--color-border);
   --table-header-bg: var(--color-bg-subtle);
@@ -176,7 +188,17 @@
   --table-row-height: 54px;
   --table-row-hover: var(--color-bg-subtle);
 
-  --card-bg: var(--color-bg-surface);
+  --card-bg: var(--primitive-warm-50);
   --card-border: var(--color-border);
-  --card-radius: var(--radius-lg);
+  --card-radius: 20px;
+  --card-bg-inverse: var(--color-bg-inverse-raised);
+  --card-fg-inverse: var(--color-fg-on-inverse);
+  --card-border-inverse: var(--color-border-inverse);
+  --app-frame: var(--primitive-charcoal-950);
+  --app-shell: var(--primitive-charcoal-900);
+  --app-shell-raised: var(--primitive-charcoal-800);
+  --app-header-height: 78px;
+  --app-shell-radius: 42px;
+  --app-folder-radius: 18px;
+  --app-nav-pill-radius: var(--radius-pill);
 }

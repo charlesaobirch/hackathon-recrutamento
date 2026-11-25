@@ -32,8 +32,6 @@
     warningSoft: "#FEF3C7",
     danger: "#DC2626",
     dangerSoft: "#FEE2E2",
-    violet: "#7C3AED",
-    violetSoft: "#EDE9FE",
     white: "#FFFFFF",
   };
 
@@ -150,7 +148,6 @@
     success: [C.successSoft, "#15803D"],
     info: [C.primarySoft, "#1D4ED8"],
     neutral: [C.soft, "#475569"],
-    violet: [C.violetSoft, "#6D28D9"],
   };
 
   function pill(parent, label, tone) {
@@ -772,7 +769,7 @@
     });
 
     const palette = box(right, { name: "Palette", layout: "HORIZONTAL", gap: 8, hugW: true });
-    [C.primary, "#15803D", "#B45309", "#B91C1C", "#6D28D9", C.sidebar].forEach((col) => {
+    [C.primary, "#15803D", "#B45309", "#B91C1C", "#1D4ED8", C.sidebar].forEach((col) => {
       box(palette, { w: 42, h: 42, radius: 10, fill: col, stroke: C.border });
     });
 
