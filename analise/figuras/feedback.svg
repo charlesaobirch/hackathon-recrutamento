@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 214" width="100%" role="img" aria-label="Feedbacks de cliente por nível de satisfação" style="max-width:760px;font-family:ui-sans-serif,system-ui,-apple-system,'Segoe UI',sans-serif;background:#fff">
+  <text x="16" y="24" font-size="15" font-weight="600" fill="#1a202c">Feedbacks de cliente por nível de satisfação</text>
+  <text x="16" y="42" font-size="11.5" fill="#4a5568">Distribuição concentrada em 3–4; 32 pedidos de substituição (12,2%).</text><g><title>1 — muito insatisfeito: 10 feedbacks</title>
+      <text x="166" y="74.68" font-size="10.5" text-anchor="end" fill="#2d3748">1 — muito insatisfeito</text>
+      <rect x="176" y="62" width="488" height="17.36" fill="#f7fafc" rx="2"/>
+      <rect x="176" y="62" width="56.74418604651163" height="17.36" rx="2" fill="#2b6cb0"/>
+      <text x="239.74418604651163" y="74.68" font-size="10.5" fill="#2d3748" font-weight="600">10</text></g><g><title>2 — insatisfeito: 42 feedbacks</title>
+      <text x="166" y="102.68" font-size="10.5" text-anchor="end" fill="#2d3748">2 — insatisfeito</text>
+      <rect x="176" y="90" width="488" height="17.36" fill="#f7fafc" rx="2"/>
+      <rect x="176" y="90" width="238.32558139534882" height="17.36" rx="2" fill="#2b6cb0"/>
+      <text x="421.3255813953488" y="102.68" font-size="10.5" fill="#2d3748" font-weight="600">42</text></g><g><title>3 — neutro: 73 feedbacks</title>
+      <text x="166" y="130.68" font-size="10.5" text-anchor="end" fill="#2d3748">3 — neutro</text>
+      <rect x="176" y="118" width="488" height="17.36" fill="#f7fafc" rx="2"/>
+      <rect x="176" y="118" width="414.2325581395349" height="17.36" rx="2" fill="#2b6cb0"/>
+      <text x="597.2325581395348" y="130.68" font-size="10.5" fill="#2d3748" font-weight="600">73</text></g><g><title>4 — satisfeito: 86 feedbacks</title>
+      <text x="166" y="158.68" font-size="10.5" text-anchor="end" fill="#2d3748">4 — satisfeito</text>
+      <rect x="176" y="146" width="488" height="17.36" fill="#f7fafc" rx="2"/>
+      <rect x="176" y="146" width="488" height="17.36" rx="2" fill="#2b6cb0"/>
+      <text x="671" y="158.68" font-size="10.5" fill="#2d3748" font-weight="600">86</text></g><g><title>5 — muito satisfeito: 51 feedbacks</title>
+      <text x="166" y="186.68" font-size="10.5" text-anchor="end" fill="#2d3748">5 — muito satisfeito</text>
+      <rect x="176" y="174" width="488" height="17.36" fill="#f7fafc" rx="2"/>
+      <rect x="176" y="174" width="289.3953488372093" height="17.36" rx="2" fill="#2b6cb0"/>
+      <text x="472.3953488372093" y="186.68" font-size="10.5" fill="#2d3748" font-weight="600">51</text></g></svg>

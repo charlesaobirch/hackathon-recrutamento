@@ -162,36 +162,32 @@ fig.funnel = C.hbarChart({
   ],
   unit: "", w: 780,
 });
-fig.mensal = C.lineChart({
-  title: "Volume mensal: candidaturas, entrevistas e contratações", subtitle: "Jan/2024 – Jan/2026. Picos em out/2025 e fev/2025.",
-  labels: [...new Set([...candidaturas.map((c) => month(c.data_candidatura)), ...contratacoes.map((c) => month(c.data_contratacao))])].sort(),
-  series: [
-    { name: "Candidaturas", values: [] }, { name: "Entrevistas", values: [] }, { name: "Contratações", values: [] },
-  ],
-  w: 800, h: 340,
-});
 {
-  const labels = fig.mensal._labels || [...new Set([...candidaturas.map((c) => month(c.data_candidatura)), ...contratacoes.map((c) => month(c.data_contratacao))])].sort();
+  const meses = [...new Set(candidaturas.map((c) => month(c.data_candidatura)))].sort();
   const cm = new Map(group(candidaturas, (c) => month(c.data_candidatura)).map(([k, v]) => [k, v.length]));
   const em = new Map(group(entrevistas, (e) => month(e.data)).map(([k, v]) => [k, v.length]));
-  const tm = new Map(group(contratacoes, (c) => month(c.data_contratacao)).map(([k, v]) => [k, v.length]));
   fig.mensal = C.lineChart({
-    title: "Volume mensal: candidaturas, entrevistas e contratações", subtitle: "Jan/2024 – Jan/2026. Picos de atividade em out/2025 e fev/2025.",
-    labels, series: [
-      { name: "Candidaturas", values: labels.map((l) => cm.get(l) || 0) },
-      { name: "Entrevistas", values: labels.map((l) => em.get(l) || 0) },
-      { name: "Contratações", values: labels.map((l) => tm.get(l) || 0) },
-    ], w: 800, h: 340, color: undefined,
+    title: "Volume mensal de candidaturas e entrevistas", subtitle: "Jan/2024 – Dez/2025. Picos em fev/2025 e out/2025; crescimento de ~40% no ano de 2025.",
+    labels: meses, series: [
+      { name: "Candidaturas", values: meses.map((l) => cm.get(l) || 0) },
+      { name: "Entrevistas", values: meses.map((l) => em.get(l) || 0) },
+    ], w: 800, h: 340,
+  });
+  const mesesCt = [...new Set(contratacoes.map((c) => month(c.data_contratacao)))].sort();
+  const tm = new Map(group(contratacoes, (c) => month(c.data_contratacao)).map(([k, v]) => [k, v.length]));
+  fig.contratacoesMes = C.barChart({
+    title: "Contratações por mês", subtitle: "Mesmo padrão de picos: fev/2025 (17), mar/2025 (18) e out/2025 (28).",
+    data: mesesCt.map((l) => ({ label: l, value: tm.get(l) || 0 })), w: 800, h: 300, color: "#2f855a",
   });
 }
-fig.recrutadores = C.groupedBarChart({
-  title: "Tempo até à contratação vs. desempenho a 90 dias, por recrutador", subtitle: "R02 contrata em 26 dias (‑38% vs. média) mas com o pior desempenho médio (2,92/5).",
-  labels: recStats.map((r) => r.id),
-  series: [
-    { name: "Tempo médio (dias)", values: recStats.map((r) => r.tth), color: "#2b6cb0" },
-    { name: "Desempenho 90d (×10)", values: recStats.map((r) => +(r.desempenho * 10).toFixed(1)), color: "#dd6b20" },
-    { name: "Retenção 90d (%)", values: recStats.map((r) => r.ret90), color: "#2f855a" },
-  ], w: 800, h: 360,
+fig.recrutadores = C.scatterChart({
+  title: "Mapa dos recrutadores: velocidade vs. qualidade", subtitle: "Eixo x = tempo médio até à contratação; eixo y = desempenho médio a 90 dias; tamanho = nº de contratações.",
+  points: recStats.map((r) => ({
+    x: r.tth, y: r.desempenho, r: 5 + r.contratacoes / 6, color: r.id === "R02" ? "#c53030" : r.id === "R07" ? "#2f855a" : "#2b6cb0",
+    opacity: 0.85, label: r.id, title: `${r.id}: ${r.tth} d, desempenho ${r.desempenho}, ${r.contratacoes} contratações, retenção ${r.ret90}%`,
+  })),
+  xDomain: [20, 62], yDomain: [2.4, 4.1], xLabel: "Tempo médio até à contratação (dias)", yLabel: "Desempenho médio a 90 dias (1‑5)",
+  tickX: (v) => Math.round(v), tickY: (v) => v.toFixed(1), xTicks: 6, yTicks: 3, labelPoints: true, w: 760, h: 360,
 });
 fig.timeline = C.stackedTimelineChart({
   title: "Onde vai o tempo do processo (mediana, dias)", subtitle: "As entrevistas demoram 6 dias; a passagem da última entrevista à proposta consome 27 dias (68% do ciclo).",
@@ -216,14 +212,15 @@ fig.score = C.histogram({
   title: "Distribuição do score técnico das entrevistas", subtitle: "2,8% dos registos (533) estão acima do máximo admissível de 100 — cauda artificial até 125.",
   values: entrevistas.map((e) => e.score_tecnico), bins: 26, marker: 100, xLabel: "score_tecnico", color: "#dd6b20", w: 760, h: 320,
 });
-fig.clientes = C.groupedBarChart({
-  title: "Clientes: satisfação, retenção a 90 dias e substituições", subtitle: "CL09 tem a pior retenção (62,5%) e a pior satisfação (3,19); CL06 está em revisão de contrato.",
-  labels: cliStats.map((c) => c.id),
-  series: [
-    { name: "Satisfação (1‑5)", values: cliStats.map((c) => c.satisfacao), color: "#2b6cb0" },
-    { name: "Retenção 90d (%)", values: cliStats.map((c) => c.ret90), color: "#2f855a" },
-    { name: "Substituições (n)", values: cliStats.map((c) => c.subst), color: "#dd6b20" },
-  ], w: 800, h: 360,
+fig.clientes = C.scatterChart({
+  title: "Mapa dos clientes: satisfação vs. retenção a 90 dias", subtitle: "Eixo x = satisfação média (1‑5); eixo y = retenção a 90 dias (%); tamanho = nº de contratações. CL09 no quadrante inferior esquerdo.",
+  points: cliStats.map((c) => ({
+    x: c.satisfacao, y: c.ret90, r: 5 + c.contratacoes / 5, color: c.id === "CL09" ? "#c53030" : c.id === "CL06" ? "#dd6b20" : "#2b6cb0",
+    opacity: 0.85, label: c.id, labelDy: c.id === "CL04" ? -9 : c.id === "CL02" ? 11 : 0,
+    title: `${c.id}: satisfação ${c.satisfacao}, retenção ${c.ret90}%, ${c.contratacoes} contratações, ${c.subst} substituições`,
+  })),
+  xDomain: [3.0, 4.0], yDomain: [55, 95], xLabel: "Satisfação média do cliente (1‑5)", yLabel: "Retenção a 90 dias (%)",
+  tickX: (v) => v.toFixed(1), tickY: (v) => Math.round(v), xTicks: 5, yTicks: 4, labelPoints: true, w: 760, h: 360,
 });
 fig.scatter = C.scatterChart({
   title: "Satisfação do cliente vs. desempenho do contratado a 90 dias", subtitle: `Correlação r = ${rSatisf.toFixed(2)} (n = 262) — mas 6 contratações com 5/5 exigem substituição.`,
@@ -234,20 +231,22 @@ fig.scatter = C.scatterChart({
   })), xDomain: [0.5, 5.5], yDomain: [0.5, 5.5], xLabel: "Satisfação do cliente (1‑5)", yLabel: "Desempenho a 90 dias (1‑5)", tickX: (v) => Math.round(v), tickY: (v) => Math.round(v), w: 700, h: 360,
 });
 fig.corr = C.heatmap({
-  title: "Matriz de correlação (contratações, n = 262)", subtitle: "Verde=positiva, vermelho=negativa. Experiência correlaciona com expectativa (0,90) mas não com salário pago (0,14).",
+  title: "Matriz de correlação (contratações, n = 262)", subtitle: "Verde = correlação positiva, vermelho = negativa. Experiência correlaciona com expectativa (0,90), não com salário pago.",
   rows: vars.map(([, l]) => l), cols: vars.map(([, l]) => l),
-  values: mat, fmt: (v) => v.toFixed(2), w: 780, h: 420, colorA: "#fff5f5", colorB: "#2f855a",
+  values: mat, fmt: (v) => (Math.abs(v) < 0.005 ? "·" : v.toFixed(2)), domain: [-1, 1], w: 800, h: 440,
 });
 fig.feedback = C.hbarChart({
   title: "Feedbacks de cliente por nível de satisfação", subtitle: "Distribuição concentrada em 3–4; 32 pedidos de substituição (12,2%).",
   data: [1, 2, 3, 4, 5].map((s) => ({ label: `${s} — ${["", "muito insatisfeito", "insatisfeito", "neutro", "satisfeito", "muito satisfeito"][s]}`, value: feedback_clientes.filter((f) => f.satisfacao === s).length })),
   w: 760, unit: " feedbacks",
 });
-fig.estadoCandidaturas = C.groupedBarChart({
+fig.estadoCandidaturas = C.barChart({
   title: "Coerência entre etapa registada e etapa efetivamente atingida", subtitle: "A coluna etapa_atual é praticamente independente das entrevistas realizadas — indício de preenchimento aleatório.",
-  labels: ["Etapa coincide com a fase máxima", "Etapa inferior à fase máxima", "Etapa superior à fase máxima"],
-  series: [{ name: "Candidaturas", values: [etapaMatch, candidaturas.filter((c) => FASE.indexOf(c.etapa_atual) < FASE.indexOf(maxStage(c))).length, candidaturas.filter((c) => FASE.indexOf(c.etapa_atual) > FASE.indexOf(maxStage(c))).length], color: "#2b6cb0" }],
-  w: 720, h: 320,
+  data: [
+    { label: "Coincide com a fase máxima", value: etapaMatch, color: "#2f855a" },
+    { label: "Abaixo da fase máxima", value: candidaturas.filter((c) => FASE.indexOf(c.etapa_atual) < FASE.indexOf(maxStage(c))).length, color: "#2b6cb0" },
+    { label: "Acima da fase máxima (impossível)", value: candidaturas.filter((c) => FASE.indexOf(c.etapa_atual) > FASE.indexOf(maxStage(c))).length, color: "#c53030" },
+  ], w: 740, h: 320,
 });
 
 for (const [k, svg] of Object.entries(fig)) fs.writeFileSync(path.join(FIG, `${k}.svg`), svg);
@@ -392,7 +391,7 @@ ul([
 
 // 5
 h2("5. Desempenho dos recrutadores", "recrutadores");
-chart("recrutadores", "Figura 5.1 — Tempo (azul), desempenho a 90 dias (laranja, ×10 para escala) e retenção a 90 dias (verde). R02 é o outlier de velocidade; R07 de qualidade.");
+chart("recrutadores", "Figura 5.1 — Cada ponto é um recrutador. R02 é o outlier de velocidade e o mais baixo em desempenho; R07 o inverso.");
 table(["Recrutador", "Equipa", "Anos", "Vagas", "Cand.", "Entrev./cand.", "Propostas", "Aceitação", "Contratações", "Tempo (d)", "Custo", "Desemp. 90d", "Retenção 90d", "Espera (d)"],
   recStats.map((r) => [r.id, r.equipa, r.anos, r.vagas, r.apps, r.entPorApp, r.propostas, r.conv + "%", r.contratacoes, r.tth, eur(r.custo), r.desempenho, r.ret90 + "%", r.idle]));
 ul([
@@ -405,7 +404,7 @@ ul([
 
 // 6
 h2("6. Clientes, satisfação e substituições", "clientes");
-chart("clientes", "Figura 6.1 — Satisfação média, retenção a 90 dias e número de substituições por cliente.");
+chart("clientes", "Figura 6.1 — Cada ponto é um cliente. CL09 (vermelho) combina a pior satisfação com a pior retenção; CL06 concentra o maior número de substituições.");
 table(["Cliente", "Setor", "Dimensão", "Modelo", "Relação", "Estado", "Vagas", "Contratações", "Tempo", "Satisfação", "Desemp.", "Retenção 90d", "Substituições", "Custo"],
   cliStats.map((c) => [c.id, c.setor, c.dimensao_empresa, c.modelo_recrutamento, c.historico_relacao, c.estado, c.vagas, c.contratacoes, c.tth + " d", c.satisfacao, c.desempenho, c.ret90 + "%", `${c.subst}/${c.nfb}`, eur(c.custo)]));
 ul([
@@ -445,7 +444,8 @@ ul([
 
 // 9
 h2("9. Padrões temporais e sazonalidade", "temporal");
-chart("mensal", "Figura 9.1 — Volumes mensais. A procura cresce ~60% de 2024 para 2025, com picos em fev/2025 e out/2025.");
+chart("mensal", "Figura 9.1 — Candidaturas e entrevistas por mês. A procura cresce ~40% de 2024 para 2025, com picos em fev/2025 e out/2025.");
+chart("contratacoesMes", "Figura 9.2 — Contratações por mês, com o mesmo padrão de picos concentrados.");
 ul([
   "**Crescimento**: 1 035 candidaturas em 2025‑T1 vs. 599 em 2024‑T1 (+73%); no ano completo, 2025 soma 3 483 candidaturas contra 2 479 em 2024 (+40%). Contratações: 18 em 2024‑T1 vs. 62 em 2025‑T4.",
   "**Picos coincidentes**: out/2025 é o mês de maior volume de candidaturas (472), entrevistas (1 648), propostas (105) e contratações (28) — comportamento em bloco, típico de carga de dados e não de sazonalidade real.",
