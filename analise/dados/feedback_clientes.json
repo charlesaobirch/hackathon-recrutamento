@@ -1,0 +1,2360 @@
+[
+  {
+    "id": "FB000001",
+    "id_contratacao": "CT000001",
+    "data_feedback": "2024-11-18",
+    "satisfacao": 3,
+    "desempenho_percebido": 4,
+    "comentario": "dentro do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000002",
+    "id_contratacao": "CT000002",
+    "data_feedback": "2025-03-23",
+    "satisfacao": 3,
+    "desempenho_percebido": 3,
+    "comentario": "abaixo do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000003",
+    "id_contratacao": "CT000003",
+    "data_feedback": "2025-06-08",
+    "satisfacao": 2,
+    "desempenho_percebido": 2,
+    "comentario": "precisa de acompanhamento",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000004",
+    "id_contratacao": "CT000004",
+    "data_feedback": "2025-12-31",
+    "satisfacao": 4,
+    "desempenho_percebido": 5,
+    "comentario": "Muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000005",
+    "id_contratacao": "CT000005",
+    "data_feedback": "2024-07-25",
+    "satisfacao": 3,
+    "desempenho_percebido": 4,
+    "comentario": "dentro do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000006",
+    "id_contratacao": "CT000006",
+    "data_feedback": "2024-05-08",
+    "satisfacao": 3,
+    "desempenho_percebido": 3,
+    "comentario": "precisa de acompanhamento",
+    "necessita_substituicao": true
+  },
+  {
+    "id": "FB000007",
+    "id_contratacao": "CT000007",
+    "data_feedback": "2024-09-13",
+    "satisfacao": 2,
+    "desempenho_percebido": 2,
+    "comentario": "abaixo do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000008",
+    "id_contratacao": "CT000008",
+    "data_feedback": "2025-07-02",
+    "satisfacao": 2,
+    "desempenho_percebido": 2,
+    "comentario": "precisa de acompanhamento",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000009",
+    "id_contratacao": "CT000009",
+    "data_feedback": "2025-12-31",
+    "satisfacao": 4,
+    "desempenho_percebido": 4,
+    "comentario": "bom",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000010",
+    "id_contratacao": "CT000010",
+    "data_feedback": "2025-04-17",
+    "satisfacao": 2,
+    "desempenho_percebido": 2,
+    "comentario": "dentro do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000011",
+    "id_contratacao": "CT000011",
+    "data_feedback": "2025-12-31",
+    "satisfacao": 5,
+    "desempenho_percebido": 5,
+    "comentario": "dentro do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000012",
+    "id_contratacao": "CT000012",
+    "data_feedback": "2024-10-29",
+    "satisfacao": 3,
+    "desempenho_percebido": 3,
+    "comentario": "muito satisfeito",
+    "necessita_substituicao": true
+  },
+  {
+    "id": "FB000013",
+    "id_contratacao": "CT000013",
+    "data_feedback": "2025-06-13",
+    "satisfacao": 2,
+    "desempenho_percebido": 3,
+    "comentario": "muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000014",
+    "id_contratacao": "CT000014",
+    "data_feedback": "2025-07-05",
+    "satisfacao": 2,
+    "desempenho_percebido": 2,
+    "comentario": "abaixo do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000015",
+    "id_contratacao": "CT000015",
+    "data_feedback": "2024-08-15",
+    "satisfacao": 3,
+    "desempenho_percebido": 4,
+    "comentario": "",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000016",
+    "id_contratacao": "CT000016",
+    "data_feedback": "2025-06-10",
+    "satisfacao": 4,
+    "desempenho_percebido": 4,
+    "comentario": "precisa de acompanhamento",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000017",
+    "id_contratacao": "CT000017",
+    "data_feedback": "2024-04-22",
+    "satisfacao": 4,
+    "desempenho_percebido": 4,
+    "comentario": "Muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000018",
+    "id_contratacao": "CT000018",
+    "data_feedback": "2024-09-12",
+    "satisfacao": 3,
+    "desempenho_percebido": 4,
+    "comentario": "abaixo do esperado",
+    "necessita_substituicao": true
+  },
+  {
+    "id": "FB000019",
+    "id_contratacao": "CT000019",
+    "data_feedback": "2025-01-02",
+    "satisfacao": 3,
+    "desempenho_percebido": 4,
+    "comentario": "bom",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000020",
+    "id_contratacao": "CT000020",
+    "data_feedback": "2025-02-11",
+    "satisfacao": 3,
+    "desempenho_percebido": 3,
+    "comentario": "",
+    "necessita_substituicao": true
+  },
+  {
+    "id": "FB000021",
+    "id_contratacao": "CT000021",
+    "data_feedback": "2024-09-15",
+    "satisfacao": 4,
+    "desempenho_percebido": 3,
+    "comentario": "dentro do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000022",
+    "id_contratacao": "CT000022",
+    "data_feedback": "2025-12-02",
+    "satisfacao": 4,
+    "desempenho_percebido": 4,
+    "comentario": "muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000023",
+    "id_contratacao": "CT000023",
+    "data_feedback": "2025-03-06",
+    "satisfacao": 5,
+    "desempenho_percebido": 4,
+    "comentario": "abaixo do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000024",
+    "id_contratacao": "CT000024",
+    "data_feedback": "2025-12-31",
+    "satisfacao": 5,
+    "desempenho_percebido": 3,
+    "comentario": "Muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000025",
+    "id_contratacao": "CT000025",
+    "data_feedback": "2025-12-31",
+    "satisfacao": 5,
+    "desempenho_percebido": 4,
+    "comentario": "bom",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000026",
+    "id_contratacao": "CT000026",
+    "data_feedback": "2024-06-30",
+    "satisfacao": 3,
+    "desempenho_percebido": 2,
+    "comentario": "abaixo do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000027",
+    "id_contratacao": "CT000027",
+    "data_feedback": "2025-04-10",
+    "satisfacao": 5,
+    "desempenho_percebido": 3,
+    "comentario": "muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000028",
+    "id_contratacao": "CT000028",
+    "data_feedback": "2025-09-02",
+    "satisfacao": 5,
+    "desempenho_percebido": 3,
+    "comentario": "abaixo do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000029",
+    "id_contratacao": "CT000029",
+    "data_feedback": "2025-07-01",
+    "satisfacao": 4,
+    "desempenho_percebido": 2,
+    "comentario": "abaixo do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000030",
+    "id_contratacao": "CT000030",
+    "data_feedback": "2025-12-31",
+    "satisfacao": 5,
+    "desempenho_percebido": 5,
+    "comentario": "bom",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000031",
+    "id_contratacao": "CT000031",
+    "data_feedback": "2024-04-20",
+    "satisfacao": 4,
+    "desempenho_percebido": 4,
+    "comentario": "Muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000032",
+    "id_contratacao": "CT000032",
+    "data_feedback": "2025-09-18",
+    "satisfacao": 3,
+    "desempenho_percebido": 3,
+    "comentario": "muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000033",
+    "id_contratacao": "CT000033",
+    "data_feedback": "2025-08-23",
+    "satisfacao": 3,
+    "desempenho_percebido": 2,
+    "comentario": "dentro do esperado",
+    "necessita_substituicao": true
+  },
+  {
+    "id": "FB000034",
+    "id_contratacao": "CT000034",
+    "data_feedback": "2024-11-24",
+    "satisfacao": 4,
+    "desempenho_percebido": 2,
+    "comentario": "Muito satisfeito",
+    "necessita_substituicao": true
+  },
+  {
+    "id": "FB000035",
+    "id_contratacao": "CT000035",
+    "data_feedback": "2025-12-31",
+    "satisfacao": 4,
+    "desempenho_percebido": 3,
+    "comentario": "",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000036",
+    "id_contratacao": "CT000036",
+    "data_feedback": "2025-12-31",
+    "satisfacao": 3,
+    "desempenho_percebido": 3,
+    "comentario": "",
+    "necessita_substituicao": true
+  },
+  {
+    "id": "FB000037",
+    "id_contratacao": "CT000037",
+    "data_feedback": "2025-03-05",
+    "satisfacao": 5,
+    "desempenho_percebido": 4,
+    "comentario": "bom",
+    "necessita_substituicao": true
+  },
+  {
+    "id": "FB000038",
+    "id_contratacao": "CT000038",
+    "data_feedback": "2025-12-10",
+    "satisfacao": 3,
+    "desempenho_percebido": 2,
+    "comentario": "",
+    "necessita_substituicao": true
+  },
+  {
+    "id": "FB000039",
+    "id_contratacao": "CT000039",
+    "data_feedback": "2024-11-12",
+    "satisfacao": 2,
+    "desempenho_percebido": 1,
+    "comentario": "dentro do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000040",
+    "id_contratacao": "CT000040",
+    "data_feedback": "2025-05-04",
+    "satisfacao": 4,
+    "desempenho_percebido": 2,
+    "comentario": "precisa de acompanhamento",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000041",
+    "id_contratacao": "CT000041",
+    "data_feedback": "2025-12-31",
+    "satisfacao": 4,
+    "desempenho_percebido": 3,
+    "comentario": "",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000042",
+    "id_contratacao": "CT000042",
+    "data_feedback": "2024-07-09",
+    "satisfacao": 4,
+    "desempenho_percebido": 4,
+    "comentario": "dentro do esperado",
+    "necessita_substituicao": true
+  },
+  {
+    "id": "FB000043",
+    "id_contratacao": "CT000043",
+    "data_feedback": "2024-12-07",
+    "satisfacao": 3,
+    "desempenho_percebido": 2,
+    "comentario": "bom",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000044",
+    "id_contratacao": "CT000044",
+    "data_feedback": "2025-08-27",
+    "satisfacao": 5,
+    "desempenho_percebido": 5,
+    "comentario": "precisa de acompanhamento",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000045",
+    "id_contratacao": "CT000045",
+    "data_feedback": "2025-12-31",
+    "satisfacao": 4,
+    "desempenho_percebido": 3,
+    "comentario": "bom",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000046",
+    "id_contratacao": "CT000046",
+    "data_feedback": "2025-03-10",
+    "satisfacao": 3,
+    "desempenho_percebido": 2,
+    "comentario": "muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000047",
+    "id_contratacao": "CT000047",
+    "data_feedback": "2025-10-26",
+    "satisfacao": 4,
+    "desempenho_percebido": 3,
+    "comentario": "dentro do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000048",
+    "id_contratacao": "CT000048",
+    "data_feedback": "2025-06-23",
+    "satisfacao": 1,
+    "desempenho_percebido": 1,
+    "comentario": "precisa de acompanhamento",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000049",
+    "id_contratacao": "CT000049",
+    "data_feedback": "2025-12-31",
+    "satisfacao": 2,
+    "desempenho_percebido": 2,
+    "comentario": "abaixo do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000050",
+    "id_contratacao": "CT000050",
+    "data_feedback": "2024-09-17",
+    "satisfacao": 3,
+    "desempenho_percebido": 2,
+    "comentario": "bom",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000051",
+    "id_contratacao": "CT000051",
+    "data_feedback": "2025-03-27",
+    "satisfacao": 4,
+    "desempenho_percebido": 3,
+    "comentario": "muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000052",
+    "id_contratacao": "CT000052",
+    "data_feedback": "2025-12-31",
+    "satisfacao": 5,
+    "desempenho_percebido": 4,
+    "comentario": "Muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000053",
+    "id_contratacao": "CT000053",
+    "data_feedback": "2025-01-24",
+    "satisfacao": 4,
+    "desempenho_percebido": 4,
+    "comentario": "dentro do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000054",
+    "id_contratacao": "CT000054",
+    "data_feedback": "2025-12-31",
+    "satisfacao": 4,
+    "desempenho_percebido": 3,
+    "comentario": "precisa de acompanhamento",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000055",
+    "id_contratacao": "CT000055",
+    "data_feedback": "2025-11-27",
+    "satisfacao": 5,
+    "desempenho_percebido": 3,
+    "comentario": "Muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000056",
+    "id_contratacao": "CT000056",
+    "data_feedback": "2024-06-03",
+    "satisfacao": 5,
+    "desempenho_percebido": 4,
+    "comentario": "bom",
+    "necessita_substituicao": true
+  },
+  {
+    "id": "FB000057",
+    "id_contratacao": "CT000057",
+    "data_feedback": "2025-08-25",
+    "satisfacao": 5,
+    "desempenho_percebido": 3,
+    "comentario": "dentro do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000058",
+    "id_contratacao": "CT000058",
+    "data_feedback": "2025-10-24",
+    "satisfacao": 4,
+    "desempenho_percebido": 3,
+    "comentario": "Muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000059",
+    "id_contratacao": "CT000059",
+    "data_feedback": "2024-11-12",
+    "satisfacao": 5,
+    "desempenho_percebido": 4,
+    "comentario": "abaixo do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000060",
+    "id_contratacao": "CT000060",
+    "data_feedback": "2025-10-06",
+    "satisfacao": 5,
+    "desempenho_percebido": 4,
+    "comentario": "bom",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000061",
+    "id_contratacao": "CT000061",
+    "data_feedback": "2024-08-21",
+    "satisfacao": 2,
+    "desempenho_percebido": 1,
+    "comentario": "dentro do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000062",
+    "id_contratacao": "CT000062",
+    "data_feedback": "2024-06-11",
+    "satisfacao": 1,
+    "desempenho_percebido": 1,
+    "comentario": "abaixo do esperado",
+    "necessita_substituicao": true
+  },
+  {
+    "id": "FB000063",
+    "id_contratacao": "CT000063",
+    "data_feedback": "2025-01-24",
+    "satisfacao": 5,
+    "desempenho_percebido": 3,
+    "comentario": "abaixo do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000064",
+    "id_contratacao": "CT000064",
+    "data_feedback": "2024-12-15",
+    "satisfacao": 4,
+    "desempenho_percebido": 4,
+    "comentario": "bom",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000065",
+    "id_contratacao": "CT000065",
+    "data_feedback": "2025-09-04",
+    "satisfacao": 3,
+    "desempenho_percebido": 4,
+    "comentario": "Muito satisfeito",
+    "necessita_substituicao": true
+  },
+  {
+    "id": "FB000066",
+    "id_contratacao": "CT000066",
+    "data_feedback": "2025-12-23",
+    "satisfacao": 4,
+    "desempenho_percebido": 4,
+    "comentario": "Muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000067",
+    "id_contratacao": "CT000067",
+    "data_feedback": "2024-09-24",
+    "satisfacao": 3,
+    "desempenho_percebido": 3,
+    "comentario": "abaixo do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000068",
+    "id_contratacao": "CT000068",
+    "data_feedback": "2024-11-19",
+    "satisfacao": 2,
+    "desempenho_percebido": 2,
+    "comentario": "",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000069",
+    "id_contratacao": "CT000069",
+    "data_feedback": "2025-10-24",
+    "satisfacao": 3,
+    "desempenho_percebido": 4,
+    "comentario": "precisa de acompanhamento",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000070",
+    "id_contratacao": "CT000070",
+    "data_feedback": "2025-07-12",
+    "satisfacao": 4,
+    "desempenho_percebido": 3,
+    "comentario": "Muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000071",
+    "id_contratacao": "CT000071",
+    "data_feedback": "2024-08-26",
+    "satisfacao": 4,
+    "desempenho_percebido": 3,
+    "comentario": "",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000072",
+    "id_contratacao": "CT000072",
+    "data_feedback": "2025-06-17",
+    "satisfacao": 2,
+    "desempenho_percebido": 3,
+    "comentario": "dentro do esperado",
+    "necessita_substituicao": true
+  },
+  {
+    "id": "FB000073",
+    "id_contratacao": "CT000073",
+    "data_feedback": "2025-11-19",
+    "satisfacao": 2,
+    "desempenho_percebido": 2,
+    "comentario": "Muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000074",
+    "id_contratacao": "CT000074",
+    "data_feedback": "2025-08-10",
+    "satisfacao": 4,
+    "desempenho_percebido": 3,
+    "comentario": "dentro do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000075",
+    "id_contratacao": "CT000075",
+    "data_feedback": "2025-05-13",
+    "satisfacao": 4,
+    "desempenho_percebido": 4,
+    "comentario": "Muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000076",
+    "id_contratacao": "CT000076",
+    "data_feedback": "2025-02-11",
+    "satisfacao": 3,
+    "desempenho_percebido": 2,
+    "comentario": "dentro do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000077",
+    "id_contratacao": "CT000077",
+    "data_feedback": "2025-12-31",
+    "satisfacao": 3,
+    "desempenho_percebido": 2,
+    "comentario": "bom",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000078",
+    "id_contratacao": "CT000078",
+    "data_feedback": "2025-11-17",
+    "satisfacao": 5,
+    "desempenho_percebido": 4,
+    "comentario": "precisa de acompanhamento",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000079",
+    "id_contratacao": "CT000079",
+    "data_feedback": "2025-12-11",
+    "satisfacao": 5,
+    "desempenho_percebido": 5,
+    "comentario": "dentro do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000080",
+    "id_contratacao": "CT000080",
+    "data_feedback": "2025-12-25",
+    "satisfacao": 2,
+    "desempenho_percebido": 4,
+    "comentario": "precisa de acompanhamento",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000081",
+    "id_contratacao": "CT000081",
+    "data_feedback": "2024-12-18",
+    "satisfacao": 1,
+    "desempenho_percebido": 3,
+    "comentario": "bom",
+    "necessita_substituicao": true
+  },
+  {
+    "id": "FB000082",
+    "id_contratacao": "CT000082",
+    "data_feedback": "2024-12-12",
+    "satisfacao": 3,
+    "desempenho_percebido": 2,
+    "comentario": "bom",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000083",
+    "id_contratacao": "CT000083",
+    "data_feedback": "2025-08-05",
+    "satisfacao": 5,
+    "desempenho_percebido": 4,
+    "comentario": "abaixo do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000084",
+    "id_contratacao": "CT000084",
+    "data_feedback": "2025-12-14",
+    "satisfacao": 2,
+    "desempenho_percebido": 2,
+    "comentario": "precisa de acompanhamento",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000085",
+    "id_contratacao": "CT000085",
+    "data_feedback": "2024-12-04",
+    "satisfacao": 3,
+    "desempenho_percebido": 4,
+    "comentario": "precisa de acompanhamento",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000086",
+    "id_contratacao": "CT000086",
+    "data_feedback": "2024-05-22",
+    "satisfacao": 5,
+    "desempenho_percebido": 4,
+    "comentario": "dentro do esperado",
+    "necessita_substituicao": true
+  },
+  {
+    "id": "FB000087",
+    "id_contratacao": "CT000087",
+    "data_feedback": "2025-07-08",
+    "satisfacao": 3,
+    "desempenho_percebido": 3,
+    "comentario": "bom",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000088",
+    "id_contratacao": "CT000088",
+    "data_feedback": "2024-07-07",
+    "satisfacao": 3,
+    "desempenho_percebido": 3,
+    "comentario": "bom",
+    "necessita_substituicao": true
+  },
+  {
+    "id": "FB000089",
+    "id_contratacao": "CT000089",
+    "data_feedback": "2025-12-31",
+    "satisfacao": 1,
+    "desempenho_percebido": 2,
+    "comentario": "abaixo do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000090",
+    "id_contratacao": "CT000090",
+    "data_feedback": "2025-06-16",
+    "satisfacao": 4,
+    "desempenho_percebido": 3,
+    "comentario": "Muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000091",
+    "id_contratacao": "CT000091",
+    "data_feedback": "2025-12-29",
+    "satisfacao": 4,
+    "desempenho_percebido": 4,
+    "comentario": "dentro do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000092",
+    "id_contratacao": "CT000092",
+    "data_feedback": "2024-12-04",
+    "satisfacao": 2,
+    "desempenho_percebido": 3,
+    "comentario": "Muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000093",
+    "id_contratacao": "CT000093",
+    "data_feedback": "2024-04-15",
+    "satisfacao": 3,
+    "desempenho_percebido": 3,
+    "comentario": "bom",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000094",
+    "id_contratacao": "CT000094",
+    "data_feedback": "2025-08-30",
+    "satisfacao": 4,
+    "desempenho_percebido": 4,
+    "comentario": "abaixo do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000095",
+    "id_contratacao": "CT000095",
+    "data_feedback": "2025-04-06",
+    "satisfacao": 4,
+    "desempenho_percebido": 4,
+    "comentario": "abaixo do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000096",
+    "id_contratacao": "CT000096",
+    "data_feedback": "2025-06-13",
+    "satisfacao": 3,
+    "desempenho_percebido": 4,
+    "comentario": "dentro do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000097",
+    "id_contratacao": "CT000097",
+    "data_feedback": "2025-12-31",
+    "satisfacao": 4,
+    "desempenho_percebido": 4,
+    "comentario": "muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000098",
+    "id_contratacao": "CT000098",
+    "data_feedback": "2024-05-10",
+    "satisfacao": 5,
+    "desempenho_percebido": 5,
+    "comentario": "dentro do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000099",
+    "id_contratacao": "CT000099",
+    "data_feedback": "2024-04-17",
+    "satisfacao": 5,
+    "desempenho_percebido": 4,
+    "comentario": "Muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000100",
+    "id_contratacao": "CT000100",
+    "data_feedback": "2025-01-29",
+    "satisfacao": 4,
+    "desempenho_percebido": 4,
+    "comentario": "muito satisfeito",
+    "necessita_substituicao": true
+  },
+  {
+    "id": "FB000101",
+    "id_contratacao": "CT000101",
+    "data_feedback": "2025-12-31",
+    "satisfacao": 3,
+    "desempenho_percebido": 4,
+    "comentario": "Muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000102",
+    "id_contratacao": "CT000102",
+    "data_feedback": "2025-12-31",
+    "satisfacao": 5,
+    "desempenho_percebido": 5,
+    "comentario": "dentro do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000103",
+    "id_contratacao": "CT000103",
+    "data_feedback": "2025-11-23",
+    "satisfacao": 4,
+    "desempenho_percebido": 3,
+    "comentario": "dentro do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000104",
+    "id_contratacao": "CT000104",
+    "data_feedback": "2025-12-12",
+    "satisfacao": 3,
+    "desempenho_percebido": 2,
+    "comentario": "precisa de acompanhamento",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000105",
+    "id_contratacao": "CT000105",
+    "data_feedback": "2025-01-29",
+    "satisfacao": 4,
+    "desempenho_percebido": 4,
+    "comentario": "muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000106",
+    "id_contratacao": "CT000106",
+    "data_feedback": "2024-10-21",
+    "satisfacao": 5,
+    "desempenho_percebido": 5,
+    "comentario": "muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000107",
+    "id_contratacao": "CT000107",
+    "data_feedback": "2025-04-25",
+    "satisfacao": 3,
+    "desempenho_percebido": 4,
+    "comentario": "muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000108",
+    "id_contratacao": "CT000108",
+    "data_feedback": "2025-12-30",
+    "satisfacao": 2,
+    "desempenho_percebido": 3,
+    "comentario": "bom",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000109",
+    "id_contratacao": "CT000109",
+    "data_feedback": "2025-10-09",
+    "satisfacao": 5,
+    "desempenho_percebido": 5,
+    "comentario": "Muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000110",
+    "id_contratacao": "CT000110",
+    "data_feedback": "2024-10-27",
+    "satisfacao": 3,
+    "desempenho_percebido": 4,
+    "comentario": "dentro do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000111",
+    "id_contratacao": "CT000111",
+    "data_feedback": "2024-12-28",
+    "satisfacao": 3,
+    "desempenho_percebido": 4,
+    "comentario": "precisa de acompanhamento",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000112",
+    "id_contratacao": "CT000112",
+    "data_feedback": "2025-05-05",
+    "satisfacao": 3,
+    "desempenho_percebido": 4,
+    "comentario": "Muito satisfeito",
+    "necessita_substituicao": true
+  },
+  {
+    "id": "FB000113",
+    "id_contratacao": "CT000113",
+    "data_feedback": "2025-06-18",
+    "satisfacao": 3,
+    "desempenho_percebido": 4,
+    "comentario": "muito satisfeito",
+    "necessita_substituicao": true
+  },
+  {
+    "id": "FB000114",
+    "id_contratacao": "CT000114",
+    "data_feedback": "2025-06-25",
+    "satisfacao": 2,
+    "desempenho_percebido": 2,
+    "comentario": "",
+    "necessita_substituicao": true
+  },
+  {
+    "id": "FB000115",
+    "id_contratacao": "CT000115",
+    "data_feedback": "2025-12-01",
+    "satisfacao": 5,
+    "desempenho_percebido": 5,
+    "comentario": "Muito satisfeito",
+    "necessita_substituicao": true
+  },
+  {
+    "id": "FB000116",
+    "id_contratacao": "CT000116",
+    "data_feedback": "2024-03-27",
+    "satisfacao": 5,
+    "desempenho_percebido": 5,
+    "comentario": "dentro do esperado",
+    "necessita_substituicao": true
+  },
+  {
+    "id": "FB000117",
+    "id_contratacao": "CT000117",
+    "data_feedback": "2025-12-11",
+    "satisfacao": 2,
+    "desempenho_percebido": 2,
+    "comentario": "muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000118",
+    "id_contratacao": "CT000118",
+    "data_feedback": "2025-12-05",
+    "satisfacao": 3,
+    "desempenho_percebido": 3,
+    "comentario": "",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000119",
+    "id_contratacao": "CT000119",
+    "data_feedback": "2025-01-01",
+    "satisfacao": 4,
+    "desempenho_percebido": 4,
+    "comentario": "precisa de acompanhamento",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000120",
+    "id_contratacao": "CT000120",
+    "data_feedback": "2025-06-06",
+    "satisfacao": 2,
+    "desempenho_percebido": 3,
+    "comentario": "dentro do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000121",
+    "id_contratacao": "CT000121",
+    "data_feedback": "2025-12-31",
+    "satisfacao": 3,
+    "desempenho_percebido": 3,
+    "comentario": "abaixo do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000122",
+    "id_contratacao": "CT000122",
+    "data_feedback": "2025-06-24",
+    "satisfacao": 2,
+    "desempenho_percebido": 2,
+    "comentario": "precisa de acompanhamento",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000123",
+    "id_contratacao": "CT000123",
+    "data_feedback": "2025-07-30",
+    "satisfacao": 4,
+    "desempenho_percebido": 4,
+    "comentario": "precisa de acompanhamento",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000124",
+    "id_contratacao": "CT000124",
+    "data_feedback": "2025-11-22",
+    "satisfacao": 2,
+    "desempenho_percebido": 3,
+    "comentario": "Muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000125",
+    "id_contratacao": "CT000125",
+    "data_feedback": "2025-07-30",
+    "satisfacao": 1,
+    "desempenho_percebido": 2,
+    "comentario": "dentro do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000126",
+    "id_contratacao": "CT000126",
+    "data_feedback": "2024-10-26",
+    "satisfacao": 5,
+    "desempenho_percebido": 5,
+    "comentario": "Muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000127",
+    "id_contratacao": "CT000127",
+    "data_feedback": "2025-07-10",
+    "satisfacao": 4,
+    "desempenho_percebido": 3,
+    "comentario": "precisa de acompanhamento",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000128",
+    "id_contratacao": "CT000128",
+    "data_feedback": "2025-04-25",
+    "satisfacao": 1,
+    "desempenho_percebido": 2,
+    "comentario": "precisa de acompanhamento",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000129",
+    "id_contratacao": "CT000129",
+    "data_feedback": "2025-12-31",
+    "satisfacao": 3,
+    "desempenho_percebido": 3,
+    "comentario": "muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000130",
+    "id_contratacao": "CT000130",
+    "data_feedback": "2025-02-08",
+    "satisfacao": 1,
+    "desempenho_percebido": 2,
+    "comentario": "muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000131",
+    "id_contratacao": "CT000131",
+    "data_feedback": "2024-05-13",
+    "satisfacao": 5,
+    "desempenho_percebido": 4,
+    "comentario": "dentro do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000132",
+    "id_contratacao": "CT000132",
+    "data_feedback": "2024-06-22",
+    "satisfacao": 4,
+    "desempenho_percebido": 4,
+    "comentario": "abaixo do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000133",
+    "id_contratacao": "CT000133",
+    "data_feedback": "2025-05-27",
+    "satisfacao": 3,
+    "desempenho_percebido": 3,
+    "comentario": "precisa de acompanhamento",
+    "necessita_substituicao": true
+  },
+  {
+    "id": "FB000134",
+    "id_contratacao": "CT000134",
+    "data_feedback": "2025-12-06",
+    "satisfacao": 3,
+    "desempenho_percebido": 3,
+    "comentario": "dentro do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000135",
+    "id_contratacao": "CT000135",
+    "data_feedback": "2025-07-23",
+    "satisfacao": 4,
+    "desempenho_percebido": 3,
+    "comentario": "dentro do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000136",
+    "id_contratacao": "CT000136",
+    "data_feedback": "2025-07-10",
+    "satisfacao": 2,
+    "desempenho_percebido": 3,
+    "comentario": "bom",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000137",
+    "id_contratacao": "CT000137",
+    "data_feedback": "2025-08-22",
+    "satisfacao": 3,
+    "desempenho_percebido": 4,
+    "comentario": "Muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000138",
+    "id_contratacao": "CT000138",
+    "data_feedback": "2025-11-13",
+    "satisfacao": 4,
+    "desempenho_percebido": 3,
+    "comentario": "muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000139",
+    "id_contratacao": "CT000139",
+    "data_feedback": "2024-11-09",
+    "satisfacao": 2,
+    "desempenho_percebido": 3,
+    "comentario": "muito satisfeito",
+    "necessita_substituicao": true
+  },
+  {
+    "id": "FB000140",
+    "id_contratacao": "CT000140",
+    "data_feedback": "2025-12-19",
+    "satisfacao": 5,
+    "desempenho_percebido": 4,
+    "comentario": "bom",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000141",
+    "id_contratacao": "CT000141",
+    "data_feedback": "2024-08-15",
+    "satisfacao": 3,
+    "desempenho_percebido": 3,
+    "comentario": "muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000142",
+    "id_contratacao": "CT000142",
+    "data_feedback": "2024-07-29",
+    "satisfacao": 4,
+    "desempenho_percebido": 5,
+    "comentario": "abaixo do esperado",
+    "necessita_substituicao": true
+  },
+  {
+    "id": "FB000143",
+    "id_contratacao": "CT000143",
+    "data_feedback": "2025-03-04",
+    "satisfacao": 3,
+    "desempenho_percebido": 3,
+    "comentario": "muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000144",
+    "id_contratacao": "CT000144",
+    "data_feedback": "2025-08-28",
+    "satisfacao": 5,
+    "desempenho_percebido": 4,
+    "comentario": "abaixo do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000145",
+    "id_contratacao": "CT000145",
+    "data_feedback": "2025-09-07",
+    "satisfacao": 4,
+    "desempenho_percebido": 4,
+    "comentario": "Muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000146",
+    "id_contratacao": "CT000146",
+    "data_feedback": "2025-01-24",
+    "satisfacao": 3,
+    "desempenho_percebido": 3,
+    "comentario": "Muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000147",
+    "id_contratacao": "CT000147",
+    "data_feedback": "2025-04-10",
+    "satisfacao": 5,
+    "desempenho_percebido": 4,
+    "comentario": "",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000148",
+    "id_contratacao": "CT000148",
+    "data_feedback": "2024-09-12",
+    "satisfacao": 4,
+    "desempenho_percebido": 4,
+    "comentario": "muito satisfeito",
+    "necessita_substituicao": true
+  },
+  {
+    "id": "FB000149",
+    "id_contratacao": "CT000149",
+    "data_feedback": "2024-10-07",
+    "satisfacao": 3,
+    "desempenho_percebido": 4,
+    "comentario": "Muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000150",
+    "id_contratacao": "CT000150",
+    "data_feedback": "2025-05-24",
+    "satisfacao": 3,
+    "desempenho_percebido": 3,
+    "comentario": "muito satisfeito",
+    "necessita_substituicao": true
+  },
+  {
+    "id": "FB000151",
+    "id_contratacao": "CT000151",
+    "data_feedback": "2025-12-31",
+    "satisfacao": 3,
+    "desempenho_percebido": 4,
+    "comentario": "muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000152",
+    "id_contratacao": "CT000152",
+    "data_feedback": "2024-06-02",
+    "satisfacao": 4,
+    "desempenho_percebido": 4,
+    "comentario": "precisa de acompanhamento",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000153",
+    "id_contratacao": "CT000153",
+    "data_feedback": "2025-05-15",
+    "satisfacao": 4,
+    "desempenho_percebido": 4,
+    "comentario": "bom",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000154",
+    "id_contratacao": "CT000154",
+    "data_feedback": "2025-12-31",
+    "satisfacao": 4,
+    "desempenho_percebido": 4,
+    "comentario": "muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000155",
+    "id_contratacao": "CT000155",
+    "data_feedback": "2025-12-06",
+    "satisfacao": 4,
+    "desempenho_percebido": 4,
+    "comentario": "bom",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000156",
+    "id_contratacao": "CT000156",
+    "data_feedback": "2025-08-14",
+    "satisfacao": 5,
+    "desempenho_percebido": 5,
+    "comentario": "bom",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000157",
+    "id_contratacao": "CT000157",
+    "data_feedback": "2024-06-04",
+    "satisfacao": 5,
+    "desempenho_percebido": 5,
+    "comentario": "Muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000158",
+    "id_contratacao": "CT000158",
+    "data_feedback": "2025-06-04",
+    "satisfacao": 3,
+    "desempenho_percebido": 2,
+    "comentario": "abaixo do esperado",
+    "necessita_substituicao": true
+  },
+  {
+    "id": "FB000159",
+    "id_contratacao": "CT000159",
+    "data_feedback": "2025-12-31",
+    "satisfacao": 3,
+    "desempenho_percebido": 4,
+    "comentario": "muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000160",
+    "id_contratacao": "CT000160",
+    "data_feedback": "2025-11-25",
+    "satisfacao": 4,
+    "desempenho_percebido": 4,
+    "comentario": "bom",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000161",
+    "id_contratacao": "CT000161",
+    "data_feedback": "2024-07-04",
+    "satisfacao": 2,
+    "desempenho_percebido": 3,
+    "comentario": "bom",
+    "necessita_substituicao": true
+  },
+  {
+    "id": "FB000162",
+    "id_contratacao": "CT000162",
+    "data_feedback": "2024-08-12",
+    "satisfacao": 5,
+    "desempenho_percebido": 5,
+    "comentario": "muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000163",
+    "id_contratacao": "CT000163",
+    "data_feedback": "2025-08-01",
+    "satisfacao": 4,
+    "desempenho_percebido": 5,
+    "comentario": "muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000164",
+    "id_contratacao": "CT000164",
+    "data_feedback": "2024-11-01",
+    "satisfacao": 4,
+    "desempenho_percebido": 4,
+    "comentario": "dentro do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000165",
+    "id_contratacao": "CT000165",
+    "data_feedback": "2025-12-31",
+    "satisfacao": 4,
+    "desempenho_percebido": 3,
+    "comentario": "abaixo do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000166",
+    "id_contratacao": "CT000166",
+    "data_feedback": "2025-07-30",
+    "satisfacao": 5,
+    "desempenho_percebido": 5,
+    "comentario": "bom",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000167",
+    "id_contratacao": "CT000167",
+    "data_feedback": "2025-06-10",
+    "satisfacao": 3,
+    "desempenho_percebido": 3,
+    "comentario": "abaixo do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000168",
+    "id_contratacao": "CT000168",
+    "data_feedback": "2025-01-16",
+    "satisfacao": 3,
+    "desempenho_percebido": 4,
+    "comentario": "",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000169",
+    "id_contratacao": "CT000169",
+    "data_feedback": "2025-02-26",
+    "satisfacao": 2,
+    "desempenho_percebido": 3,
+    "comentario": "abaixo do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000170",
+    "id_contratacao": "CT000170",
+    "data_feedback": "2025-04-15",
+    "satisfacao": 2,
+    "desempenho_percebido": 2,
+    "comentario": "precisa de acompanhamento",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000171",
+    "id_contratacao": "CT000171",
+    "data_feedback": "2024-07-11",
+    "satisfacao": 2,
+    "desempenho_percebido": 3,
+    "comentario": "Muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000172",
+    "id_contratacao": "CT000172",
+    "data_feedback": "2025-05-17",
+    "satisfacao": 2,
+    "desempenho_percebido": 4,
+    "comentario": "dentro do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000173",
+    "id_contratacao": "CT000173",
+    "data_feedback": "2025-06-12",
+    "satisfacao": 2,
+    "desempenho_percebido": 3,
+    "comentario": "",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000174",
+    "id_contratacao": "CT000174",
+    "data_feedback": "2025-08-24",
+    "satisfacao": 4,
+    "desempenho_percebido": 4,
+    "comentario": "dentro do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000175",
+    "id_contratacao": "CT000175",
+    "data_feedback": "2025-12-31",
+    "satisfacao": 4,
+    "desempenho_percebido": 5,
+    "comentario": "",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000176",
+    "id_contratacao": "CT000176",
+    "data_feedback": "2024-12-24",
+    "satisfacao": 2,
+    "desempenho_percebido": 2,
+    "comentario": "precisa de acompanhamento",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000177",
+    "id_contratacao": "CT000177",
+    "data_feedback": "2025-12-31",
+    "satisfacao": 4,
+    "desempenho_percebido": 4,
+    "comentario": "dentro do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000178",
+    "id_contratacao": "CT000178",
+    "data_feedback": "2025-12-31",
+    "satisfacao": 3,
+    "desempenho_percebido": 4,
+    "comentario": "abaixo do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000179",
+    "id_contratacao": "CT000179",
+    "data_feedback": "2024-05-09",
+    "satisfacao": 3,
+    "desempenho_percebido": 3,
+    "comentario": "bom",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000180",
+    "id_contratacao": "CT000180",
+    "data_feedback": "2025-12-31",
+    "satisfacao": 4,
+    "desempenho_percebido": 4,
+    "comentario": "muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000181",
+    "id_contratacao": "CT000181",
+    "data_feedback": "2025-05-26",
+    "satisfacao": 4,
+    "desempenho_percebido": 4,
+    "comentario": "muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000182",
+    "id_contratacao": "CT000182",
+    "data_feedback": "2025-01-13",
+    "satisfacao": 1,
+    "desempenho_percebido": 2,
+    "comentario": "Muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000183",
+    "id_contratacao": "CT000183",
+    "data_feedback": "2024-07-12",
+    "satisfacao": 3,
+    "desempenho_percebido": 4,
+    "comentario": "Muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000184",
+    "id_contratacao": "CT000184",
+    "data_feedback": "2025-12-13",
+    "satisfacao": 4,
+    "desempenho_percebido": 3,
+    "comentario": "muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000185",
+    "id_contratacao": "CT000185",
+    "data_feedback": "2025-12-31",
+    "satisfacao": 4,
+    "desempenho_percebido": 3,
+    "comentario": "dentro do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000186",
+    "id_contratacao": "CT000186",
+    "data_feedback": "2024-12-28",
+    "satisfacao": 2,
+    "desempenho_percebido": 3,
+    "comentario": "bom",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000187",
+    "id_contratacao": "CT000187",
+    "data_feedback": "2024-07-03",
+    "satisfacao": 3,
+    "desempenho_percebido": 3,
+    "comentario": "dentro do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000188",
+    "id_contratacao": "CT000188",
+    "data_feedback": "2025-04-23",
+    "satisfacao": 3,
+    "desempenho_percebido": 3,
+    "comentario": "dentro do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000189",
+    "id_contratacao": "CT000189",
+    "data_feedback": "2025-12-31",
+    "satisfacao": 4,
+    "desempenho_percebido": 4,
+    "comentario": "muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000190",
+    "id_contratacao": "CT000190",
+    "data_feedback": "2024-07-15",
+    "satisfacao": 4,
+    "desempenho_percebido": 4,
+    "comentario": "bom",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000191",
+    "id_contratacao": "CT000191",
+    "data_feedback": "2024-12-30",
+    "satisfacao": 3,
+    "desempenho_percebido": 4,
+    "comentario": "precisa de acompanhamento",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000192",
+    "id_contratacao": "CT000192",
+    "data_feedback": "2025-12-31",
+    "satisfacao": 4,
+    "desempenho_percebido": 4,
+    "comentario": "abaixo do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000193",
+    "id_contratacao": "CT000193",
+    "data_feedback": "2025-03-03",
+    "satisfacao": 5,
+    "desempenho_percebido": 4,
+    "comentario": "",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000194",
+    "id_contratacao": "CT000194",
+    "data_feedback": "2024-05-08",
+    "satisfacao": 4,
+    "desempenho_percebido": 5,
+    "comentario": "bom",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000195",
+    "id_contratacao": "CT000195",
+    "data_feedback": "2025-06-13",
+    "satisfacao": 1,
+    "desempenho_percebido": 2,
+    "comentario": "abaixo do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000196",
+    "id_contratacao": "CT000196",
+    "data_feedback": "2025-12-31",
+    "satisfacao": 4,
+    "desempenho_percebido": 3,
+    "comentario": "precisa de acompanhamento",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000197",
+    "id_contratacao": "CT000197",
+    "data_feedback": "2024-06-17",
+    "satisfacao": 3,
+    "desempenho_percebido": 4,
+    "comentario": "Muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000198",
+    "id_contratacao": "CT000198",
+    "data_feedback": "2025-03-31",
+    "satisfacao": 4,
+    "desempenho_percebido": 5,
+    "comentario": "precisa de acompanhamento",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000199",
+    "id_contratacao": "CT000199",
+    "data_feedback": "2025-02-05",
+    "satisfacao": 4,
+    "desempenho_percebido": 4,
+    "comentario": "muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000200",
+    "id_contratacao": "CT000200",
+    "data_feedback": "2025-09-03",
+    "satisfacao": 5,
+    "desempenho_percebido": 5,
+    "comentario": "muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000201",
+    "id_contratacao": "CT000201",
+    "data_feedback": "2025-10-11",
+    "satisfacao": 4,
+    "desempenho_percebido": 4,
+    "comentario": "bom",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000202",
+    "id_contratacao": "CT000202",
+    "data_feedback": "2025-06-12",
+    "satisfacao": 4,
+    "desempenho_percebido": 4,
+    "comentario": "abaixo do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000203",
+    "id_contratacao": "CT000203",
+    "data_feedback": "2025-12-31",
+    "satisfacao": 1,
+    "desempenho_percebido": 2,
+    "comentario": "dentro do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000204",
+    "id_contratacao": "CT000204",
+    "data_feedback": "2025-12-31",
+    "satisfacao": 3,
+    "desempenho_percebido": 2,
+    "comentario": "bom",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000205",
+    "id_contratacao": "CT000205",
+    "data_feedback": "2025-12-31",
+    "satisfacao": 5,
+    "desempenho_percebido": 5,
+    "comentario": "precisa de acompanhamento",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000206",
+    "id_contratacao": "CT000206",
+    "data_feedback": "2024-11-12",
+    "satisfacao": 5,
+    "desempenho_percebido": 4,
+    "comentario": "muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000207",
+    "id_contratacao": "CT000207",
+    "data_feedback": "2025-11-28",
+    "satisfacao": 4,
+    "desempenho_percebido": 4,
+    "comentario": "dentro do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000208",
+    "id_contratacao": "CT000208",
+    "data_feedback": "2025-10-26",
+    "satisfacao": 3,
+    "desempenho_percebido": 3,
+    "comentario": "dentro do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000209",
+    "id_contratacao": "CT000209",
+    "data_feedback": "2024-09-13",
+    "satisfacao": 3,
+    "desempenho_percebido": 3,
+    "comentario": "precisa de acompanhamento",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000210",
+    "id_contratacao": "CT000210",
+    "data_feedback": "2025-06-15",
+    "satisfacao": 4,
+    "desempenho_percebido": 3,
+    "comentario": "abaixo do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000211",
+    "id_contratacao": "CT000211",
+    "data_feedback": "2025-05-15",
+    "satisfacao": 3,
+    "desempenho_percebido": 3,
+    "comentario": "",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000212",
+    "id_contratacao": "CT000212",
+    "data_feedback": "2025-06-13",
+    "satisfacao": 4,
+    "desempenho_percebido": 4,
+    "comentario": "muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000213",
+    "id_contratacao": "CT000213",
+    "data_feedback": "2024-06-25",
+    "satisfacao": 5,
+    "desempenho_percebido": 5,
+    "comentario": "",
+    "necessita_substituicao": true
+  },
+  {
+    "id": "FB000214",
+    "id_contratacao": "CT000214",
+    "data_feedback": "2025-12-31",
+    "satisfacao": 2,
+    "desempenho_percebido": 3,
+    "comentario": "precisa de acompanhamento",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000215",
+    "id_contratacao": "CT000215",
+    "data_feedback": "2024-10-23",
+    "satisfacao": 2,
+    "desempenho_percebido": 2,
+    "comentario": "dentro do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000216",
+    "id_contratacao": "CT000216",
+    "data_feedback": "2024-07-23",
+    "satisfacao": 3,
+    "desempenho_percebido": 4,
+    "comentario": "abaixo do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000217",
+    "id_contratacao": "CT000217",
+    "data_feedback": "2024-07-30",
+    "satisfacao": 2,
+    "desempenho_percebido": 3,
+    "comentario": "bom",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000218",
+    "id_contratacao": "CT000218",
+    "data_feedback": "2024-09-08",
+    "satisfacao": 2,
+    "desempenho_percebido": 3,
+    "comentario": "abaixo do esperado",
+    "necessita_substituicao": true
+  },
+  {
+    "id": "FB000219",
+    "id_contratacao": "CT000219",
+    "data_feedback": "2025-05-02",
+    "satisfacao": 3,
+    "desempenho_percebido": 4,
+    "comentario": "bom",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000220",
+    "id_contratacao": "CT000220",
+    "data_feedback": "2025-07-29",
+    "satisfacao": 5,
+    "desempenho_percebido": 5,
+    "comentario": "dentro do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000221",
+    "id_contratacao": "CT000221",
+    "data_feedback": "2025-12-31",
+    "satisfacao": 4,
+    "desempenho_percebido": 3,
+    "comentario": "dentro do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000222",
+    "id_contratacao": "CT000222",
+    "data_feedback": "2025-07-10",
+    "satisfacao": 4,
+    "desempenho_percebido": 4,
+    "comentario": "dentro do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000223",
+    "id_contratacao": "CT000223",
+    "data_feedback": "2025-12-24",
+    "satisfacao": 2,
+    "desempenho_percebido": 3,
+    "comentario": "abaixo do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000224",
+    "id_contratacao": "CT000224",
+    "data_feedback": "2024-04-11",
+    "satisfacao": 2,
+    "desempenho_percebido": 3,
+    "comentario": "dentro do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000225",
+    "id_contratacao": "CT000225",
+    "data_feedback": "2024-11-16",
+    "satisfacao": 3,
+    "desempenho_percebido": 2,
+    "comentario": "dentro do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000226",
+    "id_contratacao": "CT000226",
+    "data_feedback": "2025-12-31",
+    "satisfacao": 3,
+    "desempenho_percebido": 4,
+    "comentario": "dentro do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000227",
+    "id_contratacao": "CT000227",
+    "data_feedback": "2025-11-17",
+    "satisfacao": 4,
+    "desempenho_percebido": 4,
+    "comentario": "muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000228",
+    "id_contratacao": "CT000228",
+    "data_feedback": "2024-11-01",
+    "satisfacao": 5,
+    "desempenho_percebido": 5,
+    "comentario": "Muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000229",
+    "id_contratacao": "CT000229",
+    "data_feedback": "2024-11-26",
+    "satisfacao": 3,
+    "desempenho_percebido": 4,
+    "comentario": "muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000230",
+    "id_contratacao": "CT000230",
+    "data_feedback": "2025-01-27",
+    "satisfacao": 4,
+    "desempenho_percebido": 4,
+    "comentario": "Muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000231",
+    "id_contratacao": "CT000231",
+    "data_feedback": "2025-12-31",
+    "satisfacao": 2,
+    "desempenho_percebido": 3,
+    "comentario": "muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000232",
+    "id_contratacao": "CT000232",
+    "data_feedback": "2025-12-31",
+    "satisfacao": 2,
+    "desempenho_percebido": 3,
+    "comentario": "bom",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000233",
+    "id_contratacao": "CT000233",
+    "data_feedback": "2024-12-05",
+    "satisfacao": 3,
+    "desempenho_percebido": 3,
+    "comentario": "Muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000234",
+    "id_contratacao": "CT000234",
+    "data_feedback": "2024-06-30",
+    "satisfacao": 2,
+    "desempenho_percebido": 3,
+    "comentario": "dentro do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000235",
+    "id_contratacao": "CT000235",
+    "data_feedback": "2025-12-08",
+    "satisfacao": 4,
+    "desempenho_percebido": 3,
+    "comentario": "",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000236",
+    "id_contratacao": "CT000236",
+    "data_feedback": "2025-10-01",
+    "satisfacao": 4,
+    "desempenho_percebido": 5,
+    "comentario": "abaixo do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000237",
+    "id_contratacao": "CT000237",
+    "data_feedback": "2025-03-31",
+    "satisfacao": 3,
+    "desempenho_percebido": 3,
+    "comentario": "Muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000238",
+    "id_contratacao": "CT000238",
+    "data_feedback": "2024-06-30",
+    "satisfacao": 2,
+    "desempenho_percebido": 3,
+    "comentario": "abaixo do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000239",
+    "id_contratacao": "CT000239",
+    "data_feedback": "2025-11-29",
+    "satisfacao": 4,
+    "desempenho_percebido": 4,
+    "comentario": "Muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000240",
+    "id_contratacao": "CT000240",
+    "data_feedback": "2025-09-08",
+    "satisfacao": 5,
+    "desempenho_percebido": 5,
+    "comentario": "bom",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000241",
+    "id_contratacao": "CT000241",
+    "data_feedback": "2025-09-20",
+    "satisfacao": 5,
+    "desempenho_percebido": 4,
+    "comentario": "bom",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000242",
+    "id_contratacao": "CT000242",
+    "data_feedback": "2025-12-31",
+    "satisfacao": 4,
+    "desempenho_percebido": 3,
+    "comentario": "precisa de acompanhamento",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000243",
+    "id_contratacao": "CT000243",
+    "data_feedback": "2024-08-08",
+    "satisfacao": 4,
+    "desempenho_percebido": 3,
+    "comentario": "abaixo do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000244",
+    "id_contratacao": "CT000244",
+    "data_feedback": "2025-03-10",
+    "satisfacao": 3,
+    "desempenho_percebido": 3,
+    "comentario": "bom",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000245",
+    "id_contratacao": "CT000245",
+    "data_feedback": "2025-12-31",
+    "satisfacao": 4,
+    "desempenho_percebido": 4,
+    "comentario": "bom",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000246",
+    "id_contratacao": "CT000246",
+    "data_feedback": "2025-12-12",
+    "satisfacao": 4,
+    "desempenho_percebido": 3,
+    "comentario": "bom",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000247",
+    "id_contratacao": "CT000247",
+    "data_feedback": "2025-12-28",
+    "satisfacao": 5,
+    "desempenho_percebido": 5,
+    "comentario": "bom",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000248",
+    "id_contratacao": "CT000248",
+    "data_feedback": "2025-12-31",
+    "satisfacao": 5,
+    "desempenho_percebido": 4,
+    "comentario": "Muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000249",
+    "id_contratacao": "CT000249",
+    "data_feedback": "2025-12-17",
+    "satisfacao": 4,
+    "desempenho_percebido": 3,
+    "comentario": "",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000250",
+    "id_contratacao": "CT000250",
+    "data_feedback": "2025-10-10",
+    "satisfacao": 5,
+    "desempenho_percebido": 4,
+    "comentario": "abaixo do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000251",
+    "id_contratacao": "CT000251",
+    "data_feedback": "2025-05-07",
+    "satisfacao": 4,
+    "desempenho_percebido": 5,
+    "comentario": "",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000252",
+    "id_contratacao": "CT000252",
+    "data_feedback": "2025-10-19",
+    "satisfacao": 3,
+    "desempenho_percebido": 3,
+    "comentario": "dentro do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000253",
+    "id_contratacao": "CT000253",
+    "data_feedback": "2025-04-05",
+    "satisfacao": 5,
+    "desempenho_percebido": 5,
+    "comentario": "precisa de acompanhamento",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000254",
+    "id_contratacao": "CT000254",
+    "data_feedback": "2025-12-31",
+    "satisfacao": 4,
+    "desempenho_percebido": 4,
+    "comentario": "Muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000255",
+    "id_contratacao": "CT000255",
+    "data_feedback": "2025-12-31",
+    "satisfacao": 4,
+    "desempenho_percebido": 5,
+    "comentario": "bom",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000256",
+    "id_contratacao": "CT000256",
+    "data_feedback": "2025-10-28",
+    "satisfacao": 4,
+    "desempenho_percebido": 4,
+    "comentario": "dentro do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000257",
+    "id_contratacao": "CT000257",
+    "data_feedback": "2025-12-31",
+    "satisfacao": 2,
+    "desempenho_percebido": 2,
+    "comentario": "bom",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000258",
+    "id_contratacao": "CT000258",
+    "data_feedback": "2024-09-25",
+    "satisfacao": 3,
+    "desempenho_percebido": 3,
+    "comentario": "abaixo do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000259",
+    "id_contratacao": "CT000259",
+    "data_feedback": "2025-02-20",
+    "satisfacao": 5,
+    "desempenho_percebido": 5,
+    "comentario": "dentro do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000260",
+    "id_contratacao": "CT000260",
+    "data_feedback": "2025-12-31",
+    "satisfacao": 3,
+    "desempenho_percebido": 4,
+    "comentario": "muito satisfeito",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000261",
+    "id_contratacao": "CT000261",
+    "data_feedback": "2025-08-30",
+    "satisfacao": 4,
+    "desempenho_percebido": 4,
+    "comentario": "abaixo do esperado",
+    "necessita_substituicao": false
+  },
+  {
+    "id": "FB000262",
+    "id_contratacao": "CT000262",
+    "data_feedback": "2025-05-25",
+    "satisfacao": 5,
+    "desempenho_percebido": 5,
+    "comentario": "abaixo do esperado",
+    "necessita_substituicao": false
+  }
+]

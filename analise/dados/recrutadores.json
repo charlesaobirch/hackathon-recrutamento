@@ -1,0 +1,102 @@
+[
+  {
+    "id": "R01",
+    "nome": "Recrutador 01",
+    "equipa": "Tech",
+    "cargo": "consultor",
+    "anos_experiencia": 2,
+    "especialidade_tech": "engenharia",
+    "data_entrada": "2022-08-15",
+    "estado": "ativo"
+  },
+  {
+    "id": "R02",
+    "nome": "Recrutador 02",
+    "equipa": "Produto",
+    "cargo": "consultor",
+    "anos_experiencia": 7,
+    "especialidade_tech": "produto",
+    "data_entrada": "2019-11-15",
+    "estado": "ativo"
+  },
+  {
+    "id": "R03",
+    "nome": "Recrutador 03",
+    "equipa": "Dados",
+    "cargo": "senior consultant",
+    "anos_experiencia": 2,
+    "especialidade_tech": "dados",
+    "data_entrada": "2021-03-15",
+    "estado": "ativo"
+  },
+  {
+    "id": "R04",
+    "nome": "Recrutador 04",
+    "equipa": "Operacoes",
+    "cargo": "consultor",
+    "anos_experiencia": 2,
+    "especialidade_tech": "engenharia",
+    "data_entrada": "2020-12-15",
+    "estado": "ativo"
+  },
+  {
+    "id": "R05",
+    "nome": "Recrutador 05",
+    "equipa": "Tech",
+    "cargo": "consultor",
+    "anos_experiencia": 11,
+    "especialidade_tech": "seguranca",
+    "data_entrada": "2022-09-15",
+    "estado": "em_licenca"
+  },
+  {
+    "id": "R06",
+    "nome": "Recrutador 06",
+    "equipa": "Tech",
+    "cargo": "senior consultant",
+    "anos_experiencia": 12,
+    "especialidade_tech": "engenharia",
+    "data_entrada": "2020-02-15",
+    "estado": "ativo"
+  },
+  {
+    "id": "R07",
+    "nome": "Recrutador 07",
+    "equipa": "Produto",
+    "cargo": "consultor",
+    "anos_experiencia": 12,
+    "especialidade_tech": "engenharia",
+    "data_entrada": "2019-07-15",
+    "estado": "ativo"
+  },
+  {
+    "id": "R08",
+    "nome": "Recrutador 08",
+    "equipa": "Dados",
+    "cargo": "consultor",
+    "anos_experiencia": 6,
+    "especialidade_tech": "dados",
+    "data_entrada": "2017-12-15",
+    "estado": "ativo"
+  },
+  {
+    "id": "R09",
+    "nome": "Recrutador 09",
+    "equipa": "Operacoes",
+    "cargo": "senior consultant",
+    "anos_experiencia": 11,
+    "especialidade_tech": "seguranca",
+    "data_entrada": "2021-05-15",
+    "estado": "ativo"
+  },
+  {
+    "id": "R10",
+    "nome": "Recrutador 10",
+    "equipa": "Tech",
+    "cargo": "consultor",
+    "anos_experiencia": 12,
+    "especialidade_tech": "seguranca",
+    "data_entrada": "2020-06-15",
+    "estado": "em_licenca"
+  }
+]

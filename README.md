@@ -1,5 +1,15 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Design do Figma
+
+As telas do Figma ("elo. / Dashboard", "Candidato", "Pipeline", "Candidatura", "Proposta", "Cliente" e "Qualidade") estão implementadas em `src/app`, com navegação lateral funcional.
+
+- `src/data/figma-pages.ts`: estrutura, posições, cores e textos extraídos do Figma (gerado por `scripts/generate-figma-data.mjs` a partir de `figma-pages.json`).
+- `src/data/real-data.ts`: textos e dimensões calculados a partir dos JSONs em `data/` (gerado por `scripts/generate-real-data.mjs`). É aplicado por id do nó em `src/components/FigmaFrame.tsx`.
+- `src/data/placeholders.ts`: dados genéricos usados apenas como fallback. Para alterar os dados exibidos, prefira atualizar os JSONs em `data/` e rodar `node scripts/generate-real-data.mjs`.
+
+Os arquivos em `data/` são: `candidatos.json`, `candidaturas.json`, `clientes.json`, `contratacoes.json`, `entrevistas.json`, `feedback_clientes.json`, `historico_vagas.json`, `interacoes.json`, `propostas.json`, `recrutadores.json` e `vagas.json`. O gerador usa 2025-12-31 como data de referência para os recortes temporais.
+
 ## Getting Started
 
 First, run the development server:
