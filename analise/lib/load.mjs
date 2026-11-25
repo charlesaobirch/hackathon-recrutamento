@@ -4,6 +4,9 @@ import path from "node:path";
 export const DATA_DIR = "C:/Users/Formando/Downloads/recrutamento/json";
 
 export function loadAll(dir = DATA_DIR) {
+  if (!fs.existsSync(dir)) {
+    dir = "C:/Users/USER/.copilot/session-state/1d9f2860-b80b-4db9-a8d2-29e144e5d4b3/files/recrutamento/json";
+  }
   const out = {};
   for (const f of fs.readdirSync(dir)) {
     if (!f.endsWith(".json")) continue;

@@ -9,7 +9,7 @@ import json
 import numpy as np
 import pandas as pd
 
-DATA = Path(r"C:/Users/Formando/Downloads/recrutamento/json")
+DATA = Path(r"C:/Users/USER/.copilot/session-state/1d9f2860-b80b-4db9-a8d2-29e144e5d4b3/files/recrutamento/json")
 
 def load(name):
     return pd.DataFrame(json.loads((DATA / f"{name}.json").read_text(encoding="utf-8")))
@@ -122,5 +122,13 @@ out["chi2_interacoes_tipo"], out["df"] = chi_uniform(inter.tipo)
 out["chi2_interacoes_resultado"], _ = chi_uniform(inter.resultado)
 out["feedback_dia_2025_12_31"] = int((fb.data_feedback == pd.Timestamp("2025-12-31")).sum())
 out["proposta_respondida_apos_contratacao"] = int((prop.data_resposta > prop.id_candidatura.map(ct_u.set_index("id_candidatura").data_contratacao)).sum())
+out["feedback_anterior_contratacao"] = int(fb.merge(
+    ct_u[["id", "id_candidatura", "data_contratacao"]],
+    left_on="id_contratacao",
+    right_on="id",
+).eval("data_feedback < data_contratacao").sum())
+out["candidatos_com_mais_de_uma_contratacao"] = int(
+    ct_u["id_candidatura"].map(apps.set_index("id").id_candidato).value_counts().gt(1).sum()
+)
 
 print(json.dumps(out, indent=2, ensure_ascii=False, default=float))

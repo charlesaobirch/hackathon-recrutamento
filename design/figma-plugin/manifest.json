@@ -1,0 +1,8 @@
+{
+  "name": "TalentFlow — Recruitment Control Tower",
+  "id": "1827364510293847561",
+  "api": "1.0.0",
+  "main": "code.js",
+  "editorType": ["figma"],
+  "documentAccess": "dynamic-page"
+}
