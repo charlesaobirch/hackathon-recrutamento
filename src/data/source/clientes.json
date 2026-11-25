@@ -1,0 +1,112 @@
+[
+ {
+  "id": "CL01",
+  "nome": "Cliente 01",
+  "setor": "saude",
+  "dimensao_empresa": "media",
+  "regiao": "Internacional",
+  "modelo_recrutamento": "partilhado",
+  "historico_relacao": "longo",
+  "data_inicio_contrato": "2020-03-01",
+  "estado": "ativo"
+ },
+ {
+  "id": "CL02",
+  "nome": "Cliente 02",
+  "setor": "energia",
+  "dimensao_empresa": "media",
+  "regiao": "Lisboa",
+  "modelo_recrutamento": "partilhado",
+  "historico_relacao": "longo",
+  "data_inicio_contrato": "2017-07-01",
+  "estado": "ativo"
+ },
+ {
+  "id": "CL03",
+  "nome": "Cliente 03",
+  "setor": "retalho",
+  "dimensao_empresa": "pequena",
+  "regiao": "Norte",
+  "modelo_recrutamento": "partilhado",
+  "historico_relacao": "longo",
+  "data_inicio_contrato": "2023-01-01",
+  "estado": "ativo"
+ },
+ {
+  "id": "CL04",
+  "nome": "Cliente 04",
+  "setor": "retalho",
+  "dimensao_empresa": "grande",
+  "regiao": "Lisboa",
+  "modelo_recrutamento": "exclusivo",
+  "historico_relacao": "recente",
+  "data_inicio_contrato": "2023-10-01",
+  "estado": "ativo"
+ },
+ {
+  "id": "CL05",
+  "nome": "Cliente 05",
+  "setor": "tecnologia",
+  "dimensao_empresa": "pequena",
+  "regiao": "Sul",
+  "modelo_recrutamento": "exclusivo",
+  "historico_relacao": "recente",
+  "data_inicio_contrato": "2018-08-01",
+  "estado": "ativo"
+ },
+ {
+  "id": "CL06",
+  "nome": "Cliente 06",
+  "setor": "energia",
+  "dimensao_empresa": "grande",
+  "regiao": "Lisboa",
+  "modelo_recrutamento": "contingencia",
+  "historico_relacao": "longo",
+  "data_inicio_contrato": "2018-10-01",
+  "estado": "em_revisao"
+ },
+ {
+  "id": "CL07",
+  "nome": "Cliente 07",
+  "setor": "banca",
+  "dimensao_empresa": "pequena",
+  "regiao": "Centro",
+  "modelo_recrutamento": "partilhado",
+  "historico_relacao": "longo",
+  "data_inicio_contrato": "2021-05-01",
+  "estado": "ativo"
+ },
+ {
+  "id": "CL08",
+  "nome": "Cliente 08",
+  "setor": "banca",
+  "dimensao_empresa": "media",
+  "regiao": "Lisboa",
+  "modelo_recrutamento": "partilhado",
+  "historico_relacao": "recente",
+  "data_inicio_contrato": "2017-12-01",
+  "estado": "ativo"
+ },
+ {
+  "id": "CL09",
+  "nome": "Cliente 09",
+  "setor": "saude",
+  "dimensao_empresa": "media",
+  "regiao": "Lisboa",
+  "modelo_recrutamento": "exclusivo",
+  "historico_relacao": "recente",
+  "data_inicio_contrato": "2020-11-01",
+  "estado": "ativo"
+ },
+ {
+  "id": "CL10",
+  "nome": "Cliente 10",
+  "setor": "energia",
+  "dimensao_empresa": "grande",
+  "regiao": "Norte",
+  "modelo_recrutamento": "contingencia",
+  "historico_relacao": "recente",
+  "data_inicio_contrato": "2021-10-01",
+  "estado": "ativo"
+ }
+]

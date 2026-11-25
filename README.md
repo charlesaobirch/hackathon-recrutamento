@@ -1,36 +1,33 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# TalentFlow
 
-## Getting Started
+Aplicação demonstrativa de recrutamento baseada no sistema visual documentado em [`design/preview.html`](design/preview.html) e na análise em [`analise/RELATORIO.md`](analise/RELATORIO.md).
 
-First, run the development server:
+## Iniciar
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abrir `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Páginas
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `/` — torre de controlo e prioridades.
+- `/pipeline` — percurso por etapas, volumes, conversões e espera.
+- `/candidaturas` — pesquisa paginada em todas as 5 962 candidaturas.
+- `/candidaturas/AP…` — candidatura e todos os seus registos relacionados.
+- `/propostas` — todas as 1 065 propostas.
+- `/propostas/PR…` — comparação editável entre oferta, banda e expectativa dos dados ligados.
+- `/propostas/validar` — verificador ligado a uma proposta do ficheiro completo.
+- `/clientes` — retenção, desempenho, substituições e todos os clientes.
+- `/qualidade` — anomalias prioritárias e estado local de demonstração.
+- `/dados` — explorador dos 11 ficheiros JSON, com pesquisa e paginação por tabela.
 
-## Learn More
+Todas as páginas partilham a moldura grafite, o canvas marfim e a navegação superior com aba ativa ligada à página. Em ecrãs pequenos, a navegação desloca-se horizontalmente; não existe navbar inferior.
 
-To learn more about Next.js, take a look at the following resources:
+## Dados e limites
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Os 11 ficheiros JSON originais estão em [`src/data/source/`](src/data/source/): candidatos, candidaturas, clientes, contratações, entrevistas, feedback de clientes, histórico de vagas, interações, propostas, recrutadores e vagas. A aplicação não precisa do ZIP nem da pasta Desktop para iniciar.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+O explorador lê os ficheiros no servidor e devolve apenas a página pedida (10, 25, 50 ou 100 registos); a pesquisa percorre todos os campos da tabela escolhida. Os 79 963 registos dos 11 ficheiros estão disponíveis, sem alteração dos originais, incluindo as 267 linhas de contratações (com duplicados) e outros valores inconsistentes. As métricas agregadas do dashboard continuam a vir do relatório exploratório e não constituem reporting oficial. O verificador salarial e os estados da fila de qualidade são locais à interface.

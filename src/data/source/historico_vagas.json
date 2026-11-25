@@ -1,0 +1,714 @@
+[
+ {
+  "id": "HV00001",
+  "id_vaga_original": "V0080",
+  "data_evento": "2025-11-11",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "insatisfacao_cliente",
+  "vaga_reaberta_id": "V0421"
+ },
+ {
+  "id": "HV00002",
+  "id_vaga_original": "V0089",
+  "data_evento": "2025-08-03",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "substituicao",
+  "vaga_reaberta_id": "V0422"
+ },
+ {
+  "id": "HV00003",
+  "id_vaga_original": "V0118",
+  "data_evento": "2025-04-18",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "substituicao",
+  "vaga_reaberta_id": "V0423"
+ },
+ {
+  "id": "HV00004",
+  "id_vaga_original": "V0192",
+  "data_evento": "2025-10-30",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "insatisfacao_cliente",
+  "vaga_reaberta_id": "V0424"
+ },
+ {
+  "id": "HV00005",
+  "id_vaga_original": "V0235",
+  "data_evento": "2026-01-27",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "substituicao",
+  "vaga_reaberta_id": "V0425"
+ },
+ {
+  "id": "HV00006",
+  "id_vaga_original": "V0292",
+  "data_evento": "2025-01-26",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "insatisfacao_cliente",
+  "vaga_reaberta_id": "V0426"
+ },
+ {
+  "id": "HV00007",
+  "id_vaga_original": "V0037",
+  "data_evento": "2024-10-28",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "insatisfacao_cliente",
+  "vaga_reaberta_id": "V0427"
+ },
+ {
+  "id": "HV00008",
+  "id_vaga_original": "V0098",
+  "data_evento": "2024-03-13",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "insatisfacao_cliente",
+  "vaga_reaberta_id": "V0428"
+ },
+ {
+  "id": "HV00009",
+  "id_vaga_original": "V0326",
+  "data_evento": "2025-03-08",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "insatisfacao_cliente",
+  "vaga_reaberta_id": "V0429"
+ },
+ {
+  "id": "HV00010",
+  "id_vaga_original": "V0005",
+  "data_evento": "2025-03-30",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "saida_precoce",
+  "vaga_reaberta_id": "V0430"
+ },
+ {
+  "id": "HV00011",
+  "id_vaga_original": "V0365",
+  "data_evento": "2025-10-04",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "insatisfacao_cliente",
+  "vaga_reaberta_id": "V0431"
+ },
+ {
+  "id": "HV00012",
+  "id_vaga_original": "V0160",
+  "data_evento": "2025-01-17",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "insatisfacao_cliente",
+  "vaga_reaberta_id": "V0432"
+ },
+ {
+  "id": "HV00013",
+  "id_vaga_original": "V0220",
+  "data_evento": "2025-04-29",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "substituicao",
+  "vaga_reaberta_id": "V0433"
+ },
+ {
+  "id": "HV00014",
+  "id_vaga_original": "V0385",
+  "data_evento": "2026-02-05",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "substituicao",
+  "vaga_reaberta_id": "V0434"
+ },
+ {
+  "id": "HV00015",
+  "id_vaga_original": "V0249",
+  "data_evento": "2024-07-30",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "saida_precoce",
+  "vaga_reaberta_id": "V0435"
+ },
+ {
+  "id": "HV00016",
+  "id_vaga_original": "V0006",
+  "data_evento": "2025-11-22",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "saida_precoce",
+  "vaga_reaberta_id": "V0436"
+ },
+ {
+  "id": "HV00017",
+  "id_vaga_original": "V0026",
+  "data_evento": "2024-08-12",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "substituicao",
+  "vaga_reaberta_id": "V0437"
+ },
+ {
+  "id": "HV00018",
+  "id_vaga_original": "V0080",
+  "data_evento": "2025-11-11",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "substituicao",
+  "vaga_reaberta_id": "V0438"
+ },
+ {
+  "id": "HV00019",
+  "id_vaga_original": "V0076",
+  "data_evento": "2025-11-12",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "substituicao",
+  "vaga_reaberta_id": "V0439"
+ },
+ {
+  "id": "HV00020",
+  "id_vaga_original": "V0029",
+  "data_evento": "2025-03-17",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "insatisfacao_cliente",
+  "vaga_reaberta_id": "V0440"
+ },
+ {
+  "id": "HV00021",
+  "id_vaga_original": "V0385",
+  "data_evento": "2026-02-05",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "substituicao",
+  "vaga_reaberta_id": "V0441"
+ },
+ {
+  "id": "HV00022",
+  "id_vaga_original": "V0053",
+  "data_evento": "2024-03-06",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "saida_precoce",
+  "vaga_reaberta_id": "V0442"
+ },
+ {
+  "id": "HV00023",
+  "id_vaga_original": "V0250",
+  "data_evento": "2024-08-31",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "substituicao",
+  "vaga_reaberta_id": "V0443"
+ },
+ {
+  "id": "HV00024",
+  "id_vaga_original": "V0395",
+  "data_evento": "2025-06-20",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "saida_precoce",
+  "vaga_reaberta_id": "V0444"
+ },
+ {
+  "id": "HV00025",
+  "id_vaga_original": "V0345",
+  "data_evento": "2025-05-19",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "saida_precoce",
+  "vaga_reaberta_id": "V0445"
+ },
+ {
+  "id": "HV00026",
+  "id_vaga_original": "V0123",
+  "data_evento": "2025-11-07",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "insatisfacao_cliente",
+  "vaga_reaberta_id": "V0446"
+ },
+ {
+  "id": "HV00027",
+  "id_vaga_original": "V0093",
+  "data_evento": "2025-08-29",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "saida_precoce",
+  "vaga_reaberta_id": "V0447"
+ },
+ {
+  "id": "HV00028",
+  "id_vaga_original": "V0106",
+  "data_evento": "2025-11-19",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "substituicao",
+  "vaga_reaberta_id": "V0448"
+ },
+ {
+  "id": "HV00029",
+  "id_vaga_original": "V0345",
+  "data_evento": "2025-05-19",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "saida_precoce",
+  "vaga_reaberta_id": "V0449"
+ },
+ {
+  "id": "HV00030",
+  "id_vaga_original": "V0044",
+  "data_evento": "2025-12-12",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "saida_precoce",
+  "vaga_reaberta_id": "V0450"
+ },
+ {
+  "id": "HV00031",
+  "id_vaga_original": "V0058",
+  "data_evento": "2026-01-07",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "saida_precoce",
+  "vaga_reaberta_id": "V0451"
+ },
+ {
+  "id": "HV00032",
+  "id_vaga_original": "V0304",
+  "data_evento": "2025-06-01",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "substituicao",
+  "vaga_reaberta_id": "V0452"
+ },
+ {
+  "id": "HV00033",
+  "id_vaga_original": "V0074",
+  "data_evento": "2025-08-03",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "substituicao",
+  "vaga_reaberta_id": "V0453"
+ },
+ {
+  "id": "HV00034",
+  "id_vaga_original": "V0187",
+  "data_evento": "2025-11-19",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "substituicao",
+  "vaga_reaberta_id": "V0454"
+ },
+ {
+  "id": "HV00035",
+  "id_vaga_original": "V0127",
+  "data_evento": "2025-10-25",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "saida_precoce",
+  "vaga_reaberta_id": "V0455"
+ },
+ {
+  "id": "HV00036",
+  "id_vaga_original": "V0292",
+  "data_evento": "2025-01-26",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "saida_precoce",
+  "vaga_reaberta_id": "V0456"
+ },
+ {
+  "id": "HV00037",
+  "id_vaga_original": "V0207",
+  "data_evento": "2025-05-29",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "saida_precoce",
+  "vaga_reaberta_id": "V0457"
+ },
+ {
+  "id": "HV00038",
+  "id_vaga_original": "V0134",
+  "data_evento": "2025-09-18",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "substituicao",
+  "vaga_reaberta_id": "V0458"
+ },
+ {
+  "id": "HV00039",
+  "id_vaga_original": "V0043",
+  "data_evento": "2025-02-24",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "saida_precoce",
+  "vaga_reaberta_id": "V0459"
+ },
+ {
+  "id": "HV00040",
+  "id_vaga_original": "V0338",
+  "data_evento": "2025-12-19",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "substituicao",
+  "vaga_reaberta_id": "V0460"
+ },
+ {
+  "id": "HV00041",
+  "id_vaga_original": "V0326",
+  "data_evento": "2025-03-08",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "substituicao",
+  "vaga_reaberta_id": "V0461"
+ },
+ {
+  "id": "HV00042",
+  "id_vaga_original": "V0351",
+  "data_evento": "2025-08-13",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "insatisfacao_cliente",
+  "vaga_reaberta_id": "V0462"
+ },
+ {
+  "id": "HV00043",
+  "id_vaga_original": "V0092",
+  "data_evento": "2024-10-16",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "saida_precoce",
+  "vaga_reaberta_id": "V0463"
+ },
+ {
+  "id": "HV00044",
+  "id_vaga_original": "V0217",
+  "data_evento": "2024-04-21",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "substituicao",
+  "vaga_reaberta_id": "V0464"
+ },
+ {
+  "id": "HV00045",
+  "id_vaga_original": "V0214",
+  "data_evento": "2024-11-07",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "insatisfacao_cliente",
+  "vaga_reaberta_id": "V0465"
+ },
+ {
+  "id": "HV00046",
+  "id_vaga_original": "V0347",
+  "data_evento": "2024-03-14",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "insatisfacao_cliente",
+  "vaga_reaberta_id": "V0466"
+ },
+ {
+  "id": "HV00047",
+  "id_vaga_original": "V0360",
+  "data_evento": "2025-12-11",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "saida_precoce",
+  "vaga_reaberta_id": "V0467"
+ },
+ {
+  "id": "HV00048",
+  "id_vaga_original": "V0178",
+  "data_evento": "2024-11-09",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "insatisfacao_cliente",
+  "vaga_reaberta_id": "V0468"
+ },
+ {
+  "id": "HV00049",
+  "id_vaga_original": "V0353",
+  "data_evento": "2025-08-16",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "substituicao",
+  "vaga_reaberta_id": "V0469"
+ },
+ {
+  "id": "HV00050",
+  "id_vaga_original": "V0194",
+  "data_evento": "2024-11-21",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "substituicao",
+  "vaga_reaberta_id": "V0470"
+ },
+ {
+  "id": "HV00051",
+  "id_vaga_original": "V0194",
+  "data_evento": "2024-11-21",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "saida_precoce",
+  "vaga_reaberta_id": "V0471"
+ },
+ {
+  "id": "HV00052",
+  "id_vaga_original": "V0081",
+  "data_evento": "2024-12-11",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "substituicao",
+  "vaga_reaberta_id": "V0472"
+ },
+ {
+  "id": "HV00053",
+  "id_vaga_original": "V0347",
+  "data_evento": "2024-03-14",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "saida_precoce",
+  "vaga_reaberta_id": "V0473"
+ },
+ {
+  "id": "HV00054",
+  "id_vaga_original": "V0027",
+  "data_evento": "2026-02-22",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "saida_precoce",
+  "vaga_reaberta_id": "V0474"
+ },
+ {
+  "id": "HV00055",
+  "id_vaga_original": "V0044",
+  "data_evento": "2025-12-12",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "saida_precoce",
+  "vaga_reaberta_id": "V0475"
+ },
+ {
+  "id": "HV00056",
+  "id_vaga_original": "V0274",
+  "data_evento": "2024-07-13",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "substituicao",
+  "vaga_reaberta_id": "V0476"
+ },
+ {
+  "id": "HV00057",
+  "id_vaga_original": "V0148",
+  "data_evento": "2024-09-05",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "substituicao",
+  "vaga_reaberta_id": "V0477"
+ },
+ {
+  "id": "HV00058",
+  "id_vaga_original": "V0307",
+  "data_evento": "2024-10-17",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "saida_precoce",
+  "vaga_reaberta_id": "V0478"
+ },
+ {
+  "id": "HV00059",
+  "id_vaga_original": "V0036",
+  "data_evento": "2024-08-08",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "substituicao",
+  "vaga_reaberta_id": "V0479"
+ },
+ {
+  "id": "HV00060",
+  "id_vaga_original": "V0224",
+  "data_evento": "2025-06-06",
+  "tipo_evento": "vaga_reaberta",
+  "motivo": "insatisfacao_cliente",
+  "vaga_reaberta_id": "V0480"
+ },
+ {
+  "id": "HV00061",
+  "id_vaga_original": "V0002",
+  "data_evento": "2024-06-26",
+  "tipo_evento": "cancelada_cliente",
+  "motivo": "orcamento cancelado",
+  "vaga_reaberta_id": null
+ },
+ {
+  "id": "HV00062",
+  "id_vaga_original": "V0041",
+  "data_evento": "2024-06-20",
+  "tipo_evento": "alteracao_requisitos",
+  "motivo": "novo requisito",
+  "vaga_reaberta_id": null
+ },
+ {
+  "id": "HV00063",
+  "id_vaga_original": "V0051",
+  "data_evento": "2025-09-22",
+  "tipo_evento": "encerrada_contratacao",
+  "motivo": "orcamento cancelado",
+  "vaga_reaberta_id": null
+ },
+ {
+  "id": "HV00064",
+  "id_vaga_original": "V0068",
+  "data_evento": "2024-09-22",
+  "tipo_evento": "cancelada_cliente",
+  "motivo": "contratacao concluida",
+  "vaga_reaberta_id": null
+ },
+ {
+  "id": "HV00065",
+  "id_vaga_original": "V0071",
+  "data_evento": "2024-12-12",
+  "tipo_evento": "cancelada_cliente",
+  "motivo": "",
+  "vaga_reaberta_id": null
+ },
+ {
+  "id": "HV00066",
+  "id_vaga_original": "V0080",
+  "data_evento": "2025-09-25",
+  "tipo_evento": "alteracao_requisitos",
+  "motivo": "orcamento cancelado",
+  "vaga_reaberta_id": null
+ },
+ {
+  "id": "HV00067",
+  "id_vaga_original": "V0085",
+  "data_evento": "2025-01-02",
+  "tipo_evento": "alteracao_requisitos",
+  "motivo": "contratacao concluida",
+  "vaga_reaberta_id": null
+ },
+ {
+  "id": "HV00068",
+  "id_vaga_original": "V0096",
+  "data_evento": "2024-03-02",
+  "tipo_evento": "alteracao_requisitos",
+  "motivo": "orcamento cancelado",
+  "vaga_reaberta_id": null
+ },
+ {
+  "id": "HV00069",
+  "id_vaga_original": "V0101",
+  "data_evento": "2024-06-06",
+  "tipo_evento": "cancelada_cliente",
+  "motivo": "contratacao concluida",
+  "vaga_reaberta_id": null
+ },
+ {
+  "id": "HV00070",
+  "id_vaga_original": "V0134",
+  "data_evento": "2025-07-18",
+  "tipo_evento": "encerrada_contratacao",
+  "motivo": "contratacao concluida",
+  "vaga_reaberta_id": null
+ },
+ {
+  "id": "HV00071",
+  "id_vaga_original": "V0170",
+  "data_evento": "2025-01-02",
+  "tipo_evento": "alteracao_requisitos",
+  "motivo": "orcamento cancelado",
+  "vaga_reaberta_id": null
+ },
+ {
+  "id": "HV00072",
+  "id_vaga_original": "V0178",
+  "data_evento": "2024-09-12",
+  "tipo_evento": "cancelada_cliente",
+  "motivo": "novo requisito",
+  "vaga_reaberta_id": null
+ },
+ {
+  "id": "HV00073",
+  "id_vaga_original": "V0181",
+  "data_evento": "2024-01-08",
+  "tipo_evento": "cancelada_cliente",
+  "motivo": "",
+  "vaga_reaberta_id": null
+ },
+ {
+  "id": "HV00074",
+  "id_vaga_original": "V0182",
+  "data_evento": "2024-09-21",
+  "tipo_evento": "alteracao_requisitos",
+  "motivo": "novo requisito",
+  "vaga_reaberta_id": null
+ },
+ {
+  "id": "HV00075",
+  "id_vaga_original": "V0218",
+  "data_evento": "2024-01-22",
+  "tipo_evento": "cancelada_cliente",
+  "motivo": "contratacao concluida",
+  "vaga_reaberta_id": null
+ },
+ {
+  "id": "HV00076",
+  "id_vaga_original": "V0247",
+  "data_evento": "2025-09-03",
+  "tipo_evento": "alteracao_requisitos",
+  "motivo": "novo requisito",
+  "vaga_reaberta_id": null
+ },
+ {
+  "id": "HV00077",
+  "id_vaga_original": "V0303",
+  "data_evento": "2025-01-18",
+  "tipo_evento": "alteracao_requisitos",
+  "motivo": "novo requisito",
+  "vaga_reaberta_id": null
+ },
+ {
+  "id": "HV00078",
+  "id_vaga_original": "V0310",
+  "data_evento": "2024-01-15",
+  "tipo_evento": "alteracao_requisitos",
+  "motivo": "novo requisito",
+  "vaga_reaberta_id": null
+ },
+ {
+  "id": "HV00079",
+  "id_vaga_original": "V0312",
+  "data_evento": "2024-01-13",
+  "tipo_evento": "alteracao_requisitos",
+  "motivo": "",
+  "vaga_reaberta_id": null
+ },
+ {
+  "id": "HV00080",
+  "id_vaga_original": "V0332",
+  "data_evento": "2025-01-20",
+  "tipo_evento": "encerrada_contratacao",
+  "motivo": "",
+  "vaga_reaberta_id": null
+ },
+ {
+  "id": "HV00081",
+  "id_vaga_original": "V0333",
+  "data_evento": "2024-09-06",
+  "tipo_evento": "cancelada_cliente",
+  "motivo": "novo requisito",
+  "vaga_reaberta_id": null
+ },
+ {
+  "id": "HV00082",
+  "id_vaga_original": "V0375",
+  "data_evento": "2025-12-01",
+  "tipo_evento": "encerrada_contratacao",
+  "motivo": "orcamento cancelado",
+  "vaga_reaberta_id": null
+ },
+ {
+  "id": "HV00083",
+  "id_vaga_original": "V0381",
+  "data_evento": "2025-09-07",
+  "tipo_evento": "encerrada_contratacao",
+  "motivo": "novo requisito",
+  "vaga_reaberta_id": null
+ },
+ {
+  "id": "HV00084",
+  "id_vaga_original": "V0409",
+  "data_evento": "2024-06-20",
+  "tipo_evento": "cancelada_cliente",
+  "motivo": "novo requisito",
+  "vaga_reaberta_id": null
+ },
+ {
+  "id": "HV00085",
+  "id_vaga_original": "V0411",
+  "data_evento": "2025-01-25",
+  "tipo_evento": "encerrada_contratacao",
+  "motivo": "contratacao concluida",
+  "vaga_reaberta_id": null
+ },
+ {
+  "id": "HV00086",
+  "id_vaga_original": "V0418",
+  "data_evento": "2024-04-07",
+  "tipo_evento": "cancelada_cliente",
+  "motivo": "orcamento cancelado",
+  "vaga_reaberta_id": null
+ },
+ {
+  "id": "HV00087",
+  "id_vaga_original": "V0450",
+  "data_evento": "2026-08-24",
+  "tipo_evento": "alteracao_requisitos",
+  "motivo": "orcamento cancelado",
+  "vaga_reaberta_id": null
+ },
+ {
+  "id": "HV00088",
+  "id_vaga_original": "V0452",
+  "data_evento": "2025-08-09",
+  "tipo_evento": "cancelada_cliente",
+  "motivo": "",
+  "vaga_reaberta_id": null
+ },
+ {
+  "id": "HV00089",
+  "id_vaga_original": "V0458",
+  "data_evento": "2025-12-17",
+  "tipo_evento": "encerrada_contratacao",
+  "motivo": "contratacao concluida",
+  "vaga_reaberta_id": null
+ }
+]
