@@ -4,6 +4,7 @@ import {
   HiringConversionChart,
   HiringTrendChart,
   WaitTimeChart,
+  WaitTrendChart,
 } from "@/components/overview-charts";
 import { PeriodMetric } from "@/components/period-metric";
 import { Badge, Notice, PageHeader, Panel } from "@/components/ui";
@@ -58,6 +59,7 @@ export default function OverviewPage() {
           className="chart-panel chart-panel--wait"
         >
           <WaitTimeChart />
+          <WaitTrendChart />
         </Panel>
       </div>
       <div className="overview-grid">

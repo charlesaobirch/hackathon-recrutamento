@@ -33,3 +33,12 @@ export const contratacoesByPeriod = [
   { label: "3 meses", value: 64 },
   { label: "6 meses", value: 94 },
 ] as const;
+
+// Espera mediana entre a última entrevista e a proposta, nas propostas que
+// levaram a uma contratação única. Janela ancorada na data da proposta.
+// n = amostra de cada janela; mediana global = 27 dias (n = 262).
+export const esperaByPeriod = [
+  { label: "1 mês", value: 23, n: 14 },
+  { label: "3 meses", value: 26, n: 61 },
+  { label: "6 meses", value: 27, n: 93 },
+] as const;

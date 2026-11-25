@@ -1,9 +1,78 @@
-import { contratacoesByPeriod } from "@/data/overview-periods";
+import type { ReactNode } from "react";
+import { contratacoesByPeriod, esperaByPeriod } from "@/data/overview-periods";
 
 const APPLICATIONS = 5962;
 const HIRES = 262;
 const HIRED_CELLS = 4;
-const TREND_MAX = 100;
+
+type TrendPoint = { label: string; value: number };
+
+function PeriodBarChart({
+  title,
+  points,
+  ticks,
+  max,
+  unit,
+  description,
+  note,
+  tone = "success",
+}: {
+  title: string;
+  points: readonly TrendPoint[];
+  ticks: readonly number[];
+  max: number;
+  unit: string;
+  description: string;
+  note: ReactNode;
+  tone?: "success" | "danger";
+}) {
+  const summary = points
+    .map((point) => `${point.label}: ${point.value} ${unit}`)
+    .join(", ");
+
+  return (
+    <figure className="chart-block chart-block--trend">
+      <figcaption className="chart-subhead">{title}</figcaption>
+      <div
+        className={`trend-chart trend-chart--${tone}`}
+        role="img"
+        aria-label={`${description} ${summary}.`}
+      >
+        <div className="trend-axis-y" aria-hidden="true">
+          {ticks.map((tick) => (
+            <span key={tick}>{tick}</span>
+          ))}
+        </div>
+        <div className="trend-plot">
+          <div className="trend-grid" aria-hidden="true" />
+          <div className="trend-columns">
+            {points.map((point) => {
+              const height = (point.value / max) * 100;
+              return (
+                <div className="trend-column" key={point.label}>
+                  <div className="trend-bar-area">
+                    <div
+                      className="trend-bar"
+                      style={{ height: `${height}%` }}
+                    />
+                    <span
+                      className="trend-value"
+                      style={{ bottom: `calc(${height}% + 4px)` }}
+                    >
+                      {point.value}
+                    </span>
+                  </div>
+                  <span className="trend-label">{point.label}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+      <p className="chart-note">{note}</p>
+    </figure>
+  );
+}
 
 export function HiringConversionChart() {
   return (
@@ -40,57 +109,16 @@ export function HiringConversionChart() {
 }
 
 export function HiringTrendChart() {
-  const description = contratacoesByPeriod
-    .map((point) => `${point.label}: ${point.value}`)
-    .join(", ");
-
   return (
-    <figure className="chart-block chart-block--trend">
-      <figcaption className="chart-subhead">
-        Evolução das contratações únicas
-      </figcaption>
-      <div
-        className="trend-chart"
-        role="img"
-        aria-label={`Contratações únicas por janela móvel até 3 jan. 2026. ${description}.`}
-      >
-        <div className="trend-axis-y" aria-hidden="true">
-          <span>100</span>
-          <span>75</span>
-          <span>50</span>
-          <span>25</span>
-          <span>0</span>
-        </div>
-        <div className="trend-plot">
-          <div className="trend-grid" aria-hidden="true" />
-          <div className="trend-columns">
-            {contratacoesByPeriod.map((point) => (
-              <div className="trend-column" key={point.label}>
-                <div className="trend-bar-area">
-                  <div
-                    className="trend-bar"
-                    style={{ height: `${(point.value / TREND_MAX) * 100}%` }}
-                  />
-                  <span
-                    className="trend-value"
-                    style={{
-                      bottom: `calc(${(point.value / TREND_MAX) * 100}% + 4px)`,
-                    }}
-                  >
-                    {point.value}
-                  </span>
-                </div>
-                <span className="trend-label">{point.label}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-      <p className="chart-note">
-        Janelas móveis até 3 jan. 2026, deduplicadas por candidato. A tendência
-        cresce com o período observado, não com o ritmo de contratação.
-      </p>
-    </figure>
+    <PeriodBarChart
+      title="Evolução das contratações únicas"
+      points={contratacoesByPeriod}
+      ticks={[100, 75, 50, 25, 0]}
+      max={100}
+      unit="contratações"
+      description="Contratações únicas por janela móvel até 3 jan. 2026."
+      note="Janelas móveis até 3 jan. 2026, deduplicadas por candidato. A tendência cresce com o período observado, não com o ritmo de contratação."
+    />
   );
 }
 
@@ -128,5 +156,27 @@ export function WaitTimeChart() {
         das outras etapas.
       </p>
     </figure>
+  );
+}
+
+export function WaitTrendChart() {
+  const samples = esperaByPeriod.map((point) => point.n).join(" / ");
+
+  return (
+    <PeriodBarChart
+      title="Espera até à proposta por período"
+      points={esperaByPeriod}
+      ticks={[40, 30, 20, 10, 0]}
+      max={40}
+      unit="dias"
+      description={`Mediana da espera entre a última entrevista e a proposta, nas propostas que levaram a contratação (n = ${samples}).`}
+      note={
+        <>
+          Janelas móveis ancoradas na proposta, até 3 jan. 2026. A espera
+          mantém-se perto de 27 dias em todas as janelas (n = {samples}).
+        </>
+      }
+      tone="danger"
+    />
   );
 }
