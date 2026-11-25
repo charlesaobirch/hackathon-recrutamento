@@ -16,7 +16,10 @@
     surface: "#FFFFFF",
     ink: "#0F172A",
     muted: "#64748B",
-    faint: "#94A3B8",
+    faint: "#64748B",
+    onDarkMuted: "#94A3B8",
+    onDark: "#E2E8F0",
+    darkRaised: "#111C2E",
     border: "#E2E8F0",
     soft: "#F1F5F9",
     sidebar: "#0B1220",
@@ -641,85 +644,141 @@
       w: 1440,
       h: 1024,
       layout: "VERTICAL",
-      gap: 36,
-      pad: [64, 80, 64, 80],
+      gap: 26,
+      pad: [54, 72, 54, 72],
       hugW: false,
       hugH: false,
     });
 
     const top = box(wrap, {
       name: "Top",
-      w: 1280,
-      h: 520,
+      w: 1296,
+      h: 500,
       layout: "HORIZONTAL",
-      gap: 60,
+      gap: 48,
       hugW: false,
       hugH: false,
     });
 
     const left = box(top, {
       name: "Intro",
-      w: 680,
-      h: 520,
+      w: 704,
+      h: 500,
       layout: "VERTICAL",
-      gap: 16,
+      gap: 0,
       hugW: false,
       hugH: false,
     });
-    txt(left, "HACKATHON · RECRUTAMENTO", {
-      size: 11,
-      weight: "Semi Bold",
-      color: "#60A5FA",
-      letterSpacing: 2.4,
+
+    const brand = box(left, {
+      name: "Brand",
+      layout: "HORIZONTAL",
+      gap: 10,
+      align: "CENTER",
+      hugW: true,
     });
-    txt(left, "TalentFlow", { size: 68, weight: "Bold", color: C.white, letterSpacing: -2.5 });
-    txt(left, "Torre de controlo para recrutamento", {
-      size: 28,
-      weight: "Semi Bold",
-      color: "#E2E8F0",
-      letterSpacing: -0.4,
+    const mark = box(brand, {
+      name: "Mark",
+      w: 30,
+      h: 30,
+      radius: 8,
+      fill: C.primary,
+      layout: "HORIZONTAL",
+      justify: "CENTER",
+      align: "CENTER",
+      hugW: false,
+      hugH: false,
     });
+    txt(mark, "T", { size: 15, weight: "Bold", color: C.white });
+    txt(brand, "TalentFlow · torre de controlo", { size: 12.5, weight: "Semi Bold", color: C.onDark });
+
+    box(left, { name: "Space", h: 26, hugW: false, hugH: false });
+    txt(left, "O recrutamento não está lento.\nEstá parado à espera de uma decisão.", {
+      size: 40,
+      weight: "Bold",
+      color: C.white,
+      width: 640,
+      lineHeight: 44,
+      letterSpacing: -1.2,
+    });
+    box(left, { name: "Space", h: 16, hugW: false, hugH: false });
     txt(
       left,
-      "Esboço de produto construído a partir do RELATORIO.md: a espera entre a última entrevista e a proposta consome 27 dos 40 dias do ciclo, 20,4% das propostas ficam fora da banda e 8 dos 11 ficheiros não são fiáveis para decisões de gestão.",
-      { size: 15, color: "#94A3B8", width: 620, lineHeight: 24 }
+      "Esboço construído a partir do relatório de 11 tabelas: a espera entre a última entrevista e a proposta consome 27 dos 40 dias do ciclo, 20,4% das propostas ficam fora da banda e 8 dos 11 ficheiros não são fiáveis para decisões de gestão.",
+      { size: 13, color: C.onDarkMuted, width: 600, lineHeight: 21 }
     );
+    box(left, { name: "Space", h: 22, hugW: false, hugH: false });
 
-    const stats = box(left, { name: "Stats", layout: "HORIZONTAL", gap: 36, hugW: true });
+    box(left, { name: "Rule", w: 704, h: 1, fill: C.border, hugW: false, hugH: false });
+    const diag = box(left, { name: "Diagnostic", w: 704, layout: "VERTICAL", hugW: false, hugH: false });
     [
-      ["40 d", "ciclo médio"],
-      ["27 d", "espera até proposta"],
-      ["20,4%", "fora da banda"],
-      ["262", "contratações"],
-    ].forEach((pair) => {
-      const st = box(stats, { name: pair[1], layout: "VERTICAL", gap: 2, hugW: true });
-      txt(st, pair[0], { size: 28, weight: "Bold", color: C.white, letterSpacing: -0.8 });
-      txt(st, pair[1], { size: 10.5, color: "#64748B" });
+      ["Ciclo médio", "40 dias", "27 dias são espera entre a última entrevista e a proposta (68%)."],
+      ["Propostas fora da banda", "20,4%", "207 de 1 065 propostas · a exceção exige justificação formal."],
+      ["Ficheiros não fiáveis", "8 de 11", "P0 e P1 bloqueiam relatórios oficiais até correção."],
+    ].forEach((r, i) => {
+      if (i > 0) box(diag, { name: "Rule", w: 704, h: 1, fill: C.border, hugW: false, hugH: false });
+      const row = box(diag, {
+        name: r[0],
+        w: 704,
+        h: 46,
+        layout: "HORIZONTAL",
+        gap: 16,
+        align: "CENTER",
+        hugW: false,
+        hugH: false,
+      });
+      txt(row, r[0], { size: 11, color: C.onDarkMuted, width: 190 });
+      txt(row, r[1], { size: 20, weight: "Bold", color: C.white, width: 96, letterSpacing: -0.5 });
+      txt(row, r[2], { size: 10, color: C.onDarkMuted, width: 330, lineHeight: 14 });
     });
 
     const right = box(top, {
       name: "System",
-      w: 540,
-      h: 520,
+      w: 512,
+      h: 500,
       layout: "VERTICAL",
-      gap: 16,
-      pad: [26, 26, 26, 26],
-      fill: "#111C2E",
-      stroke: "#1E293B",
+      gap: 12,
+      pad: [24, 24, 24, 24],
+      fill: C.darkRaised,
+      stroke: C.border,
       radius: 18,
       hugW: false,
       hugH: false,
     });
     txt(right, "Sistema visual", { size: 13, weight: "Bold", color: C.white });
-    txt(right, "Cores, tipografia e componentes reutilizáveis.", { size: 11.5, color: "#94A3B8" });
+    txt(right, "Três camadas, uma fonte de verdade.", { size: 11, color: C.onDarkMuted });
 
-    const palette = box(right, { name: "Palette", layout: "HORIZONTAL", gap: 8, hugW: true });
-    [C.primary, C.success, C.warning, C.danger, C.violet, C.sidebar].forEach((col) => {
-      box(palette, { w: 46, h: 46, radius: 10, fill: col, stroke: "#1E293B" });
+    const ladder = box(right, { name: "Token ladder", w: 464, layout: "VERTICAL", hugW: false, hugH: false });
+    [
+      ["Primitiva", "--primitive-blue-600"],
+      ["Semântica", "--color-accent"],
+      ["Componente", "--button-bg-primary"],
+    ].forEach((r) => {
+      const line = box(ladder, {
+        name: r[0],
+        w: 464,
+        h: 34,
+        layout: "HORIZONTAL",
+        justify: "SPACE_BETWEEN",
+        align: "CENTER",
+        hugW: false,
+        hugH: false,
+      });
+      txt(line, r[0], { size: 10.5, color: C.onDarkMuted });
+      txt(line, r[1], { size: 10, color: "#93C5FD" });
+      if (r[1] !== "--button-bg-primary") {
+        box(ladder, { name: "Rule", w: 464, h: 1, fill: C.border, hugW: false, hugH: false });
+      }
     });
 
-    txt(right, "Aa  Inter · 12 / 14 / 18 / 28", { size: 18, weight: "Semi Bold", color: C.white });
-    txt(right, "Regular · Medium · Semi Bold · Bold", { size: 11, color: "#64748B" });
+    const palette = box(right, { name: "Palette", layout: "HORIZONTAL", gap: 8, hugW: true });
+    [C.primary, "#15803D", "#B45309", "#B91C1C", "#6D28D9", C.sidebar].forEach((col) => {
+      box(palette, { w: 42, h: 42, radius: 10, fill: col, stroke: C.border });
+    });
+
+    const typeRow = box(right, { name: "Type", layout: "VERTICAL", gap: 2, hugW: true });
+    txt(typeRow, "Aa  Inter", { size: 18, weight: "Semi Bold", color: C.white });
+    txt(typeRow, "10 / 11 / 13 / 14 / 18 / 28 / 40 · números tabulares", { size: 10, color: C.onDarkMuted });
 
     const comps = box(right, { name: "Components", layout: "HORIZONTAL", gap: 8, hugW: true });
     btn(comps, "Ação primária", "primary");
@@ -731,49 +790,128 @@
     pill(badges, "Atenção", "warning");
     pill(badges, "Info", "info");
 
-    const mods = box(wrap, {
+    const demo = box(right, {
+      name: "Example KPI",
+      w: 464,
+      layout: "VERTICAL",
+      gap: 2,
+      pad: [10, 12, 10, 12],
+      fill: C.sidebar,
+      stroke: C.border,
+      radius: 10,
+      hugW: false,
+    });
+    txt(demo, "EXEMPLO · KPI", { size: 9, weight: "Semi Bold", color: C.onDarkMuted, letterSpacing: 1 });
+    const demoRow = box(demo, { layout: "HORIZONTAL", align: "CENTER", gap: 8, hugW: true });
+    txt(demoRow, "34", { size: 22, weight: "Bold", color: C.white });
+    txt(demoRow, "Candidaturas paradas", { size: 10, color: C.onDarkMuted });
+    pill(demoRow, "+6", "danger");
+
+    txt(right, "Fonte única: design/tokens.css", { size: 10, color: C.onDarkMuted });
+
+    const modules = box(wrap, {
       name: "Modules",
-      w: 1260,
-      h: 300,
+      w: 1296,
       layout: "VERTICAL",
       gap: 12,
       hugW: false,
       hugH: false,
     });
-    txt(mods, "Módulos do MVP", { size: 13, weight: "Bold", color: C.white });
-    const grid = box(mods, {
+    const head = box(modules, {
+      name: "Head",
+      w: 1296,
+      layout: "HORIZONTAL",
+      justify: "SPACE_BETWEEN",
+      align: "CENTER",
+      hugW: false,
+    });
+    txt(head, "Módulos do MVP", { size: 12, weight: "Bold", color: C.white });
+    txt(head, "Cada ecrã responde a uma pergunta operacional e termina numa ação.", {
+      size: 10,
+      color: C.onDarkMuted,
+    });
+
+    const grid = box(modules, {
       name: "Grid",
-      w: 1260,
-      h: 240,
+      w: 1296,
       layout: "HORIZONTAL",
       gap: 12,
       hugW: false,
       hugH: false,
     });
-    [
-      ["Torre de Controlo", "Candidaturas paradas, SLA e próxima ação", "01"],
-      ["Validação Salarial", "Oferta vs. banda vs. expectativa", "02"],
-      ["Qualidade de Dados", "Anomalias P0–P3 e regras de validação", "03"],
-      ["Pipeline", "Fases derivadas das entrevistas", "04"],
-      ["Clientes", "Retenção, substituições e risco", "05"],
-      ["Copiloto (fase 2)", "Perguntas em linguagem natural", "06"],
-    ].forEach((m) => {
+
+    const cards = [
+      { title: "Torre de Controlo", sub: "Onde está parado e qual é a próxima ação.", tag: "MVP", featured: true },
+      { title: "Validação Salarial", sub: "Oferta vs. banda vs. expectativa.", bullets: ["Alerta fora da banda", "Expectativa excedida", "Justificação formal"], tag: "MVP" },
+      { title: "Qualidade de Dados", sub: "Anomalias P0–P3 e regras de validação.", bullets: ["V999 e datas mistas", "Scores fora do domínio", "Estados recalculados"], tag: "MVP" },
+      { title: "Pipeline", sub: "Fases derivadas das entrevistas.", bullets: ["Kanban por fase real", "Conversão por etapa", "Espera por fase"], tag: "MVP" },
+      { title: "Clientes", sub: "Retenção, substituições e risco.", bullets: ["Health score", "Plano 30/60/90", "Custo da má colocação"], tag: "MVP" },
+      { title: "Copiloto", sub: "Perguntas em linguagem natural.", bullets: ["Só após dados limpos", "Consultas auditáveis", "Sem decisão automática"], tag: "Fase 2" },
+    ];
+
+    cards.forEach((m) => {
       const card = box(grid, {
-        name: m[0],
-        w: 200,
-        h: 240,
+        name: m.title,
+        w: m.featured ? 360 : 172,
+        h: 206,
         layout: "VERTICAL",
-        gap: 10,
-        pad: [18, 16, 18, 16],
-        fill: "#111C2E",
-        stroke: "#1E293B",
+        justify: "SPACE_BETWEEN",
+        gap: 8,
+        pad: [16, 16, 16, 16],
+        fill: C.darkRaised,
+        stroke: C.border,
         radius: 14,
         hugW: false,
         hugH: false,
       });
-      txt(card, m[2], { size: 11, weight: "Bold", color: "#60A5FA", letterSpacing: 1 });
-      txt(card, m[0], { size: 15, weight: "Semi Bold", color: C.white, width: 168 });
-      txt(card, m[1], { size: 11.5, color: "#94A3B8", width: 168, lineHeight: 17 });
+      const topGroup = box(card, { name: "Top", layout: "VERTICAL", gap: 6, hugW: false });
+      txt(topGroup, m.tag, { size: 9, weight: "Semi Bold", color: m.tag === "Fase 2" ? "#C4B5FD" : C.onDarkMuted, letterSpacing: 1 });
+      txt(topGroup, m.title, { size: 14, weight: "Semi Bold", color: C.white, width: m.featured ? 328 : 140 });
+      txt(topGroup, m.sub, { size: 11, color: C.onDarkMuted, width: m.featured ? 328 : 140, lineHeight: 15 });
+
+      if (m.featured) {
+        const queue = box(card, { name: "Queue", layout: "VERTICAL", gap: 6, w: 328, hugW: false, hugH: false });
+        [
+          ["Inês Carvalho · V0184", "+6 d", "danger"],
+          ["Tiago Mendes · V0231", "+3 d", "danger"],
+        ].forEach((r, i) => {
+          if (i > 0) box(queue, { name: "Rule", w: 328, h: 1, fill: C.border, hugW: false, hugH: false });
+          const row = box(queue, {
+            name: r[0],
+            w: 328,
+            h: 20,
+            layout: "HORIZONTAL",
+            justify: "SPACE_BETWEEN",
+            align: "CENTER",
+            hugW: false,
+            hugH: false,
+          });
+          txt(row, r[0], { size: 10, color: "#CBD5E1" });
+          pill(row, r[1], r[2]);
+        });
+      } else {
+        const list = box(card, { name: "List", layout: "VERTICAL", gap: 4, w: 140, hugW: false, hugH: false });
+        m.bullets.forEach((b) => txt(list, "· " + b, { size: 10, color: C.onDarkMuted, width: 140, lineHeight: 13 }));
+      }
+    });
+
+    const foot = box(wrap, {
+      name: "Principles",
+      w: 1296,
+      layout: "HORIZONTAL",
+      gap: 24,
+      hugW: false,
+      hugH: false,
+    });
+    [
+      ["Uma ação por ecrã", "Cada vista responde a uma pergunta operacional e termina numa ação concreta."],
+      ["Números rastreáveis", "Todos os valores vêm do relatório; dados suspeitos aparecem marcados, não escondidos."],
+      ["Dados antes do copiloto", "A IA só entra depois de P0/P1 corrigidos, com respostas auditáveis."],
+    ].forEach((p) => {
+      const item = box(foot, { name: p[0], w: 416, layout: "VERTICAL", gap: 4, hugW: false, hugH: false });
+      box(item, { name: "Rule", w: 416, h: 1, fill: C.border, hugW: false, hugH: false });
+      txt(item, p[0], { size: 11, weight: "Semi Bold", color: C.onDark, width: 416 });
+      txt(item, p[1], { size: 10, color: C.onDarkMuted, width: 416, lineHeight: 14 });
     });
   }
 
