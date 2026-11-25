@@ -10,10 +10,11 @@ Análise dos ficheiros JSON em `C:\Users\Formando\Downloads\recrutamento\json`, 
 - **Volume**: 3 500 candidatos e 5 962 candidaturas → 19 117 entrevistas e 49 201 interações → 1 065 propostas → **262 contratações únicas**, num total de **79 963 registos** em 11 tabelas. Conversão global candidatura→contratação: 4.4%.
 - **O processo demora 39,5 dias em média** (mediana 40), dos quais **27 dias são espera entre a última entrevista e a proposta** — 68% do ciclo é tempo morto, não avaliação. As entrevistas em si demoram 6 dias.
 - **O score não prevê nada**: candidatos contratados têm score de currículo 68,6 vs. 67,7 dos não contratados (r≈0); o score técnico das entrevistas tem correlação **negativa** com a contratação (r = ‑0,02) e nenhum dos 2 782 candidatos que chegaram à entrevista final foi contratado.
-- **Velocidade ≠ qualidade**: R02 contrata em 26,4 dias e custa €2 261 por contratação (média: €4 566), mas tem o pior desempenho a 90 dias (2,92/5) e a maior taxa de propostas (19,5%). R07 demora 58,2 dias e custa €8 980, mas obtém 3,82/5 e 92,9% de retenção.
+- **Velocidade ≠ qualidade**: R02 contrata em 26,3 dias e custa €2 261 por contratação (média: €4 566), mas tem o pior desempenho a 90 dias (2,94/5) e a maior taxa de propostas (19,5%). R07 demora 58,2 dias e custa €8 980, mas obtém 3,78/5 e 93,3% de retenção.
 - **Salários desalinhados**: 20,4% das propostas ficam **abaixo do mínimo** da banda da vaga e 26,8% das expectativas dos candidatos superam o máximo da vaga. As bandas não seguem a senioridade (mínimo médio júnior €70 075 > mid €67 686) e explicam apenas 9,5% da variação salarial (η²).
 - **Retenção**: 83,8% aos 90 dias e 65,5% aos 180 dias; 32 contratações (12,2%) exigiram substituição, 6 delas com satisfação 5/5 — sinal de que a satisfação declarada não é fiável.
 - **Qualidade dos dados é o maior problema**: 864 candidatos marcados como "contratado" quando só 254 o foram; 330 candidaturas apontam para uma vaga inexistente (V999), 13 delas com contratação registada noutra vaga; 20% das datas de entrevista em formato dd/mm/aaaa; 533 scores técnicos acima de 100 (máx. 125); a etapa_atual é aleatória face às entrevistas reais.
+- **Reconciliação adicional**: 262 contratações únicas correspondem a 254 candidatos únicos; 8 candidatos foram contratados duas vezes. Existem 191 respostas de propostas posteriores à contratação e 2 feedbacks anteriores à contratação.
 - **Conclusão**: o dataset é internamente consistente nas chaves (0 órfãos fora de V999) mas **não é confiável para decisões de gestão** em 8 dos 11 ficheiros: vários campos parecem gerados de forma independente. Antes de qualquer dashboard, é necessário corrigir/recolher os campos do ponto 11.
 
 
@@ -31,6 +32,9 @@ Análise dos ficheiros JSON em `C:\Users\Formando\Downloads\recrutamento\json`, 
 - 10. Relações estatísticas e testes
 - 11. Anomalias priorizadas (fora do padrão)
 - 12. Recomendações
+- 13. Referências de produto e inspiração
+- 14. Plano de criação do projeto
+- 15. Critérios de conclusão e demonstração
 - Anexo A. Metodologia e limitações
 - Anexo B. Dicionário de dados e chaves
 
@@ -95,6 +99,8 @@ Aplicando o scorecard da skill exploratory-data-analysis, a avaliação por dime
 | Q13 | Pares candidato‑vaga repetidos | 22 pares (todos em V999) — candidato concorre duas vezes à mesma vaga no mesmo dia ou em dias diferentes. | Média | Regra de unicidade. |
 | Q14 | Candidatos sem atividade | 608 candidatos (17,4%) nunca se candidataram a nada; 22 candidaturas sem entrevista nem interação. | Baixa | Explicar origem (leads?). |
 | Q15 | Texto livre não normalizado | 6 valores distintos de `feedback` para 4 conceitos; 7 de `comentario` para 5 conceitos; 20 comentários vazios. | Baixa | Dicionário de valores + trim/lower. |
+| Q16 | Contratações repetidas por candidato | 262 contratações únicas correspondem a 254 candidatos únicos; 8 candidatos têm 2 contratações. | Média | Validar unicidade e distinguir recontratações de duplicação. |
+| Q17 | Sequência temporal de respostas e feedback | 191 respostas de propostas foram registadas após a contratação; 2 feedbacks foram registados antes da contratação. | Alta | Validar timestamps e regras de transição. |
 
 *Gravidade: Crítica = invalida análises; Alta = distorce conclusões; Média = exige tratamento; Baixa = cosmético.*
 
@@ -167,9 +173,9 @@ Aplicando o scorecard da skill exploratory-data-analysis, a avaliação por dime
 | R09 | Operacoes | 11 | 48 | 546 | 3.33 | 81 | 24.7% | 24 | 42.2 | €4742 | 3.75 | 84.2% | 30 |
 | R10 | Tech | 12 | 43 | 504 | 3.44 | 88 | 22.7% | 22 | 41.7 | €4777 | 3.45 | 85.7% | 28 |
 
-- **R02** (Produto, 7 anos) é o caso mais contrastante: 49 contratações, 26,4 dias, €2 261 de custo médio e 82,4% de retenção, mas **desempenho médio 2,92/5** — o único abaixo de 3,2. A espera até à proposta é de 14,5 dias (vs. ~28 nos restantes). É um perfil de «fecho rápido» que sacrifica adequação.
-- **R07** (Produto, 12 anos) é o oposto: 58,2 dias, €8 980, apenas 17 contratações, mas 3,82/5 de desempenho e 92,9% de retenção. Custa 4× mais por contratação do que R02.
-- **R01** tem a pior retenção (63,2%) apesar de tempo e custo médios — merece revisão de qualidade de匹配 (poucas contratações: 22).
+- **R02** (Produto, 7 anos) é o caso mais contrastante: 50 contratações, 26,3 dias, €2 261 de custo médio e 82,4% de retenção, mas **desempenho médio 2,94/5** — o único abaixo de 3,2. A espera até à proposta é de 14,5 dias (vs. ~28 nos restantes). É um perfil de «fecho rápido» que sacrifica adequação.
+- **R07** (Produto, 12 anos) é o oposto: 58,2 dias, €8 980, 18 contratações, mas 3,78/5 de desempenho e 93,3% de retenção. Custa 4× mais por contratação do que R02.
+- **R01** tem a pior retenção (65%) apesar de tempo e custo médios — merece revisão da adequação das contratações (23 contratações).
 - **A carga de entrevistas é quase idêntica** (3,14–3,25 por candidatura) e a duração média das interações é a mesma (31,9 vs. 32,0 min): as diferenças de tempo vêm da **gestão da espera**, não do esforço de avaliação.
 - **Custo por contratação** não é explicado pelo tempo (r intra‐recrutador ≈ 0): o custo é essencialmente um nível fixo por recrutador, com R02 a €2 261 e R07 a €8 980 — incoerência contabilística a esclarecer.
 
@@ -299,7 +305,10 @@ Lista ordenada por impacto na confiança dos dados. Cada item é reproduzível c
 | P1 | Propostas abaixo do mínimo da banda | propostas × vagas | 207 (20.4%) |
 | P1 | Banda salarial independente da senioridade | vagas | η² = 0,095; júnior > mid |
 | P1 | Custo por contratação desalinhado | contratacoes | R02 €2 261 vs. R07 €8 980 (4×) sem explicação |
+| P1 | Resposta temporalmente incoerente | propostas × contratacoes | 191/262 respostas após a contratação |
+| P1 | Feedback anterior à contratação | feedback_clientes × contratacoes | 2 feedbacks |
 | P2 | Duplicados exatos | contratacoes | 5 linhas (1,9%) |
+| P2 | Candidato contratado mais de uma vez | candidatos × contratacoes | 8 candidatos com 2 contratações |
 | P2 | Retenção incoerente com datas | contratacoes | 31+64 registos |
 | P2 | Estados de vaga inconsistentes | vagas | 10 preenchidas sem contratação; 28 reabertas com contratação; 176 expiradas |
 | P2 | Feedback concentrado em 2025‑12‑31 | feedback_clientes | 47 registos (18%) |
@@ -327,7 +336,7 @@ Lista ordenada por impacto na confiança dos dados. Cada item é reproduzível c
 - **Atacar a espera até à proposta**: 27 dias após a última entrevista. Definir SLA de 48 h para decisão e um "calendário de proposta" por vaga reduziria o ciclo de 40 para ~20 dias sem contratar mais ninguém.
 - **Rever o papel da entrevista final**: hoje é um beco sem saída estatístico (0 contratações). Ou passa a ser a etapa de decisão, ou deve ser eliminada.
 - **Parar de usar `etapa_atual` como fonte de verdade** em relatórios; usar a sequência real de entrevistas.
-- **Segmentar recrutadores por estratégia**: R02 serve volume/velocidade, R07 serve funções críticas. Fixar metas por segmento em vez de um SLA único — mas monitorizar o desempenho a 90 dias de R02 (2,92).
+- **Segmentar recrutadores por estratégia**: R02 serve volume/velocidade, R07 serve funções críticas. Fixar metas por segmento em vez de um SLA único — mas monitorizar o desempenho a 90 dias de R02 (2,94).
 
 
 ### 12.3 Negócio
@@ -337,6 +346,143 @@ Lista ordenada por impacto na confiança dos dados. Cada item é reproduzível c
 - **Plano de retenção para CL09, CL05 e CL06**: concentram a pior retenção e a maioria das substituições. Rever o perfil pedido e o acompanhamento aos 30/60/90 dias.
 - **Substituir a satisfação declarada por métricas objetivas** (retenção a 90/180 dias, desempenho, substituição) para avaliar clientes e contratações.
 - **Quantificar o custo da má colocação**: 32 substituições ≈ €146k diretos; com tempo e impacto no cliente, o custo real é superior.
+
+
+## 13. Referências de produto e inspiração
+
+Esta secção consolida no relatório a informação das ideias de aplicação e das referências de plataformas anexadas ao projeto. Não se pretende copiar integralmente nenhuma aplicação; a solução deve combinar os conceitos úteis numa única experiência operacional.
+
+| Referência | Conceito de inspiração | Aplicação no projeto |
+| --- | --- | --- |
+| Ashby | Dashboards de recrutamento, KPIs, funil, entrevistas, propostas e análise por recrutador. | Torre de controlo principal, com prioridades por candidatura e próximos passos. |
+| Lever | Pipeline visual e identificação de etapas com maior espera. | Visão kanban do percurso da candidatura, filtros por cliente, vaga e recrutador. |
+| Hireall | Comparação da expectativa do candidato, banda da vaga e oferta. | Verificador salarial integrado ao formulário de proposta, com avisos e bloqueio opcional. |
+| Gainsight | Customer Health Score, tendências e acompanhamento 30/60/90 dias. | Radar de clientes com retenção, substituições, satisfação e plano de ação. |
+| DQOps | Monitorização de qualidade, regras de validação e tratamento de anomalias. | Guardião dos dados com datas inválidas, vagas inexistentes e incoerências temporais. |
+| ThoughtSpot | Pesquisa em linguagem natural sobre dados empresariais. | Copiloto apenas numa fase posterior, depois de as consultas serem confiáveis. |
+
+
+### 13.1 Funcionalidades prioritárias
+
+| Prioridade | Módulo | Resultado esperado |
+| --- | --- | --- |
+| 1 | Recruitment Control Tower | Mostrar candidaturas paradas, dias sem ação, SLA ultrapassado e próxima intervenção. |
+| 2 | Salary Validation | Comparar oferta, mínimo/máximo da vaga e expectativa do candidato antes da proposta. |
+| 3 | Data Quality Monitor | Validar entradas e derivar estados a partir de candidaturas, entrevistas e contratações. |
+| 4 | Recruitment Pipeline | Visualizar candidaturas por etapa e destacar gargalos e conversões. |
+| Opcional | Client Retention | Identificar clientes de risco e substituir satisfação declarada por métricas objetivas. |
+| Fase posterior | AI Assistant | Responder perguntas operacionais em linguagem natural quando os dados estiverem limpos. |
+
+> **Direção principal** — Ashby é a referência visual e funcional principal; Lever orienta o pipeline; Hireall orienta a validação salarial.
+
+Deve ser apresentada uma demonstração baseada numa história operacional: identificar uma candidatura parada → ultrapassar o SLA → abrir os detalhes → comparar oferta e banda salarial → corrigir um desalinhamento → enviar a proposta.
+
+
+## 14. Plano de criação do projeto
+
+O plano seguinte está adaptado ao projeto existente, que já utiliza Next.js 16, React 19 e Tailwind/Turbopack no workspace. Deve haver separação entre dados analíticos, dados operacionais limpos e componentes de interface.
+
+
+### 14.1 Fase 0 — Preparação e decisão de âmbito
+
+- **Tempo recomendado:** 30–60 minutos.
+- Confirmar a narrativa da demo: espera entre entrevista e proposta, validação salarial e qualidade dos dados.
+- Congelar o âmbito do MVP: torre de controlo, verificador salarial e guardião de dados.
+- Definir os utilizadores: recrutador, gestor de recrutamento e responsável pelo cliente.
+- Fixar o critério de sucesso: uma candidatura pode ser identificada, investigada e acionada em menos de 30 segundos.
+- Evitar IA preditiva e personalização baseada em scores durante o hackathon.
+
+
+### 14.2 Fase 1 — Dados e modelo operacional
+
+- **Tempo recomendado:** 2–4 horas.
+- Copiar os ficheiros JSON de demonstração para uma origem controlada dentro do projeto ou conservar dados de leitura no estado da aplicação.
+- Normalizar datas para ISO 8601 e representar `null`/ausência sem ambiguidade.
+- Deduplicar `contratacoes` por id antes de construir contagens.
+- Excluir ou isolar a vaga V999 e apresentar explicitamente o problema em vez de calcular indicadores silenciosamente.
+- Derivar a fase real pela última entrevista em vez de usar `etapa_atual`.
+- Recalcular tempo parado desde a última entrevista e flags de SLA.
+- Criar regras de proposta: abaixo do mínimo, dentro da banda, acima do máximo e expectativa excedida.
+- Adicionar testes unitários para os cálculos de dias, banda salarial e integridade.
+
+
+### 14.3 Fase 2 — Estrutura da aplicação
+
+- **Tempo recomendado:** 1–2 horas.
+- Criar uma shell responsiva com navegação lateral: Visão geral, Pipeline, Candidaturas, Propostas, Clientes e Qualidade.
+- Definir componentes reutilizáveis: KPI card, tabela de ação, badge de estado, alerta de SLA e indicador salarial.
+- Criar dados de demonstração derivados dos ficheiros existentes, não números inventados.
+- Definir filtros globais por cliente, vaga, recrutador e estado.
+- Manter um estado vazio, um estado com dados e um estado com alertas para testar a interface.
+
+
+### 14.4 Fase 3 — Torre de controlo
+
+- **Tempo recomendado:** 3–5 horas.
+- KPIs: candidaturas paradas, propostas atrasadas, tempo médio até proposta, propostas fora da banda e clientes de risco.
+- Tabela de prioridade: candidato, vaga, cliente, recrutador, última entrevista, dias parado, SLA e próxima ação.
+- Ordenar primeiro por SLA ultrapassado e depois por dias parados.
+- Permitir abrir uma candidatura e apresentar o contexto completo da espera.
+- Adicionar ações claras: rever proposta, contactar recrutador, validar salário ou marcar intervenção.
+
+
+### 14.5 Fase 4 — Validação salarial e pipeline
+
+- **Tempo recomendado:** 2–3 horas.
+- Construir o formulário de proposta com expectativa do candidato, mínimo da vaga, máximo da vaga e oferta.
+- Apresentar posição visual da oferta na banda salarial.
+- Emitir avisos distintos para abaixo do mínimo, acima do máximo e expectativa excedida.
+- Conectar os valores aos dados da candidatura selecionada.
+- Adicionar visão de pipeline por fases derivadas das entrevistas.
+- Mostrar perda entre fases e tempo médio de espera por etapa.
+
+
+### 14.6 Fase 5 — Qualidade e retenção
+
+- **Tempo recomendado:** 2–3 horas.
+- Criar painel de problemas: V999, datas misturadas, scores > 100, respostas tardias, feedback invertido e retenção incoerente.
+- Permitir filtros por severidade P0/P1/P2/P3.
+- Mostrar quantidade, impacto, regra esperada e ação corretiva.
+- Adicionar o radar de clientes com CL09, CL06 e CL05 destacados.
+- Usar retenção, substituição e desempenho como sinais principais; não usar satisfação isoladamente.
+
+
+### 14.7 Fase 6 — Polimento e ensaio
+
+- **Tempo recomendado:** 2–3 horas.
+- Executar testes de cálculo e verificação da build.
+- Confirmar comportamento em desktop e ecrã pequeno.
+- Preencher estados vazios e estados de carregamento sem esconder erros.
+- Ensaiar a demo com uma candidatura real do dataset.
+- Preparar uma rota de fallback caso os dados externos falhem.
+- Eliminar menus e funcionalidades secundárias que não participem na história principal.
+
+
+## 15. Critérios de conclusão e demonstração
+
+| Entregável | Critério verificável |
+| --- | --- |
+| Métricas principais | Os totais correspondem aos dados corrigidos: 262 contratações únicas, 254 candidatos contratados únicos e 191 propostas respondidas depois da contratação. |
+| Qualidade dos dados | V999, datas misturadas, scores fora de domínio e incoerências temporais são visíveis e explicadas. |
+| Torre de controlo | Permite encontrar uma candidatura por SLA, cliente, recrutador ou vaga e identificar a próxima ação. |
+| Validação salarial | Detecta oferta abaixo do mínimo, acima do máximo e expectativa superior ao máximo da vaga. |
+| Pipeline | Usa a fase derivada das entrevistas, não `etapa_atual`. |
+| Clientes | CL09, CL06 e CL05 podem ser explicados por retenção e substituições. |
+| Demonstração | A solução apresenta o problema, alerta, intervenção e prevenção em menos de cinco minutos. |
+| Estabilidade | Build concluída, fluxo principal testado e sem dependências necessárias apenas durante a apresentação. |
+
+
+### 15.1 Roteiro da demo
+
+- Começar com o KPI de tempo: 27 dos 40 dias são espera.
+- Abrir a tabela e selecionar uma candidatura com SLA ultrapassado.
+- Mostrar a última entrevista, os dias sem ação e a próxima intervenção.
+- Abrir o verificador salarial e identificar um valor fora da banda ou acima da expectativa.
+- Corrigir ou justificar a oferta e demonstrar o alerta.
+- Abrir o painel de qualidade e mostrar uma anomalia P0/P1.
+- Fechar com o impacto operacional: menos espera, menos desalinhamento salarial e menos dados contaminados.
+
+> **Não usar no MVP** — Ranking preditivo, score de contratação, IA que toma decisões sem transparência e satisfação isolada como indicador de qualidade.
 
 
 ## Anexo A. Metodologia e limitações
