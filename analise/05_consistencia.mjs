@@ -120,6 +120,11 @@ const ctByCand = new Map(contratacoes.map((c) => [c.id_candidatura, c]));
 log("taxa contratação por nº de candidaturas:");
 for (const [k, v] of group(group(candidaturas, (c) => c.id_candidato).map(([id, apps]) => ({ id, apps })), (x) => x.apps.length)) log(`  ${k} candidaturas: candidatos=${v.length} contratados=${v.filter((x) => x.apps.some((a) => ctByCand.has(a.id))).length}`);
 
+log("\n=== CANDIDATOS COM MAIS DE UMA CONTRATAÇÃO ===");
+const hiresPerCandidate = group(contratacoes, (c) => candtMap.get(c.id_candidatura).id_candidato);
+log("candidatos com mais de 1 contratação:", hiresPerCandidate.filter(([, v]) => v.length > 1).length,
+  "| máximo:", Math.max(...hiresPerCandidate.map(([, v]) => v.length)));
+
 log("\n=== 10. SCORE_CURRICULO ===");
 log("distribuição:", [0, 0.01, 0.1, 0.25, 0.5, 0.75, 0.9, 0.99, 1].map((q) => quantile(candidaturas.map((c) => c.score_curriculo), q)).join(" / "));
 log("score/expectativa por senioridade: candidato vs score:");

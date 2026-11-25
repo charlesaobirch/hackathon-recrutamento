@@ -15,6 +15,8 @@ const ctByCand = new Map(contratacoes.map((c) => [c.id_candidatura, c]));
 log("=== A. COERÊNCIA DE ESTADOS ===");
 const hiredCands = new Set(contratacoes.map((c) => candtMap.get(c.id_candidatura).id_candidato));
 log("candidatos estado=contratado:", candidatos.filter((c) => c.estado === "contratado").length, "| candidatos efetivamente contratados:", hiredCands.size);
+const hiresPerCandId = group(contratacoes, (c) => candtMap.get(c.id_candidatura).id_candidato);
+log("candidatos com mais de 1 contratação:", hiresPerCandId.filter(([, v]) => v.length > 1).length, "| máximo por candidato:", Math.max(...hiresPerCandId.map(([, v]) => v.length)));
 const hiredNotMarked = [...hiredCands].filter((id) => candMap.get(id).estado !== "contratado").length;
 log("contratados não marcados como contratado:", hiredNotMarked);
 const etapaByCand = new Map();
