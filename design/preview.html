@@ -11,21 +11,21 @@
   <header class="page-head">
     <div>
       <h1>TalentFlow <span>· esboço de aplicação</span></h1>
-      <p>Baseado no RELATORIO.md · 11 tabelas · 79 963 registos · 262 contratações · 25/11/2026</p>
+      <p>Protótipo funcional · agregados exploratórios do RELATORIO.md · sem ligação a registos operacionais</p>
     </div>
     <div class="legend">
-      <span><i style="background:#2563eb"></i>Primário</span>
+      <span><i style="background:var(--color-accent)"></i>Primário</span>
       <span><i style="background:#16a34a"></i>Sucesso</span>
       <span><i style="background:#d97706"></i>Atenção</span>
       <span><i style="background:#dc2626"></i>Risco</span>
-      <span><i style="background:#7c3aed"></i>Info</span>
+      <span><i style="background:#1d4ed8"></i>Info</span>
     </div>
   </header>
 
   <main id="screens"></main>
 
   <footer>
-    Esboço visual para discussão de produto. Os números vêm do relatório de análise; os nomes de candidatos e IDs de candidatura são exemplos ilustrativos.
+    Os dados fonte não estão incluídos. Agregados são exploratórios; pessoas, candidaturas e estados são fictícios. As alterações de workflow ficam apenas neste browser.
   </footer>
 
   <script>
@@ -49,37 +49,40 @@
       `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ICONS[name] || ""}</svg>`;
 
     const badge = (text, tone = "neutral") => `<span class="badge b-${tone}">${text}</span>`;
-    const btn = (text, variant = "primary", block = false) =>
-      `<button class="btn btn-${variant}${block ? " btn-block" : ""}">${text}</button>`;
-    const chip = (text, active = false) => `<span class="chip${active ? " active" : ""}">${text}</span>`;
+    const btn = (text, variant = "primary", block = false, disabled = false, action = "") =>
+      `<button class="btn btn-${variant}${block ? " btn-block" : ""}"${disabled ? " disabled" : ""}${action ? ` data-action="${action}"` : ""}>${text}</button>`;
+    const chip = (text, active = false, group = "", value = "") =>
+      `<button type="button" class="chip${active ? " active" : ""}"${group ? ` data-filter-group="${group}" data-filter-value="${value}" aria-pressed="${active}"` : ""}>${text}</button>`;
+    const belowMinimumRate = ((207 / 1065) * 100).toLocaleString("pt-PT", { maximumFractionDigits: 1 });
 
     const NAV = [
-      ["Visão geral", "grid"],
-      ["Pipeline", "kanban"],
-      ["Candidaturas", "users"],
-      ["Propostas", "file"],
-      ["Clientes", "building"],
-      ["Qualidade", "shield"]
+      ["Visão geral", "grid", "overview"],
+      ["Pipeline", "kanban", "pipeline"],
+      ["Candidaturas", "users", "detail"],
+      ["Propostas", "file", "proposals"],
+      ["Clientes", "building", "clients"],
+      ["Qualidade", "shield", "quality"]
     ];
 
     function sidebar(active) {
-      return `<aside class="sidebar">
+      return `<header class="sidebar">
         <div class="brand"><div class="logo">T</div><div class="brand-name">TalentFlow</div></div>
-        <div class="nav-section">OPERAÇÃO</div>
-        ${NAV.map(
-          ([label, ic]) =>
-            `<div class="nav${label === active ? " active" : ""}"><span class="nav-ico">${icon(ic, 16)}</span>${label}</div>`
-        ).join("")}
-        <div class="spacer"></div>
-        <div class="sidebar-foot"><div class="sidebar-avatar">AC</div><div><div class="sidebar-user">Ana Costa</div><div class="sidebar-role">Recrutamento</div></div></div>
-      </aside>`;
+        <nav class="top-nav" aria-label="Navegação principal">
+          ${NAV.map(
+            ([label, ic, page]) =>
+              `<button type="button" class="nav${label === active ? " active" : ""}" data-page="${page}"${label === active ? ' aria-current="page"' : ""}><span class="nav-ico">${icon(ic, 16)}</span>${label}</button>`
+          ).join("")}
+        </nav>
+        <div class="sidebar-foot"><div class="sidebar-avatar">TF</div><div><div class="sidebar-user">Demonstração</div><div class="sidebar-role">Dados ilustrativos</div></div></div>
+      </header>`;
     }
 
     function topbar(title, subtitle, actions) {
-      const defaultActions = `<div class="search">${icon("search", 14)}<span>Pesquisar candidato, vaga, cliente…</span></div><div class="icon-btn">${icon("bell", 15)}</div><div class="avatar">AC</div>`;
+      const globalActions = `<label class="search">${icon("search", 14)}<input type="search" data-global-search aria-label="Pesquisar registos" placeholder="Pesquisar candidato, vaga, cliente…"></label>
+        <select class="global-filter" data-global-filter aria-label="Filtrar registos"><option value="all">Todos os registos</option><option value="attention">Com alerta ou atraso</option><option value="p0">Bloqueios P0</option></select>`;
       return `<div class="topbar">
         <div><h2 class="h1">${title}</h2><div class="sub">${subtitle}</div></div>
-        <div class="topbar-actions">${actions || defaultActions}</div>
+        <div class="topbar-actions">${globalActions}${actions || ""}</div>
       </div>`;
     }
 
@@ -95,12 +98,17 @@
         .join("")}</div>`;
     }
 
-    function table(cols, rows) {
+    function table(cols, rows, rowKinds = []) {
       const colgroup = `<colgroup>${cols.map((c) => `<col style="width:${c.w}px">`).join("")}</colgroup>`;
       const head = `<thead><tr>${cols.map((c) => `<th>${c.label}</th>`).join("")}</tr></thead>`;
       const body = `<tbody>${rows
         .map(
-          (r) => `<tr>${r
+          (r, index) => {
+            const meta = rowKinds[index];
+            const kind = typeof meta === "string" ? meta : meta?.kind;
+            const status = typeof meta === "object" ? meta.status : "";
+            const interactive = typeof meta !== "object" || meta.interactive !== false;
+            return `<tr${kind ? ` data-kind="${kind}" data-status="${status || ""}" data-navigable="${interactive}"${interactive ? ' tabindex="0" role="button" aria-label="Abrir registo"' : ""}` : ""}>${r
             .map((v) => {
               if (v == null) return "<td></td>";
               if (typeof v === "string") return `<td><div class="cell-main">${v}</div></td>`;
@@ -110,21 +118,22 @@
               if (v.badge) html += badge(v.badge[0], v.badge[1]);
               return `<td>${html}</td>`;
             })
-            .join("")}</tr>`
+            .join("")}</tr>`;
+          }
         )
         .join("")}</tbody>`;
-      return `<table class="table">${colgroup}${head}${body}</table>`;
+      return `<table class="table">${colgroup}${head}${body}</table><div class="empty-state" data-empty-state hidden>Sem registos para estes filtros. Limpe a pesquisa ou os filtros para voltar a ver resultados.</div>`;
     }
 
     function tableCard(title, count, cols, rows, height = 700) {
       return `<div class="table-wrap" style="height:${height}px">
         <div class="table-head"><div class="card-title">${title}</div>${count ? badge(count[0], count[1]) : ""}</div>
-        ${table(cols, rows)}
+        ${table(cols, rows, ["overdue", "overdue", "overdue", "overdue", "on-track", "on-track", "on-track"])}
       </div>`;
     }
 
-    function frame(label, tag, inner, cls = "") {
-      return `<section class="frame">
+    function frame(label, tag, inner, cls = "", page = "") {
+      return `<section class="frame" data-screen="${page}"${page === "overview" ? "" : " hidden"}>
         <div class="frame-label"><b>${label}</b><span>${tag}</span></div>
         <div class="screen-scroll"><div class="screen ${cls}">${inner}</div></div>
       </section>`;
@@ -142,94 +151,6 @@
     const signal = (t, s, c) =>
       `<div class="signal"><span class="dot" style="background:${c}"></span><div><div class="signal-title">${t}</div><div class="signal-sub">${s}</div></div></div>`;
 
-    /* ------------------------------ cover -------------------------------- */
-    function cover() {
-      const moduleCard = (m) => `<div class="module${m.featured ? " featured" : ""}">
-        <div class="module-top">
-          <span class="module-icon">${icon(m.icon, 18)}</span>
-          <span class="module-tag${m.tag === "Fase 2" ? " next" : ""}">${m.tag}</span>
-        </div>
-        <div class="module-title">${m.title}</div>
-        <div class="module-sub">${m.sub}</div>
-        ${
-          m.featured
-            ? `<div class="module-queue">
-                <div class="queue-row"><span>Inês Carvalho · V0184</span>${badge("+6 d", "danger")}</div>
-                <div class="queue-row"><span>Tiago Mendes · V0231</span>${badge("+3 d", "danger")}</div>
-              </div>`
-            : `<ul class="module-list">${m.bullets.map((x) => `<li>${x}</li>`).join("")}</ul>`
-        }
-      </div>`;
-
-      const inner = `<div class="cover-top">
-        <div class="cover-intro">
-          <div class="cover-brand"><div class="logo">T</div><span>TalentFlow · torre de controlo</span></div>
-          <h2 class="cover-title">O recrutamento não está lento. Está parado à espera de uma decisão.</h2>
-          <p class="cover-desc">Esboço construído a partir do relatório de 11 tabelas: a espera entre a última entrevista e a proposta consome 27 dos 40 dias do ciclo, 20,4% das propostas ficam fora da banda e 8 dos 11 ficheiros não são fiáveis para decisões de gestão.</p>
-          <div class="diagnostic">
-            <div class="diag-row"><span class="diag-label">Ciclo médio</span><span class="diag-value">40 dias</span><span class="diag-note">27 dias são espera entre a última entrevista e a proposta (68%).</span></div>
-            <div class="diag-row"><span class="diag-label">Propostas fora da banda</span><span class="diag-value">20,4%</span><span class="diag-note">207 de 1 065 propostas · a exceção exige justificação formal.</span></div>
-            <div class="diag-row"><span class="diag-label">Ficheiros não fiáveis</span><span class="diag-value">8 de 11</span><span class="diag-note">P0 e P1 bloqueiam relatórios oficiais até correção.</span></div>
-          </div>
-        </div>
-        <div class="system-card">
-          <div><div class="system-title">Sistema visual</div><div class="system-sub">Três camadas, uma fonte de verdade.</div></div>
-          <div class="token-ladder">
-            <div class="ladder-row"><span class="ladder-label">Primitiva</span><code class="ladder-code">--primitive-blue-600</code></div>
-            <div class="ladder-row"><span class="ladder-label">Semântica</span><code class="ladder-code">--color-accent</code></div>
-            <div class="ladder-row"><span class="ladder-label">Componente</span><code class="ladder-code">--button-bg-primary</code></div>
-          </div>
-          <div class="palette">
-            <div class="swatch" style="background:#2563eb"></div>
-            <div class="swatch" style="background:#15803d"></div>
-            <div class="swatch" style="background:#b45309"></div>
-            <div class="swatch" style="background:#b91c1c"></div>
-            <div class="swatch" style="background:#6d28d9"></div>
-            <div class="swatch" style="background:#0b1220"></div>
-          </div>
-          <div><div class="system-type">Aa <span>Inter</span></div><div class="system-type-sub">10 / 11 / 13 / 14 / 18 / 28 / 40 · números tabulares</div></div>
-          <div class="system-row">${btn("Ação primária", "primary")}${btn("Secundária", "ghost")}</div>
-          <div class="system-row">${badge("SLA +6 d", "danger")}${badge("No prazo", "success")}${badge("Atenção", "warning")}${badge("Info", "info")}</div>
-          <div class="system-demo">
-            <div class="system-demo-label">Exemplo · KPI</div>
-            <div class="system-demo-row"><b>34</b><span>Candidaturas paradas</span>${badge("+6", "danger")}</div>
-          </div>
-          <div class="system-note">Fonte única: <code>design/tokens.css</code></div>
-        </div>
-      </div>
-      <div class="modules">
-        <div class="modules-head">
-          <div class="modules-title">Módulos do MVP</div>
-          <div class="modules-note">Cada ecrã responde a uma pergunta operacional e termina numa ação.</div>
-        </div>
-        <div class="modules-grid">
-          ${[
-            { title: "Torre de Controlo", sub: "Onde está parado e qual é a próxima ação.", bullets: [], tag: "MVP", icon: "grid", featured: true },
-            { title: "Validação Salarial", sub: "Oferta vs. banda vs. expectativa.", bullets: ["Alerta fora da banda", "Expectativa excedida", "Justificação formal"], tag: "MVP", icon: "wallet" },
-            { title: "Qualidade de Dados", sub: "Anomalias P0–P3 e regras de validação.", bullets: ["V999 e datas mistas", "Scores fora do domínio", "Estados recalculados"], tag: "MVP", icon: "shield" },
-            { title: "Pipeline", sub: "Fases derivadas das entrevistas.", bullets: ["Kanban por fase real", "Conversão por etapa", "Espera por fase"], tag: "MVP", icon: "kanban" },
-            { title: "Clientes", sub: "Retenção, substituições e risco.", bullets: ["Health score", "Plano 30/60/90", "Custo da má colocação"], tag: "MVP", icon: "building" },
-            { title: "Copiloto", sub: "Perguntas em linguagem natural.", bullets: ["Só após dados limpos", "Consultas auditáveis", "Sem decisão automática"], tag: "Fase 2", icon: "spark" }
-          ]
-            .map(moduleCard)
-            .join("")}
-        </div>
-      </div>
-      <div class="cover-foot">
-        <div class="cover-foot-item"><b>Uma ação por ecrã</b><span>Cada vista responde a uma pergunta operacional e termina numa ação concreta.</span></div>
-        <div class="cover-foot-item"><b>Números rastreáveis</b><span>Todos os valores vêm do relatório; dados suspeitos aparecem marcados, não escondidos.</span></div>
-        <div class="cover-foot-item"><b>Dados antes do copiloto</b><span>A IA só entra depois de P0/P1 corrigidos, com respostas auditáveis.</span></div>
-      </div>
-      <div class="cover-meta">
-        <span><b>79 963</b> registos</span>
-        <span><b>11</b> tabelas</span>
-        <span><b>262</b> contratações</span>
-        <span><b>25/11/2026</b> última análise</span>
-        <span class="meta-end">Fonte: analise/RELATORIO.md</span>
-      </div>`;
-      return frame("00 · Capa e sistema", "Design system", inner, "cover");
-    }
-
     /* --------------------------- control tower --------------------------- */
     function tower() {
       const cols = [
@@ -243,51 +164,52 @@
         { label: "PRÓXIMA AÇÃO", w: 150 }
       ];
       const rows = [
-        [{ text: "Inês Carvalho", bold: true, sub: "AP004821" }, "V0184", "CL09", "R07", "12/11/2026", "13 d", { badge: ["+6 d", "danger"] }, { text: "Enviar proposta", bold: true, color: "#2563eb" }],
-        [{ text: "Tiago Mendes", bold: true, sub: "AP003190" }, "V0231", "CL06", "R02", "15/11/2026", "10 d", { badge: ["+3 d", "danger"] }, { text: "Validar salário", bold: true, color: "#2563eb" }],
-        [{ text: "Ana Ribeiro", bold: true, sub: "AP005012" }, "V0098", "CL05", "R04", "16/11/2026", "9 d", { badge: ["+2 d", "warning"] }, { text: "Contactar cliente", bold: true, color: "#2563eb" }],
-        [{ text: "Bruno Silva", bold: true, sub: "AP001744" }, "V0310", "CL01", "R01", "18/11/2026", "7 d", { badge: ["+1 d", "warning"] }, { text: "Aguardar feedback", bold: true, color: "#2563eb" }],
-        [{ text: "Marta Lopes", bold: true, sub: "AP004400" }, "V0122", "CL03", "R06", "19/11/2026", "6 d", { badge: ["No prazo", "success"] }, { text: "Agendar final", bold: true, color: "#2563eb" }],
-        [{ text: "Rui Costa", bold: true, sub: "AP002981" }, "V0076", "CL02", "R05", "20/11/2026", "5 d", { badge: ["No prazo", "success"] }, { text: "Preparar proposta", bold: true, color: "#2563eb" }],
-        [{ text: "Sofia Alves", bold: true, sub: "AP005233" }, "V0145", "CL08", "R03", "21/11/2026", "4 d", { badge: ["No prazo", "success"] }, { text: "Triagem", bold: true, color: "#2563eb" }]
+        [{ text: "Inês Carvalho", bold: true, sub: "AP004821" }, "V0184", "CL09", "R07", "12/11/2026", "13 d", { badge: ["+11 d", "danger"] }, { text: "Enviar proposta", bold: true, color: "var(--color-fg-accent)" }],
+        [{ text: "Tiago Mendes", bold: true, sub: "AP003190" }, "V0231", "CL06", "R02", "15/11/2026", "10 d", { badge: ["+8 d", "danger"] }, { text: "Validar salário", bold: true, color: "var(--color-fg-accent)" }],
+        [{ text: "Ana Ribeiro", bold: true, sub: "AP005012" }, "V0098", "CL05", "R04", "16/11/2026", "9 d", { badge: ["+7 d", "warning"] }, { text: "Contactar cliente", bold: true, color: "var(--color-fg-accent)" }],
+        [{ text: "Bruno Silva", bold: true, sub: "AP001744" }, "V0310", "CL01", "R01", "18/11/2026", "7 d", { badge: ["+5 d", "warning"] }, { text: "Aguardar feedback", bold: true, color: "var(--color-fg-accent)" }],
+        [{ text: "Marta Lopes", bold: true, sub: "AP004400" }, "V0122", "CL03", "R06", "19/11/2026", "6 d", { badge: ["No prazo", "success"] }, { text: "Agendar final", bold: true, color: "var(--color-fg-accent)" }],
+        [{ text: "Rui Costa", bold: true, sub: "AP002981" }, "V0076", "CL02", "R05", "20/11/2026", "5 d", { badge: ["No prazo", "success"] }, { text: "Preparar proposta", bold: true, color: "var(--color-fg-accent)" }],
+        [{ text: "Sofia Alves", bold: true, sub: "AP005233" }, "V0145", "CL08", "R03", "21/11/2026", "4 d", { badge: ["No prazo", "success"] }, { text: "Triagem", bold: true, color: "var(--color-fg-accent)" }]
       ];
 
       const inner = `${sidebar("Visão geral")}<div class="content">
-        ${topbar("Torre de Controlo", "Onde o processo está parado e qual é a próxima ação")}
+        ${topbar("Visão geral", "Agregados exploratórios · base operacional indisponível · relatório não certificado")}
         ${kpis([
-          { label: "Candidaturas paradas", value: "34", badge: ["+6", "danger"], foot: "SLA ultrapassado em 12" },
+          { label: "Candidaturas analisadas", value: "5 962", badge: ["11 tabelas", "neutral"], foot: "Agregado exploratório do relatório" },
           { label: "Espera até proposta", value: "27 d", badge: ["68%", "warning"], foot: "do ciclo total de 40 dias" },
-          { label: "Propostas fora da banda", value: "207", badge: ["20,4%", "danger"], foot: "abaixo do mínimo ou acima do máximo" },
-          { label: "Contratações no mês", value: "28", badge: ["+12%", "success"], foot: "vs. outubro de 2025" }
+          { label: "Propostas abaixo do mínimo", value: "207", badge: [`${belowMinimumRate}%*`, "danger"], foot: "207 / 1 065; relatório cita 20,4% (validar)" },
+          { label: "Contratações únicas", value: "262", badge: ["após deduplicação", "success"], foot: "254 candidatos · 8 recontratados" }
         ])}
         <div class="tower-main">
           <div class="table-wrap" style="height:520px">
-            <div class="table-head"><div class="card-title">Fila de prioridade</div><div style="display:flex;align-items:center;gap:8px">${badge("34 paradas", "danger")}<span class="tiny faint">Ordenado por SLA</span></div></div>
-            ${table(cols, rows)}
+            <div class="table-head"><div><div class="card-title">Fila de prioridade · demonstração</div><div class="tiny faint">Só Inês tem detalhe navegável; as restantes linhas são exemplos ilustrativos.</div></div><div style="display:flex;align-items:center;gap:8px">${badge("Amostras", "neutral")}<span class="tiny faint">Ordenado por atraso</span></div></div>
+            ${table(cols, rows, rows.map((_, index) => ({ kind: "candidate", interactive: index === 0 })))}
           </div>
           <div class="side-col">
             <div class="card signals-card">
               <div class="card-title">Sinais do dia</div>
-              ${signal("3 propostas acima do máximo da banda", "Requer justificação antes do envio", "#dc2626")}
+              ${signal("26,8% das expectativas superam a banda", "Rever alinhamento salarial antes de abrir proposta", "#d97706")}
               ${signal("CL09 com retenção de 62,5% aos 90 dias", "Pior cliente do portefólio", "#dc2626")}
               ${signal("V999: 330 candidaturas sem vaga", "Bloquear relatórios oficiais", "#d97706")}
             </div>
             <div class="card cycle-card">
-              <div class="card-title">Ciclo médio</div>
+              <div class="card-title">Ciclo mediano</div>
               <div style="display:flex;align-items:flex-end;gap:6px"><span class="big-value">40</span><span class="small muted" style="margin-bottom:4px">dias</span></div>
               <div class="tiny muted" style="line-height:1.4">27 dias são espera entre a última entrevista e a proposta (68%).</div>
-              ${segBar([["", 3, "#dbeafe"], ["", 6, "#bfdbfe"], ["", 27, "#fca5a5"], ["", 3, "#bbf7d0"]], 300)}
+              ${segBar([["", 3, "var(--color-bg-muted)"], ["", 6, "var(--color-accent-soft)"], ["", 27, "#fca5a5"], ["", 3, "#bbf7d0"]], 300)}
             </div>
             <div class="card quick-card">
-              <div class="card-title">Ação rápida</div>
-              <div class="quick-row">${btn("Abrir candidatura", "primary")}${btn("Ver qualidade", "ghost")}</div>
+              <div class="card-title">Fila de propostas com alertas</div>
+              <div class="tiny muted">207 propostas abaixo do mínimo · 191 respostas com ordem temporal incoerente</div>
+              <div class="quick-row">${btn("Rever propostas", "primary", false, false, "open-proposals")}${btn("Ver bloqueios P0", "ghost", false, false, "open-quality")}</div>
             </div>
           </div>
         </div>
         <div class="tower-bottom">
           <div class="card cycle-detail">
             <div><div class="card-title">Ciclo do processo</div><div class="tiny faint">Candidatura → contratação · mediana 40 dias</div></div>
-            ${segBar([["", 3, "#dbeafe"], ["", 6, "#bfdbfe"], ["", 27, "#fca5a5"], ["", 3, "#bbf7d0"]], 520)}
+            ${segBar([["", 3, "var(--color-bg-muted)"], ["", 6, "var(--color-accent-soft)"], ["", 27, "#fca5a5"], ["", 3, "#bbf7d0"]], 520)}
             <div class="cycle-grid">
               <div class="cycle-cell"><b>3 d</b><span>1ª entrevista</span></div>
               <div class="cycle-cell"><b>6 d</b><span>entrevistas</span></div>
@@ -303,73 +225,70 @@
           </div>
         </div>
       </div>`;
-      return frame("01 · Torre de Controlo", "Visão geral", inner);
+      return frame("Visão geral", "Indicadores exploratórios", inner, "", "overview");
     }
 
     /* ----------------------------- pipeline ------------------------------ */
     function pipeline() {
-      const cols = [
-        ["Triagem", 18, [
-          { name: "Sofia Alves", role: "Data Analyst · V0145", client: "CL08", days: "4 d", tone: "success" },
-          { name: "Miguel Pinto", role: "Backend · V0220", client: "CL02", days: "3 d", tone: "success" },
-          { name: "Rita Nunes", role: "QA · V0190", client: "CL04", days: "2 d", tone: "success" },
-          { name: "André Faria", role: "DevOps · V0261", client: "CL01", days: "2 d", tone: "success" },
-          { name: "Tiago Reis", role: "Analytics · V0272", client: "CL10", days: "1 d", tone: "success" }
-        ]],
-        ["Entrevista técnica", 12, [
-          { name: "Rui Costa", role: "Data Engineer · V0076", client: "CL02", days: "5 d", tone: "success" },
-          { name: "Pedro Matos", role: "Frontend · V0301", client: "CL07", days: "4 d", tone: "success" },
-          { name: "Carla Dias", role: "Product · V0088", client: "CL01", days: "3 d", tone: "success" },
-          { name: "Hugo Nunes", role: "SRE · V0119", client: "CL06", days: "3 d", tone: "success" },
-          { name: "Sofia Matos", role: "Mobile · V0188", client: "CL05", days: "2 d", tone: "success" }
-        ]],
-        ["Entrevista cliente", 9, [
-          { name: "Inês Carvalho", role: "Senior Data Eng. · V0184", client: "CL09", days: "+6 d", tone: "danger" },
-          { name: "Ana Ribeiro", role: "Product Manager · V0098", client: "CL05", days: "+2 d", tone: "warning" },
-          { name: "João Freitas", role: "Analyst · V0250", client: "CL10", days: "7 d", tone: "success" },
-          { name: "Beatriz Lima", role: "Designer · V0210", client: "CL09", days: "4 d", tone: "success" },
-          { name: "Paulo Gomes", role: "Data · V0236", client: "CL02", days: "3 d", tone: "success" }
-        ]],
-        ["Entrevista final", 7, [
-          { name: "Marta Lopes", role: "Engineering Mgr · V0122", client: "CL03", days: "6 d", tone: "success" },
-          { name: "Nuno Reis", role: "Data Scientist · V0160", client: "CL06", days: "5 d", tone: "success" },
-          { name: "Lara Pinto", role: "Recruiter · V0299", client: "CL03", days: "4 d", tone: "success" },
-          { name: "Diogo Melo", role: "Architect · V0042", client: "CL07", days: "3 d", tone: "success" },
-          { name: "Carla Sousa", role: "Product · V0104", client: "CL10", days: "2 d", tone: "success" }
-        ]],
-        ["Proposta", 5, [
-          { name: "Tiago Mendes", role: "Data Engineer · V0231", client: "CL06", days: "+3 d", tone: "danger" },
-          { name: "Hugo Sousa", role: "Backend · V0175", client: "CL01", days: "8 d", tone: "warning" },
-          { name: "Sara Gomes", role: "Product · V0133", client: "CL04", days: "6 d", tone: "success" },
-          { name: "Vasco Rocha", role: "QA Lead · V0247", client: "CL08", days: "5 d", tone: "success" },
-          { name: "Rita Alves", role: "Design · V0288", client: "CL07", days: "4 d", tone: "success" }
-        ]]
+      const stages = [
+        { title: "Candidatura", count: 5962, tone: "neutral", person: "Candidaturas recebidas", role: "Amostra ilustrativa", state: "Registo demonstrativo" },
+        { title: "Triagem", count: 5938, tone: "success", person: "Triagem concluída", role: "Amostra ilustrativa", state: "Registo demonstrativo" },
+        { title: "Entrevista técnica", count: 5913, tone: "success", person: "Entrevista técnica", role: "Amostra ilustrativa", state: "Registo demonstrativo" },
+        { title: "Entrevista cliente", count: 4484, tone: "warning", person: "Entrevista com cliente", role: "Amostra ilustrativa", state: "Etapa com contratação", selected: true },
+        { title: "Entrevista final", count: 2782, tone: "danger", person: "Entrevista final", role: "0 contratações observadas", state: "Bloqueio a validar", alert: true },
+        { title: "Proposta", count: 1065, tone: "warning", person: "Propostas emitidas", role: "Amostra ilustrativa", state: "Registo demonstrativo" },
+        { title: "Contratação", count: 262, tone: "success", person: "Contratações únicas", role: "Após deduplicação no relatório", state: "262 registos únicos" }
+      ].map((stage, index, list) => ({
+        ...stage,
+        conversion: index === 0 ? 100 : (stage.count / list[index - 1].count) * 100
+      }));
+      const intervals = [
+        ["3 d", "candidatura → 1.ª entrevista"],
+        ["6 d", "ciclo de entrevistas"],
+        ["27 d", "última entrevista → proposta", "danger"],
+        ["3 d", "proposta → contratação"]
       ];
 
       const inner = `${sidebar("Pipeline")}<div class="content">
-        ${topbar("Pipeline", "Fase real derivada das entrevistas, não da etapa_atual")}
+        ${topbar("Pipeline de recrutamento", "Etapas derivadas das entrevistas · percurso e conversão")}
         <div class="filters">
-          ${["Todas", "CL09", "R07", "SLA ultrapassado", "+ Filtros"].map((f, i) => chip(f, i === 0)).join("")}
+          ${chip("Todas", true, "pipeline", "all")}
+          ${chip("CL09", false, "pipeline", "CL09")}
+          ${chip("R07", false, "pipeline", "R07")}
+          ${chip("SLA ultrapassado", false, "pipeline", "sla")}
+          ${chip("Limpar filtros", false, "pipeline", "all")}
           <div class="grow"></div>
-          <span class="tiny faint">5 962 candidaturas · 10 clientes · 10 recrutadores</span>
+          <span class="tiny faint">5 962 candidaturas · dados do relatório</span>
         </div>
-        <div class="kanban">
-          ${cols
-            .map(
-              (c) => `<div class="col">
-                <div class="col-head"><div class="col-title">${c[0]}${badge(String(c[1]), "neutral")}</div></div>
-                ${c[2]
-                  .map(
-                    (k) => `<div class="kanban-card"><div class="kanban-name">${k.name}</div><div class="kanban-role">${k.role}</div><div class="kanban-foot"><span class="tiny faint">${k.client}</span>${badge(k.days, k.tone)}</div></div>`
-                  )
-                  .join("")}
-                <div class="kanban-more">+ ${c[1] - c[2].length} candidaturas</div>
-              </div>`
-            )
-            .join("")}
+        <div class="pipeline-board">
+          <div class="pipeline-board-head"><div><div class="card-title">Percurso das candidaturas</div><div class="tiny faint">Volume por etapa e conversão face à etapa anterior</div></div>${badge("Volumes do relatório · casos fictícios", "neutral")}</div>
+          <div class="stage-track">
+            <div class="stage-line"></div>
+            ${stages.map((s, index) => `<button type="button" class="stage-step${s.alert ? " has-alert" : ""}${s.selected ? " selected" : ""}" data-stage="${index}" aria-pressed="${s.selected ? "true" : "false"}"><span class="stage-marker${s.alert ? " marker-alert" : ""}${s.selected ? " marker-selected" : ""}"></span><span class="stage-title">${s.title}</span><span class="stage-count">${s.count.toLocaleString("pt-PT")}</span>${badge(`${s.conversion.toLocaleString("pt-PT", { maximumFractionDigits: 1 })}%`, s.tone)}</button>`).join("")}
+          </div>
+          <div class="stage-samples">
+            ${stages.map((s, index) => `<button type="button" class="stage-sample${s.selected ? " selected" : ""}${s.alert ? " alert" : ""}" data-stage-sample="${index}" data-kind="${s.alert ? "p0" : "sample"}" data-client="${index === 3 || index === 5 ? "CL09" : "CL08"}" data-recruiter="${index === 3 || index === 5 ? "R07" : "R02"}" data-sla="${index === 3 || index === 5 ? "yes" : "no"}"><div class="sample-top"><span class="sample-dot"></span>${s.alert ? badge("0 contratações", "danger") : `<span class="sample-state">Amostra fictícia</span>`}</div><span class="sample-name">Candidato de demonstração · ${s.title}</span><span class="sample-role">${s.role} · sem registo operacional</span></button>`).join("")}
+          </div>
+          <div class="cycle-strip">${intervals.map((item) => `<div class="cycle-segment${item[2] ? " delayed" : ""}"><b>${item[0]}</b><span>${item[1]}</span></div>`).join("")}</div>
+          <div class="pipeline-footnote"><span class="dot" style="background:var(--color-danger)"></span>2 782 candidaturas chegaram à entrevista final; nenhuma das 262 contratações teve essa fase como última entrevista. <span>Tempos por segmento são medianas independentes; podem não somar à mediana do ciclo.</span></div>
+        </div>
+        <div class="pipeline-focus">
+          <div class="focus-journey">
+            <div class="focus-heading"><div><div class="card-title">Percurso de demonstração · Inês Carvalho</div><div class="tiny faint">Candidatura e eventos fictícios · não representam estado operacional</div></div>${badge("SLA ilustrativo", "danger")}</div>
+            <div class="journey-line">
+              ${[
+                ["02 out", "Candidatura", "LinkedIn", "done"],
+                ["05 out", "Triagem", "R07", "done"],
+                ["09 out", "Entrevista técnica", "4,2/5", "done"],
+                ["12 nov", "Entrevista cliente", "4,5/5 · CL09", "current"],
+                ["Pendente", "Proposta", "validar banda", "blocked"]
+              ].map((e) => `<div class="journey-step ${e[3]}"><i></i><b>${e[1]}</b><span>${e[0]} · ${e[2]}</span></div>`).join("")}
+            </div>
+          </div>
+          <div class="focus-action"><div class="label">PRÓXIMA AÇÃO</div><div class="focus-action-title">Rever a proposta</div><div class="small muted">€76 500 excede o máximo da banda em €2 500.</div>          ${btn("Abrir validação salarial", "primary", false, false, "open-salary")}</div>
         </div>
       </div>`;
-      return frame("02 · Pipeline", "Candidaturas", inner);
+      return frame("Pipeline", "Etapas e conversões", inner, "", "pipeline");
     }
 
     /* -------------------------- candidate detail ------------------------- */
@@ -384,22 +303,24 @@
       const inner = `${sidebar("Candidaturas")}<div class="content">
         ${topbar(
           "Inês Carvalho",
-          "AP004821 · Senior Data Engineer · V0184 · CL09",
-          `${btn("Contactar recrutador", "ghost")}${btn("Abrir validação salarial", "primary")}`
+          "AP004821 · V0184 · CL09 · candidatura fictícia",
+          `${btn("Contactar recrutador", "ghost", false, false, "contact")}${btn("Abrir validação salarial", "primary", false, false, "open-salary")}`
         )}
         <div class="sla-banner">
           <span class="dot" style="background:#dc2626"></span>
-          <div><div class="sla-title">13 dias sem ação desde a última entrevista</div><div class="sla-sub">SLA de 48 h ultrapassado há 6 dias · última interação em 12/11/2026</div></div>
+          <div><div class="sla-title"><span data-idle-days>13 dias</span> sem ação · registo fictício</div><div class="sla-sub">SLA de 48 h · <span data-sla-overdue>11 dias de atraso</span> · última ação ilustrativa em 12/11/2026</div></div>
         </div>
         <div class="detail-main">
           <div class="card timeline-card">
-            <div><div class="card-title">Percurso da candidatura</div><div class="tiny faint">Fase real derivada das entrevistas registadas</div></div>
+            <div><div class="card-title">Percurso da candidatura</div><div class="tiny faint">Eventos cronológicos de demonstração · sem registo operacional</div></div>
             <div class="timeline">
-              ${timelineItem("1", "Candidatura recebida", "02/10/2026 · canal LinkedIn", "Score do currículo 78/100")}
-              ${timelineItem("2", "Triagem concluída", "05/10/2026 · recrutador R07", "Aprovado para entrevista técnica")}
-              ${timelineItem("3", "Entrevista técnica", "09/10/2026 · 4,2/5 · R07", "Score técnico 88/100")}
-              ${timelineItem("4", "Entrevista cliente", "12/11/2026 · 4,5/5 · CL09", "Feedback positivo, sem reservas")}
-              ${timelineItem("5", "Proposta por enviar", "13 dias sem decisão · SLA 48 h ultrapassado", "Bloqueio: oferta €76 500 acima do máximo da banda (€74 000)", true, true)}
+                  ${[
+                    ["2026-10-02", "Candidatura recebida", "Canal de origem · ilustrativo", "Evento de demonstração"],
+                    ["2026-10-05", "Triagem concluída", "Recrutador · exemplo", "Etapa demonstrativa"],
+                    ["2026-10-09", "Entrevista técnica", "Avaliação · exemplo", "Evento demonstrativo"],
+                    ["2026-11-12", "Entrevista com cliente", "Feedback · exemplo", "Último evento ilustrativo"]
+                  ].sort((a, b) => new Date(a[0]) - new Date(b[0])).map((e, i) => timelineItem(String(i + 1), e[1], `${new Date(`${e[0]}T12:00:00`).toLocaleDateString("pt-PT")} · ${e[2]}`, e[3], false, false)).join("")}
+                  ${timelineItem("!", "Próxima decisão · proposta", '<span data-idle-days>13 dias</span> sem ação · SLA de 48 h', "Dados fictícios: oferta indicativa €76 500 acima do máximo de €74 000.", true, true)}
             </div>
             <div class="note-box">
               <div class="tiny" style="font-weight:600;color:#64748b">Nota do recrutador</div>
@@ -410,9 +331,9 @@
             <div class="card side-card side-action">
               <div class="card-title">Próxima ação</div>
               <div class="small muted" style="line-height:1.4">Enviar proposta ou justificar a exceção salarial antes de avançar.</div>
-              ${btn("Abrir validação salarial", "primary", true)}
-              ${btn("Contactar recrutador", "ghost", true)}
-              ${btn("Marcar intervenção", "ghost", true)}
+              ${btn("Abrir validação salarial", "primary", true, false, "open-salary")}
+              ${btn("Contactar recrutador", "ghost", true, false, "contact")}
+              ${btn("Marcar intervenção", "ghost", true, false, "intervene")}
             </div>
             <div class="card side-card side-band">
               <div class="card-title">Banda salarial</div>
@@ -426,7 +347,7 @@
                 <div class="band-marker" style="left:327px;background:#d97706"></div>
               </div>
               <div class="legend-row">
-                <span class="legend-item"><i style="background:#dbeafe"></i>Banda</span>
+                <span class="legend-item"><i style="background:var(--color-bg-muted)"></i>Banda</span>
                 <span class="legend-item"><i style="background:#dc2626"></i>Oferta</span>
                 <span class="legend-item"><i style="background:#d97706"></i>Expectativa</span>
               </div>
@@ -435,26 +356,97 @@
               <div class="card-title">Sinais</div>
               <div class="signal-line"><span class="small muted">Score técnico</span>${badge("88/100", "success")}</div>
               <div class="signal-line"><span class="small muted">Entrevista cliente</span>${badge("4,5/5", "success")}</div>
-              <div class="signal-line"><span class="small muted">Dias sem interação</span>${badge("9 dias", "warning")}</div>
+              <div class="signal-line"><span class="small muted">Dias sem ação</span><span class="badge b-danger" data-idle-days>13 dias</span></div>
               <div class="signal-line"><span class="small muted">Propostas anteriores do cliente</span>${badge("4 abaixo do mínimo", "danger")}</div>
             </div>
           </div>
         </div>
       </div>`;
-      return frame("03 · Candidatura", "Detalhe e SLA", inner);
+      return frame("Candidatura", "Percurso e SLA · registo fictício", inner, "", "detail");
+    }
+
+    /* ----------------------- proposals review queue --------------------- */
+    function proposals() {
+      const cols = [
+        { label: "CANDIDATO / VAGA", w: 155 },
+        { label: "CLIENTE / RECRUTADOR", w: 130 },
+        { label: "OFERTA", w: 90 },
+        { label: "BANDA DA VAGA", w: 115 },
+        { label: "EXCEÇÃO", w: 160 },
+        { label: "ESTADO", w: 115 },
+        { label: "PRÓXIMA AÇÃO", w: 165 }
+      ];
+      const rows = [
+        [{ text: "Inês Carvalho", bold: true, sub: "V0184 · Senior Data Engineer" }, { text: "CL09 · Saúde", sub: "R07 · Produto" }, "€76 500", "€62 000–€74 000", { badge: ["+€2 500 acima", "danger"] }, { badge: ["Aprovação", "warning"] }, { text: "Rever proposta", color: "var(--color-fg-accent)", bold: true }],
+        [{ text: "Expectativa acima da banda", bold: true, sub: "26,8% das propostas" }, { text: "Várias vagas", sub: "Rever por cliente" }, "—", "—", { badge: ["Expectativa > máximo", "warning"] }, { badge: ["Por validar", "neutral"] }, { text: "Comparar expectativa", color: "var(--color-fg-accent)", bold: true }],
+        [{ text: "Propostas sem resposta", bold: true, sub: "25,4% do total" }, { text: "Várias vagas", sub: "Mediana de resposta: 6 d" }, "—", "—", { badge: ["Sem resposta", "warning"] }, { badge: ["Acompanhar", "neutral"] }, { text: "Contactar recrutador", color: "var(--color-fg-accent)", bold: true }],
+        [{ text: "Resposta após contratação", bold: true, sub: "191 de 262 casos" }, { text: "Propostas × contratações", sub: "Incoerência temporal" }, "—", "—", { badge: ["Data incoerente", "danger"] }, { badge: ["Bloqueia métrica", "danger"] }, { text: "Validar sequência", color: "var(--color-fg-accent)", bold: true }]
+      ];
+
+      const inner = `${sidebar("Propostas")}<div class="content">
+        ${topbar("Propostas", "Fila de revisão salarial, aprovação e resposta")}
+        ${kpis([
+          { label: "Abaixo do mínimo da banda", value: "207", badge: [`${belowMinimumRate}%*`, "danger"], foot: "207 / 1 065; relatório cita 20,4% (validar)" },
+          { label: "Expectativa acima do máximo", value: "26,8%", badge: ["Rever bandas", "warning"], foot: "dos candidatos" },
+          { label: "Sem resposta", value: "25,4%", badge: ["Acompanhar", "warning"], foot: "das propostas · mediana 6 d" },
+          { label: "Resposta após contratação", value: "191", badge: ["Bloqueio", "danger"], foot: "em 262 contratações" }
+        ])}
+        <div class="filters proposal-filters">
+          ${chip("Todas", true, "proposal", "all")}
+          ${chip("Abaixo do mínimo", false, "proposal", "below")}
+          ${chip("Expectativa acima", false, "proposal", "expectation")}
+          ${chip("Sem resposta", false, "proposal", "unanswered")}
+          ${chip("Ordem temporal", false, "proposal", "temporal")}
+          ${chip("Por aprovar", false, "proposal-status", "approval")}
+          ${chip("Acompanhar", false, "proposal-status", "followup")}
+          ${chip("Bloqueia métrica", false, "proposal-status", "blocked")}
+          <span class="tiny faint">Agregados exploratórios + 1 caso fictício</span>
+        </div>
+        <div class="proposal-queue-main">
+          <div class="table-wrap proposal-table">
+            <div class="table-head"><div><div class="card-title">Exceções e propostas por tratar</div><div class="tiny faint">Prioridade por risco salarial e incoerência temporal</div></div>${badge("4 tipos de alerta", "warning")}</div>
+            ${table(cols, rows, [
+              { kind: "below", status: "approval", interactive: true },
+              { kind: "expectation", status: "pending", interactive: false },
+              { kind: "unanswered", status: "followup", interactive: false },
+              { kind: "temporal", status: "blocked", interactive: false }
+            ])}
+            <div class="proposal-note"><span class="dot" style="background:var(--color-accent)"></span><span>Os agregados vêm do relatório exploratório; o único candidato mostrado é fictício.</span></div>
+          </div>
+          <div class="proposal-side">
+            <div class="card proposal-guide">
+              <div class="card-title">Antes de enviar</div>
+              ${signal("Comparar oferta, banda e expectativa", "Separar abaixo do mínimo, acima do máximo e expectativa excedida.", "#c9f522")}
+              ${signal("Registar a aprovação", "Exceções salariais exigem justificação e aprovação do gestor.", "#d97706")}
+              ${signal("Confirmar a ordem temporal", "Uma resposta não pode ficar depois da contratação.", "#dc2626")}
+            </div>
+            <div class="card proposal-selected">
+              <div class="card-title">Caso selecionado</div>
+              <div class="small strong">Inês Carvalho · V0184</div>
+              <div class="tiny muted">Oferta €76 500 · máximo €74 000</div>
+              <div class="proposal-delta"><b>+€2 500</b><span>acima da banda</span></div>
+              ${btn("Abrir validação salarial", "primary", true, false, "open-salary")}
+            </div>
+          </div>
+        </div>
+      </div>`;
+      return frame("Propostas", "Exceções salariais e temporais", inner, "", "proposals");
     }
 
     /* ----------------------------- salary -------------------------------- */
-    function field(label, value, bold = false, alert = false, help = "") {
-      return `<div class="field">
+    function field(label, value, bold = false, alert = false, help = "", name = "") {
+      const editable = Boolean(name);
+      return `<label class="field">
         <div class="field-label">${label}</div>
-        <div class="input${bold ? " bold" : ""}${alert ? " alert" : ""}">${value}</div>
-        ${help ? `<div class="help${alert ? " alert" : ""}">${help}</div>` : ""}
-      </div>`;
+        <span class="input-wrap${alert ? " alert" : ""}">${editable ? '<span aria-hidden="true">€</span>' : ""}
+          <input class="input${bold ? " bold" : ""}${alert ? " alert" : ""}"${editable ? ` type="number" min="0" step="500" data-salary-field="${name}"` : ' type="text" readonly'} value="${value}"${help ? ` aria-describedby="${name}-help"` : ""}>
+        </span>
+        ${help ? `<span class="help${alert ? " alert" : ""}"${name ? ` id="${name}-help"` : ""} data-salary-help="${name}">${help}</span>` : ""}
+      </label>`;
     }
 
     function alertLine(title, sub, tone) {
-      const colors = { danger: "#dc2626", warning: "#d97706", info: "#2563eb" };
+      const colors = { danger: "#dc2626", warning: "#d97706", info: "var(--color-fg-accent)", success: "var(--color-success)" };
       return `<div class="alert-line"><span class="dot" style="background:${colors[tone]}"></span><div><div class="alert-title" style="color:${colors[tone]}">${title}</div><div class="alert-sub">${sub}</div></div></div>`;
     }
 
@@ -463,120 +455,143 @@
         ${topbar("Validação Salarial", "Comparar oferta, banda da vaga e expectativa antes de enviar")}
         <div class="salary-main">
           <div class="card form-card">
-            <div style="display:flex;justify-content:space-between;align-items:center"><div class="card-title">Dados da proposta</div>${badge("Fora da banda", "danger")}</div>
+            <div style="display:flex;justify-content:space-between;align-items:center"><div class="card-title">Dados da proposta · demonstração</div><span data-salary-status>${badge("A validar", "warning")}</span></div>
             <div class="form-row">${field("Candidato", "Inês Carvalho", true)}${field("Vaga", "V0184 · Senior Data Engineer")}</div>
             <div class="form-row">${field("Cliente", "CL09 · Saúde")}${field("Recrutador", "R07 · Produto")}</div>
-            <div class="form-row">${field("Expectativa do candidato", "€78 500", true)}${field("Banda da vaga", "€62 000 – €74 000")}</div>
-            ${field("Oferta", "€76 500", true, true, "Acima do máximo da banda em €2 500 e abaixo da expectativa em €2 000.")}
-            <div class="field">
-              <div class="field-label">Justificação da exceção</div>
-              <div class="textarea">Cliente aceita pagar acima do máximo para funções críticas. Necessária aprovação do gestor de recrutamento.</div>
+            <div class="form-row">${field("Expectativa do candidato", "78500", true, false, "", "expectation")}
+              <div class="field"><div class="field-label">Banda da vaga</div><div class="form-row salary-band-fields">${field("Mínimo", "62000", false, false, "", "minimum")}${field("Máximo", "74000", false, false, "", "maximum")}</div></div>
             </div>
-            <div class="form-actions">${btn("Ajustar para €72 000", "primary")}${btn("Justificar exceção", "ghost")}${btn("Enviar proposta", "ghost")}</div>
+            ${field("Oferta proposta", "76500", true, true, "", "offer")}
+            <div class="field">
+              <label class="field-label" for="exception-reason">Justificação da exceção (mín. 20 caracteres)</label>
+              <textarea class="textarea" id="exception-reason" data-exception-reason placeholder="Explique o motivo da exceção…">Cliente aceita pagar acima do máximo para funções críticas. Necessária aprovação do gestor de recrutamento.</textarea>
+              <label class="approval-check"><input type="checkbox" data-exception-approved> Aprovação do gestor registada (demonstração)</label>
+            </div>
+            <div class="form-actions">${btn("Registar justificação", "ghost", false, false, "focus-reason")}${btn("Enviar proposta", "primary", false, true, "send-proposal")}</div>
+            <div class="form-feedback" data-salary-feedback role="status" aria-live="polite"></div>
             <div class="mini-stats">
-              <div class="mini-stat"><span>Posição na banda</span><b>108%</b></div>
-              <div class="mini-stat"><span>Acima do máximo</span><b>+€2 500</b></div>
-              <div class="mini-stat"><span>Abaixo da expectativa</span><b>−€2 000</b></div>
+              <div class="mini-stat"><span>Oferta / máximo</span><b data-salary-position>103%</b></div>
+              <div class="mini-stat"><span>Diferença para o máximo</span><b data-salary-delta>+€2 500</b></div>
+              <div class="mini-stat"><span>Diferença para expectativa</span><b data-salary-expectation-delta>−€2 000</b></div>
             </div>
           </div>
           <div class="salary-side">
             <div class="card band-card">
               <div class="card-title">Posição na banda</div>
-              <div style="display:flex;justify-content:space-between;align-items:center"><span class="tiny faint">Mín. €62 000</span><span class="tiny faint">Máx. €74 000</span></div>
+              <div style="display:flex;justify-content:space-between;align-items:center"><span class="tiny faint" data-band-min-label>Mín. €62 000</span><span class="tiny faint" data-band-max-label>Máx. €74 000</span></div>
               <div class="band-viz" style="height:70px">
                 <div class="band-track" style="top:28px;height:12px"></div>
                 <div class="band-range" style="left:40px;width:240px;top:28px;height:12px"></div>
-                <div class="band-marker" style="left:323px;top:27px;width:14px;height:14px;background:#dc2626"></div>
-                <div class="band-marker" style="left:363px;top:27px;width:14px;height:14px;background:#d97706"></div>
+                <div class="band-marker offer-marker" data-band-marker="offer" style="left:323px;top:27px;width:14px;height:14px;background:#dc2626"></div>
+                <div class="band-marker expectation-marker" data-band-marker="expectation" style="left:363px;top:27px;width:14px;height:14px;background:#d97706"></div>
               </div>
               <div class="legend-row">
-                <span class="legend-item"><i style="background:#dbeafe"></i>Banda €62k–€74k</span>
-                <span class="legend-item"><i style="background:#dc2626"></i>Oferta €76,5k</span>
-                <span class="legend-item"><i style="background:#d97706"></i>Expectativa €78,5k</span>
+                <span class="legend-item"><i style="background:var(--color-bg-muted)"></i>Banda</span>
+                <span class="legend-item"><i style="background:#dc2626"></i><span data-band-offer-legend>Oferta €76 500</span></span>
+                <span class="legend-item"><i style="background:#d97706"></i><span data-band-expectation-legend>Expectativa €78 500</span></span>
               </div>
             </div>
             <div class="card alerts-card">
               <div class="card-title">Alertas</div>
-              ${alertLine("Oferta acima do máximo", "+€2 500 face ao topo da banda (€74 000).", "danger")}
-              ${alertLine("Expectativa acima do máximo", "Candidata pede €78 500; +€4 500 face ao topo.", "warning")}
-              ${alertLine("Sem negociação registada", "Salário final = salário oferecido em 100% das contratações.", "info")}
+              <div data-salary-alerts aria-live="polite"></div>
             </div>
             <div class="card decision-card">
               <div class="card-title">Decisão</div>
-              ${btn("Corrigir oferta para €72 000", "primary", true)}
-              ${btn("Registar exceção com aprovação", "ghost", true)}
+              <span class="tiny muted" data-decision-copy>A proposta só pode ser enviada se cumprir as regras ou se a exceção estiver justificada e aprovada.</span>
             </div>
           </div>
         </div>
-        <div class="card rules-card">
-          <div class="card-title">Regras aplicadas</div>
-          ${[
-            ["Oferta dentro da banda", "€62 000 ≤ oferta ≤ €74 000", "Falhou", "danger"],
-            ["Expectativa dentro do máximo", "expectativa ≤ €74 000", "Falhou", "danger"],
-            ["Oferta ≥ expectativa − 5%", "€76 500 ≥ €74 575", "Passou", "success"],
-            ["Justificação obrigatória em exceção", "campo preenchido", "Passou", "success"]
-          ]
-            .map(
-              (r) => `<div class="rule-row"><div class="rule-left"><b>${r[0]}</b><span>${r[1]}</span></div>${badge(r[2], r[3])}</div>`
-            )
-            .join("")}
-        </div>
+        <div class="card rules-card"><div class="card-title">Regras aplicadas</div><div data-salary-rules></div></div>
       </div>`;
-      return frame("04 · Validação Salarial", "Propostas", inner);
+      return frame("Validação Salarial", "Regras e aprovação · demonstração", inner, "", "salary");
     }
 
     /* ----------------------------- quality ------------------------------- */
+    const DATA_ISSUES = [
+      { id: "q6", priority: "P0", name: "Nenhuma contratação passou pela entrevista final", source: "Candidaturas × entrevistas", amount: "2 782 na fase final · 0 contratações", action: "Rever regra de negócio" },
+      { id: "q1", priority: "P0", name: "Estado do candidato desligado da realidade", source: "Candidatos", amount: "864 marcados como contratados vs. 254 reais", action: "Recalcular a partir das contratações" },
+      { id: "q5", priority: "P0", name: "Etapa atual aleatória face às entrevistas", source: "Candidaturas", amount: "16,7% de coincidência com a fase real", action: "Derivar a partir dos eventos" },
+      { id: "q2", priority: "P0", name: "Vaga inexistente V999", source: "Candidaturas × contratações", amount: "330 candidaturas · 13 vagas divergentes", action: "Remapear ou bloquear por chave" },
+      { id: "q3", priority: "P1", name: "Datas de entrevista em dois formatos", source: "Entrevistas", amount: "3 831 registos (20%) em dd/mm/aaaa", action: "Normalizar para ISO 8601" },
+      { id: "q4", priority: "P1", name: "Score técnico fora do domínio", source: "Entrevistas", amount: "533 registos acima de 100 · máximo 125", action: "Investigar e validar o domínio" },
+      { id: "q7", priority: "P1", name: "Resposta à proposta posterior à contratação", source: "Propostas × contratações", amount: "191 de 262 respostas fora de ordem", action: "Validar sequência temporal" },
+      { id: "salary", priority: "P1", name: "Propostas abaixo do mínimo da banda", source: "Propostas × vagas", amount: `207 / 1 065 = ${belowMinimumRate}%; relatório cita 20,4%`, action: "Validar denominador e rever banda" },
+      { id: "band", priority: "P1", name: "Banda salarial pouco relacionada com senioridade", source: "Vagas", amount: "A banda explica 9,5% da variação", action: "Rever bandas por senioridade" },
+      { id: "cost", priority: "P1", name: "Custo por contratação desalinhado", source: "Contratações", amount: "R02 €2 261 vs. R07 €8 980", action: "Investigar origem dos custos" },
+      { id: "feedback-date", priority: "P1", name: "Feedback anterior à contratação", source: "Feedback × contratações", amount: "2 eventos com sequência temporal inválida", action: "Validar timestamps" },
+      { id: "duplicates", priority: "P2", name: "Duplicados exatos", source: "Contratações", amount: "5 linhas duplicadas (1,9%)", action: "Deduplicar por identificador" },
+      { id: "rehire", priority: "P2", name: "Candidatos contratados mais de uma vez", source: "Candidatos × contratações", amount: "8 candidatos com 2 contratações", action: "Distinguir recontratação de duplicado" },
+      { id: "retention", priority: "P2", name: "Retenção incoerente com datas", source: "Contratações", amount: "31 flags contraditórias · 64 nulas após 90 dias", action: "Recalcular a partir das datas" },
+      { id: "jobs", priority: "P2", name: "Estados de vaga inconsistentes", source: "Vagas", amount: "10 preenchidas sem contratação · 176 expiradas", action: "Derivar estado a partir dos eventos" },
+      { id: "feedback-batch", priority: "P2", name: "Feedback concentrado numa única data", source: "Feedback de clientes", amount: "47 registos em 31/12/2025 (18%)", action: "Confirmar fecho contabilístico" },
+      { id: "distributions", priority: "P2", name: "Distribuições comportamentais uniformes", source: "Interações × candidatos", amount: "Vários campos sem sinal estatístico", action: "Verificar origem dos dados" },
+      { id: "text", priority: "P3", name: "Texto livre inconsistente", source: "Entrevistas × feedback", amount: "6 variantes para 4 conceitos · 20 vazios", action: "Normalizar o vocabulário" },
+      { id: "redundancy", priority: "P3", name: "Campos redundantes", source: "Feedback × contratações", amount: "Desempenho e salário repetem outros campos", action: "Remover ou documentar redundância" }
+    ];
+    const issueWorkflow = JSON.parse(localStorage.getItem("talentflow-quality-workflow") || "{}");
+    const issueStatus = (id) => issueWorkflow[id] || "Por tratar";
+    const saveIssueStatus = (id, status) => {
+      issueWorkflow[id] = status;
+      localStorage.setItem("talentflow-quality-workflow", JSON.stringify(issueWorkflow));
+    };
+
     function quality() {
       const cols = [
         { label: "SEVERIDADE", w: 100 },
+        { label: "ESTADO", w: 126 },
         { label: "ANOMALIA", w: 300 },
         { label: "ONDE", w: 170 },
         { label: "QUANTIFICAÇÃO", w: 300 },
         { label: "AÇÃO", w: 258 }
       ];
-      const rows = [
-        [{ badge: ["P0", "danger"] }, { text: "Contratação sem passar pela entrevista final", bold: true }, "candidaturas × entrevistas", "2 782 na fase final, 0 contratações", { text: "Rever regra de negócio", color: "#2563eb", bold: true }],
-        [{ badge: ["P0", "danger"] }, { text: "Estado do candidato desligado da realidade", bold: true }, "candidatos", "864 'contratado' vs. 254 reais", { text: "Recalcular a partir de contratações", color: "#2563eb", bold: true }],
-        [{ badge: ["P0", "danger"] }, { text: "Candidaturas para vaga inexistente", bold: true }, "candidaturas", "330 registos em V999", { text: "Remapear ou bloquear por FK", color: "#2563eb", bold: true }],
-        [{ badge: ["P0", "danger"] }, { text: "Etapa atual aleatória", bold: true }, "candidaturas", "16,7% de coincidência com a fase real", { text: "Derivar de entrevistas", color: "#2563eb", bold: true }],
-        [{ badge: ["P1", "warning"] }, { text: "Datas em dois formatos", bold: true }, "entrevistas", "3 831 registos (20%) em dd/mm/aaaa", { text: "Normalizar para ISO 8601", color: "#2563eb", bold: true }],
-        [{ badge: ["P1", "warning"] }, { text: "Score técnico fora do domínio", bold: true }, "entrevistas", "533 registos > 100, máximo 125", { text: "Invalidar ou aplicar clip", color: "#2563eb", bold: true }],
-        [{ badge: ["P1", "warning"] }, { text: "Proposta respondida após a contratação", bold: true }, "propostas × contratações", "191 de 262 casos", { text: "Validar sequência temporal", color: "#2563eb", bold: true }],
-        [{ badge: ["P2", "info"] }, { text: "Duplicados exatos", bold: true }, "contratações", "5 linhas (1,9%)", { text: "Deduplicar por id", color: "#2563eb", bold: true }]
-      ];
+      const priorityTone = { P0: "danger", P1: "warning", P2: "info", P3: "neutral" };
+      const statusTone = { "Por tratar": "neutral", "Em correção": "warning", "Resolvido (demo)": "success" };
+      const rows = DATA_ISSUES.map((issue) => [
+        { badge: [issue.priority, priorityTone[issue.priority]] },
+        { badge: [issueStatus(issue.id), statusTone[issueStatus(issue.id)] || "neutral"] },
+        { text: issue.name, bold: true },
+        issue.source,
+        issue.amount,
+        { text: issueStatus(issue.id) === "Resolvido (demo)" ? "Reabrir na demonstração" : issue.action, color: "var(--color-fg-accent)", bold: true }
+      ]);
+      const counts = ["P0", "P1", "P2", "P3"].map((priority) => DATA_ISSUES.filter((issue) => issue.priority === priority).length);
+      const openP0 = DATA_ISSUES.filter((issue) => issue.priority === "P0" && issueStatus(issue.id) !== "Resolvido (demo)").length;
 
       const inner = `${sidebar("Qualidade")}<div class="content">
         ${topbar("Qualidade de Dados", "Anomalias priorizadas antes de qualquer dashboard")}
         ${kpis([
-          { label: "P0 · Críticas", value: "4", badge: ["Bloqueia", "danger"], foot: "invalidam análises" },
-          { label: "P1 · Altas", value: "6", badge: ["Distorce", "warning"], foot: "distorcem decisões" },
-          { label: "P2 · Médias", value: "5", badge: ["Tratar", "info"], foot: "tratamento obrigatório" },
-          { label: "P3 · Baixas", value: "2", badge: ["Limpeza", "neutral"], foot: "cosmético" }
+          { label: "P0 · Críticas", value: counts[0], badge: ["Bloqueiam", "danger"], foot: "bloqueiam relatórios oficiais" },
+          { label: "P1 · Altas", value: counts[1], badge: ["Distorcem", "warning"], foot: "distorcem decisões" },
+          { label: "P2 · Médias", value: counts[2], badge: ["Tratar", "info"], foot: "requerem tratamento" },
+          { label: "P3 · Baixas", value: counts[3], badge: ["Limpeza", "neutral"], foot: "qualidade editorial" }
         ])}
         <div class="filters">
-          ${["Todas (17)", "P0 (4)", "P1 (6)", "P2 (5)", "P3 (2)"].map((f, i) => chip(f, i === 0)).join("")}
+          ${chip(`Todas (${DATA_ISSUES.length})`, true, "quality", "all")}
+          ${["P0", "P1", "P2", "P3"].map((priority) => chip(`${priority} (${counts[Number(priority[1])]})`, false, "quality", priority.toLowerCase())).join("")}
+          ${chip("Por tratar", false, "quality-status", "open")}
+          ${chip("Resolvidas na demo", false, "quality-status", "resolved")}
           <div class="grow"></div>
-          <span class="tiny faint">Última validação: 25/11/2026 · 09:42</span>
+          <span class="tiny faint">19 anomalias únicas · uma repetição consolidada · workflow local</span>
         </div>
-        <div class="table-wrap" style="height:700px">
-          <div class="table-head"><div class="card-title">Registo de anomalias</div>${badge("17 abertas", "danger")}</div>
-          ${table(cols, rows)}
-          <div class="quality-note"><span class="dot" style="background:#dc2626"></span><div><div class="small" style="font-weight:600;color:#991b1b">P0 bloqueia relatórios oficiais até correção</div><div class="tiny" style="color:#b91c1c">P1 distorce decisões de gestão; P2 exige tratamento; P3 é limpeza cosmética.</div></div></div>
+        <div class="table-wrap quality-table-wrap">
+          <div class="table-head"><div class="card-title">Registo de anomalias</div><span data-open-p0>${badge(`${openP0} P0 por tratar`, openP0 ? "danger" : "success")}</span></div>
+          ${table(cols, rows, DATA_ISSUES.map((issue) => `quality ${issue.priority.toLowerCase()} ${issueStatus(issue.id) === "Resolvido (demo)" ? "resolved" : "open"}`))}
+          <div class="quality-note"><span class="dot" style="background:#dc2626"></span><div><div class="small" style="font-weight:600;color:#991b1b" data-report-block>${openP0 ? "Relatórios oficiais bloqueados por anomalias P0." : "P0 marcados como resolvidos nesta demonstração."}</div><div class="tiny" style="color:#b91c1c">Marcar uma linha como resolvida altera apenas o workflow local; não corrige dados nem desbloqueia relatórios reais.</div></div></div>
         </div>
       </div>`;
-      return frame("05 · Qualidade de Dados", "Guardião dos dados", inner);
+      return frame("Qualidade", "Anomalias e bloqueios", inner, "", "quality");
     }
 
     /* ----------------------------- clients ------------------------------- */
     function riskCard(d) {
-      return `<div class="card risk-card">
+      return `<button type="button" class="card risk-card" data-client="${d.id}">
         <div class="risk-top"><div><div class="risk-id">${d.id}</div><div class="risk-sector">${d.sector}</div></div>${badge(d.risk, d.tone)}</div>
         <div class="risk-metrics">
           <div class="risk-metric"><b>${d.ret}</b><span>Retenção</span></div>
-          <div class="risk-metric"><b>${d.sat}</b><span>Satisfação</span></div>
+          <div class="risk-metric"><b>${d.perf}</b><span>Desempenho 90d</span></div>
           <div class="risk-metric"><b>${d.subs}</b><span>Substituições</span></div>
         </div>
-      </div>`;
+      </button>`;
     }
 
     function clients() {
@@ -586,52 +601,377 @@
         { label: "VAGAS", w: 60 },
         { label: "CONTRATAÇÕES", w: 100 },
         { label: "RETENÇÃO 90D", w: 95 },
+        { label: "DESEMPENHO 90D", w: 100 },
         { label: "SATISFAÇÃO", w: 95 },
         { label: "SUBSTITUIÇÕES", w: 105 },
         { label: "MODELO", w: 100 },
         { label: "CUSTO", w: 95 },
-        { label: "SAÚDE", w: 120 },
+        { label: "SINAL PRINCIPAL", w: 140 },
         { label: "AÇÃO", w: 188 }
       ];
       const rows = [
-        ["CL01", "Saúde", "48", "27", "90%", "3,48", "4/27", "Partilhado", "€4 391", { badge: ["82 Saudável", "success"] }, { text: "Rever plano", bold: true, color: "#2563eb" }],
-        ["CL02", "Energia", "51", "30", "90%", "3,37", "3/30", "Partilhado", "€4 561", { badge: ["80 Saudável", "success"] }, { text: "Monitorizar", bold: true, color: "#2563eb" }],
-        ["CL03", "Retalho", "44", "24", "86,7%", "3,83", "2/24", "Partilhado", "€5 148", { badge: ["84 Saudável", "success"] }, { text: "Manter", bold: true, color: "#2563eb" }],
-        ["CL04", "Retalho", "44", "22", "90,5%", "3,36", "1/22", "Exclusivo", "€4 515", { badge: ["79 Saudável", "success"] }, { text: "Manter", bold: true, color: "#2563eb" }],
-        ["CL05", "Tecnologia", "54", "27", "75%", "3,59", "4/27", "Exclusivo", "€3 981", { badge: ["66 Atenção", "warning"] }, { text: "Plano 30/60/90", bold: true, color: "#2563eb" }],
-        ["CL06", "Energia", "50", "30", "77,3%", "3,70", "6/30", "Contingência", "€4 789", { badge: ["61 Risco", "danger"] }, { text: "Rever contrato", bold: true, color: "#2563eb" }],
-        ["CL07", "Banca", "49", "25", "89,5%", "3,28", "2/25", "Partilhado", "€4 562", { badge: ["78 Saudável", "success"] }, { text: "Manter", bold: true, color: "#2563eb" }],
-        ["CL08", "Banca", "44", "28", "86,4%", "3,32", "2/28", "Partilhado", "€4 396", { badge: ["77 Saudável", "success"] }, { text: "Manter", bold: true, color: "#2563eb" }],
-        ["CL09", "Saúde", "46", "21", "62,5%", "3,19", "4/21", "Exclusivo", "€4 835", { badge: ["52 Risco", "danger"] }, { text: "Plano de retenção", bold: true, color: "#2563eb" }],
-        ["CL10", "Energia", "50", "28", "87%", "3,61", "4/28", "Contingência", "€4 474", { badge: ["74 Saudável", "success"] }, { text: "Monitorizar", bold: true, color: "#2563eb" }]
+        ["CL01", "Saúde", "48", "27", "90%", "3,30", "3,48", "4/27", "Partilhado", "€4 391", { badge: ["90% retenção", "success"] }, { text: "Rever plano", bold: true, color: "var(--color-fg-accent)" }],
+        ["CL02", "Energia", "51", "30", "90%", "3,57", "3,37", "3/30", "Partilhado", "€4 561", { badge: ["90% retenção", "success"] }, { text: "Monitorizar", bold: true, color: "var(--color-fg-accent)" }],
+        ["CL03", "Retalho", "44", "24", "86,7%", "3,88", "3,83", "2/24", "Partilhado", "€5 148", { badge: ["86,7% retenção", "success"] }, { text: "Manter", bold: true, color: "var(--color-fg-accent)" }],
+        ["CL04", "Retalho", "44", "22", "90,5%", "3,36", "3,36", "1/22", "Exclusivo", "€4 515", { badge: ["90,5% retenção", "success"] }, { text: "Manter", bold: true, color: "var(--color-fg-accent)" }],
+        ["CL05", "Tecnologia", "54", "27", "75%", "3,37", "3,59", "4/27", "Exclusivo", "€3 981", { badge: ["75% retenção", "warning"] }, { text: "Plano 30/60/90", bold: true, color: "var(--color-fg-accent)" }],
+        ["CL06", "Energia", "50", "30", "77,3%", "3,60", "3,70", "6/30", "Contingência", "€4 789", { badge: ["6 substituições", "danger"] }, { text: "Rever contrato", bold: true, color: "var(--color-fg-accent)" }],
+        ["CL07", "Banca", "49", "25", "89,5%", "3,32", "3,28", "2/25", "Partilhado", "€4 562", { badge: ["89,5% retenção", "success"] }, { text: "Manter", bold: true, color: "var(--color-fg-accent)" }],
+        ["CL08", "Banca", "44", "28", "86,4%", "3,39", "3,32", "2/28", "Partilhado", "€4 396", { badge: ["86,4% retenção", "success"] }, { text: "Manter", bold: true, color: "var(--color-fg-accent)" }],
+        ["CL09", "Saúde", "46", "21", "62,5%", "3,38", "3,19", "4/21", "Exclusivo", "€4 835", { badge: ["62,5% retenção", "danger"] }, { text: "Plano de retenção", bold: true, color: "var(--color-fg-accent)" }],
+        ["CL10", "Energia", "50", "28", "87%", "3,36", "3,61", "4/28", "Contingência", "€4 474", { badge: ["87% retenção", "success"] }, { text: "Monitorizar", bold: true, color: "var(--color-fg-accent)" }]
       ];
 
       const inner = `${sidebar("Clientes")}<div class="content">
-        ${topbar("Clientes", "Radar de retenção, substituições e satisfação")}
+        ${topbar("Clientes", "Retenção, desempenho e substituições · satisfação como contexto")}
         <div class="risk-row">
-          ${riskCard({ id: "CL09", sector: "Saúde · exclusivo · recente", risk: "Risco alto", tone: "danger", ret: "62,5%", sat: "3,19", subs: "4/21" })}
-          ${riskCard({ id: "CL06", sector: "Energia · contingência · longo", risk: "Risco alto", tone: "danger", ret: "77,3%", sat: "3,70", subs: "6/30" })}
-          ${riskCard({ id: "CL05", sector: "Tecnologia · exclusivo · recente", risk: "Risco médio", tone: "warning", ret: "75%", sat: "3,59", subs: "4/27" })}
+          ${riskCard({ id: "CL09", sector: "Saúde · exclusivo · recente", risk: "Risco alto", tone: "danger", ret: "62,5%", perf: "3,38", subs: "4/21" })}
+          ${riskCard({ id: "CL06", sector: "Energia · contingência · longo", risk: "Risco alto", tone: "danger", ret: "77,3%", perf: "3,60", subs: "6/30" })}
+          ${riskCard({ id: "CL05", sector: "Tecnologia · exclusivo · recente", risk: "Risco médio", tone: "warning", ret: "75%", perf: "3,37", subs: "4/27" })}
         </div>
         <div class="table-wrap" style="height:710px">
           <div class="table-head"><div class="card-title">Radar de clientes</div>${badge("10 clientes", "neutral")}</div>
-          ${table(cols, rows)}
-          <div class="clients-note"><span class="dot" style="background:#2563eb"></span><div><div class="small" style="font-weight:600">Satisfação declarada não é KPI suficiente</div><div class="tiny muted">Usar retenção a 90/180 dias, substituições e desempenho. 32 substituições ≈ €146 mil de custo direto.</div></div></div>
+          ${table(cols, rows, rows.map(() => "client"))}
+          <div class="clients-note"><span class="dot" style="background:var(--color-fg-accent)"></span><div><div class="small" style="font-weight:600">Sinais objetivos para avaliar a relação</div><div class="tiny muted">Portefólio: retenção 83,8% aos 90d e 65,5% aos 180d. Cruzar retenção, desempenho e substituições; satisfação fica como contexto. 32 substituições ≈ €146 mil de custo direto.</div></div></div>
         </div>
+        <section class="card client-plan" data-client-plan hidden aria-live="polite">
+          <div class="client-plan-head"><div><div class="card-title">Plano de acompanhamento · <span data-plan-client>CL09</span></div><div class="tiny muted">Roteiro 30/60/90 dias · progresso guardado neste browser</div></div><button type="button" class="btn btn-ghost" data-action="close-plan">Fechar</button></div>
+          <div class="plan-grid">
+            ${[
+              ["30", "Rever perfis e expectativas", "Confirmar alinhamento de função, banda e critérios de sucesso."],
+              ["60", "Rever retenção e substituições", "Comparar retenção, desempenho e causas de substituição."],
+              ["90", "Reavaliar plano com o cliente", "Acordar ações corretivas; usar satisfação apenas como contexto."]
+            ].map(([day, title, description]) => `<label class="plan-step"><input type="checkbox" data-plan-step="${day}"><span><b>Dia ${day} · ${title}</b><small>${description}</small></span></label>`).join("")}
+          </div>
+        </section>
       </div>`;
-      return frame("06 · Clientes", "Retenção e risco", inner);
+      return frame("Clientes", "Retenção, desempenho e substituições", inner, "", "clients");
     }
 
     /* ------------------------------ render ------------------------------- */
     document.getElementById("screens").innerHTML = [
-      cover(),
       tower(),
       pipeline(),
       detail(),
+      proposals(),
       salary(),
       quality(),
       clients()
     ].join("");
+
+    const app = document.getElementById("screens");
+    const pages = [...app.querySelectorAll("[data-screen]")];
+    const money = new Intl.NumberFormat("pt-PT", { style: "currency", currency: "EUR", maximumFractionDigits: 0 });
+    const getSaved = (key, fallback) => JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback));
+    const setSaved = (key, value) => localStorage.setItem(key, JSON.stringify(value));
+    const state = {
+      page: pages.some((page) => page.dataset.screen === location.hash.slice(1)) ? location.hash.slice(1) : "overview",
+      search: "",
+      globalFilter: "all",
+      filters: { proposal: "all", "proposal-status": "all", quality: "all", "quality-status": "all" },
+      stage: null,
+      pipelineFilter: "all",
+      selectedClient: "CL09",
+      planOpen: false,
+      plan: getSaved("talentflow-client-plan", {}),
+      proposalSent: false
+    };
+
+    function currentPage() {
+      return pages.find((page) => page.dataset.screen === state.page) || pages[0];
+    }
+
+    function navigate(page) {
+      if (!pages.some((item) => item.dataset.screen === page)) return;
+      state.page = page;
+      if (location.hash !== `#${page}`) history.pushState({ page }, "", `#${page}`);
+      renderRoute();
+    }
+
+    function renderRoute() {
+      pages.forEach((page) => {
+        const active = page === currentPage();
+        page.hidden = !active;
+        page.querySelectorAll("[data-page]").forEach((item) => {
+          const selected = item.dataset.page === state.page || (state.page === "salary" && item.dataset.page === "proposals");
+          item.classList.toggle("active", selected);
+          if (selected) item.setAttribute("aria-current", "page");
+          else item.removeAttribute("aria-current");
+        });
+      });
+      applyFilters();
+      if (state.page === "salary") updateSalary();
+      if (state.page === "detail") updateIdleTime();
+      if (state.page === "quality") updateQualitySummary();
+      if (state.page === "clients" && state.planOpen) openClientPlan(state.selectedClient, false);
+    }
+
+    function applyFilters() {
+      const page = currentPage();
+      const query = state.search.trim().toLocaleLowerCase("pt-PT");
+      page.querySelectorAll("tbody tr").forEach((row) => {
+        const kind = row.dataset.kind || "";
+        const terms = row.textContent.toLocaleLowerCase("pt-PT");
+        const matchesSearch = !query || terms.includes(query);
+        const matchesGlobal = state.globalFilter === "all" ||
+          (state.globalFilter === "attention" && /atras|acima|abaixo|bloque|incoer|sem resposta|p0|alerta|sla|\+\d+\s*d|risco alto|risco médio|62,5%|75%|77,3%|6\/30/i.test(terms)) ||
+          (state.globalFilter === "p0" && kind.split(" ").includes("p0"));
+        const filterGroup = state.page === "proposals" ? "proposal" : state.page === "quality" ? "quality" : "";
+        const selectedFilter = filterGroup ? state.filters[filterGroup] : "all";
+        const matchesPage = selectedFilter === "all" || kind.split(" ").includes(selectedFilter);
+        const matchesQualityStatus = state.page !== "quality" || state.filters["quality-status"] === "all" ||
+          kind.split(" ").includes(state.filters["quality-status"]);
+        const matchesProposalStatus = state.page !== "proposals" || state.filters["proposal-status"] === "all" ||
+          row.dataset.status === state.filters["proposal-status"];
+        row.hidden = !(matchesSearch && matchesGlobal && matchesPage && matchesQualityStatus && matchesProposalStatus);
+      });
+      page.querySelectorAll(".stage-step").forEach((stage) => {
+        const terms = stage.textContent.toLocaleLowerCase("pt-PT");
+        stage.hidden = Boolean(query && !terms.includes(query));
+      });
+      page.querySelectorAll(".stage-sample").forEach((sample) => {
+        const selectedStage = state.stage === null || Number(sample.dataset.stageSample) === state.stage;
+        const matchesSearch = !query || sample.textContent.toLocaleLowerCase("pt-PT").includes(query);
+        const matchesGlobal = state.globalFilter === "all" ||
+          (state.globalFilter === "p0" && sample.dataset.kind === "p0") ||
+          (state.globalFilter === "attention" && sample.dataset.sla === "yes");
+        const matchesPipeline = state.page !== "pipeline" || state.pipelineFilter === "all" ||
+          (state.pipelineFilter === "sla" ? sample.dataset.sla === "yes" : sample.dataset[state.pipelineFilter === "CL09" ? "client" : "recruiter"] === state.pipelineFilter);
+        sample.hidden = !(selectedStage && matchesSearch && matchesGlobal && matchesPipeline);
+      });
+      page.querySelectorAll(".risk-card[data-client]").forEach((card) => {
+        const terms = card.textContent.toLocaleLowerCase("pt-PT");
+        const matchesSearch = !query || terms.includes(query);
+        const matchesGlobal = state.globalFilter === "all" || (state.globalFilter === "attention" && /risco alto|risco médio/i.test(terms));
+        card.hidden = !(matchesSearch && matchesGlobal);
+      });
+      const visibleRows = page.querySelectorAll("tbody tr:not([hidden])").length;
+      page.querySelectorAll("[data-empty-state]").forEach((empty) => { empty.hidden = visibleRows > 0; });
+      page.querySelectorAll("[data-filter-group]").forEach((button) => {
+        const group = button.dataset.filterGroup;
+        const selectedValue = group === "pipeline" ? state.pipelineFilter : state.filters[group] || "all";
+        const selected = selectedValue === button.dataset.filterValue;
+        button.classList.toggle("active", selected);
+        button.setAttribute("aria-pressed", String(selected));
+      });
+    }
+
+    function formatDaysFrom(dateString) {
+      const start = new Date(`${dateString}T00:00:00`);
+      return Math.max(0, Math.floor((Date.now() - start.getTime()) / 86400000));
+    }
+
+    function updateIdleTime() {
+      const idleDays = formatDaysFrom("2026-11-12");
+      currentPage().querySelectorAll("[data-idle-days]").forEach((node) => {
+        node.textContent = `${idleDays} ${idleDays === 1 ? "dia" : "dias"}`;
+      });
+      currentPage().querySelectorAll("[data-sla-overdue]").forEach((node) => {
+        const overdue = Math.max(0, idleDays - 2);
+        node.textContent = overdue ? `${overdue} ${overdue === 1 ? "dia" : "dias"} de atraso` : "dentro do SLA";
+      });
+    }
+
+    function updateQualitySummary() {
+      const openP0 = DATA_ISSUES.filter((issue) => issue.priority === "P0" && issueStatus(issue.id) !== "Resolvido (demo)").length;
+      const tone = openP0 ? "danger" : "success";
+      const label = openP0 ? `${openP0} P0 por tratar` : "P0 resolvidos na demo";
+      const badgeHost = currentPage().querySelector("[data-open-p0]");
+      if (badgeHost) badgeHost.innerHTML = badge(label, tone);
+      const reportBlock = currentPage().querySelector("[data-report-block]");
+      if (reportBlock) reportBlock.textContent = openP0
+        ? "Relatórios oficiais bloqueados: existem anomalias P0 por tratar."
+        : "P0 marcados como resolvidos na demo; a fonte continua por validar.";
+    }
+
+    function salaryValues() {
+      return Object.fromEntries([...currentPage().querySelectorAll("[data-salary-field]")].map((input) => [input.dataset.salaryField, Number(input.value)]));
+    }
+
+    function updateSalary() {
+      const page = currentPage();
+      const values = salaryValues();
+      const validNumbers = Object.values(values).every(Number.isFinite) && Object.values(values).every((value) => value > 0);
+      const bandValid = validNumbers && values.minimum < values.maximum;
+      const violations = [];
+      if (!validNumbers) violations.push("Preencha todos os valores salariais com números positivos.");
+      else if (!bandValid) violations.push("O mínimo da banda tem de ser inferior ou igual ao máximo.");
+      else {
+        if (values.offer < values.minimum) violations.push(`A oferta está ${money.format(values.minimum - values.offer)} abaixo do mínimo.`);
+        if (values.offer > values.maximum) violations.push(`A oferta está ${money.format(values.offer - values.maximum)} acima do máximo.`);
+        if (values.expectation > values.maximum) violations.push(`A expectativa excede o máximo em ${money.format(values.expectation - values.maximum)}.`);
+        if (values.offer < values.expectation * 0.95) violations.push("A oferta fica mais de 5% abaixo da expectativa.");
+      }
+      const justification = page.querySelector("[data-exception-reason]").value.trim();
+      const approved = page.querySelector("[data-exception-approved]").checked;
+      const hasException = violations.length > 0;
+      const exceptionAuthorized = justification.length >= 20 && approved;
+      const canSend = validNumbers && bandValid && (!hasException || exceptionAuthorized);
+      const send = page.querySelector('[data-action="send-proposal"]');
+      send.disabled = !canSend;
+      page.querySelector("[data-salary-status]").innerHTML = badge(canSend ? (hasException ? "Exceção aprovada" : "Pronta para envio") : hasException ? "Fora das regras" : "A validar", canSend ? "success" : hasException ? "danger" : "warning");
+      page.querySelector("[data-decision-copy]").textContent = canSend ? (hasException ? "Exceção justificada e aprovada. O envio está disponível nesta demonstração." : "A proposta cumpre as regras e está pronta para envio nesta demonstração.") : hasException ? "Envio bloqueado: corrija os valores ou justifique e registe a aprovação." : "Corrija os valores para validar a proposta.";
+      page.querySelector("[data-salary-feedback]").textContent = state.proposalSent ? "Proposta marcada como enviada nesta demonstração; não foi transmitida a nenhum sistema." : "";
+      page.querySelector("[data-salary-alerts]").innerHTML = violations.length
+        ? violations.map((message) => alertLine(message, "Revise os valores ou documente e aprove a exceção.", "danger")).join("")
+        : alertLine("Sem alertas salariais", "Oferta e expectativa dentro das regras configuradas.", "success");
+      page.querySelector("[data-salary-rules]").innerHTML = [
+        ["Oferta dentro da banda", bandValid && values.offer >= values.minimum && values.offer <= values.maximum, "pass"],
+        ["Expectativa dentro do máximo", bandValid && values.expectation <= values.maximum, "pass"],
+        ["Oferta ≥ expectativa − 5%", bandValid && values.offer >= values.expectation * 0.95, "pass"],
+        ["Exceção justificada e aprovada", hasException ? exceptionAuthorized : null, "exception"]
+      ].map(([label, passed, rule]) => {
+        const status = rule === "exception" && !hasException ? "Não necessária" : passed ? "Passou" : "Falhou";
+        const tone = rule === "exception" && !hasException ? "neutral" : passed ? "success" : "danger";
+        return `<div class="rule-row"><div class="rule-left"><b>${label}</b></div>${badge(status, tone)}</div>`;
+      }).join("");
+      page.querySelector("[data-salary-position]").textContent = bandValid ? `${Math.round((values.offer / values.maximum) * 100)}%` : "—";
+      page.querySelector("[data-salary-delta]").textContent = bandValid ? `${values.offer > values.maximum ? "+ " : values.offer < values.maximum ? "− " : ""}${money.format(Math.abs(values.offer - values.maximum))}` : "—";
+      page.querySelector("[data-salary-expectation-delta]").textContent = validNumbers ? `${values.offer >= values.expectation ? "+ " : "− "}${money.format(Math.abs(values.offer - values.expectation))}` : "—";
+      page.querySelector("[data-band-min-label]").textContent = `Mín. ${money.format(values.minimum || 0)}`;
+      page.querySelector("[data-band-max-label]").textContent = `Máx. ${money.format(values.maximum || 0)}`;
+      page.querySelector("[data-band-offer-legend]").textContent = `Oferta ${money.format(values.offer || 0)}`;
+      page.querySelector("[data-band-expectation-legend]").textContent = `Expectativa ${money.format(values.expectation || 0)}`;
+      const domainMin = Math.max(0, values.minimum * 0.9);
+      const domainMax = values.maximum * 1.1;
+      const domainSize = domainMax - domainMin || 1;
+      const band = page.querySelector(".band-range");
+      band.style.left = `${((values.minimum - domainMin) / domainSize) * 100}%`;
+      band.style.width = `${((values.maximum - values.minimum) / domainSize) * 100}%`;
+      page.querySelector('[data-band-marker="offer"]').style.left = `${Math.max(0, Math.min(98, ((values.offer - domainMin) / domainSize) * 100))}%`;
+      page.querySelector('[data-band-marker="expectation"]').style.left = `${Math.max(0, Math.min(98, ((values.expectation - domainMin) / domainSize) * 100))}%`;
+      page.querySelectorAll("[data-salary-field]").forEach((input) => input.classList.toggle("alert", !bandValid || violations.length > 0));
+    }
+
+    function openClientPlan(clientId, focus = true) {
+      const page = pages.find((item) => item.dataset.screen === "clients");
+      if (!page) return;
+      state.selectedClient = clientId;
+      page.querySelector("[data-plan-client]").textContent = clientId;
+      const panel = page.querySelector("[data-client-plan]");
+      state.planOpen = true;
+      panel.hidden = false;
+      const plan = state.plan[clientId] || [];
+      panel.querySelectorAll("[data-plan-step]").forEach((checkbox) => {
+        checkbox.checked = plan.includes(checkbox.dataset.planStep);
+      });
+      if (focus) panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+
+    function saveClientPlan() {
+      const page = currentPage();
+      state.plan[state.selectedClient] = [...page.querySelectorAll("[data-plan-step]:checked")].map((checkbox) => checkbox.dataset.planStep);
+      setSaved("talentflow-client-plan", state.plan);
+    }
+
+    function cycleIssue(row) {
+      const issueId = DATA_ISSUES[Number(row.dataset.issueIndex)]?.id;
+      if (!issueId) return;
+      const states = ["Por tratar", "Em correção", "Resolvido (demo)"];
+      saveIssueStatus(issueId, states[(states.indexOf(issueStatus(issueId)) + 1) % states.length]);
+      const issue = DATA_ISSUES.find((item) => item.id === issueId);
+      const next = issueStatus(issueId);
+      row.cells[1].innerHTML = badge(next, next === "Resolvido (demo)" ? "success" : next === "Em correção" ? "warning" : "neutral");
+      row.cells[row.cells.length - 1].querySelector(".cell-main").textContent = next === "Resolvido (demo)" ? "Reabrir na demonstração" : issue.action;
+      row.dataset.kind = `quality ${issue.priority.toLowerCase()} ${next === "Resolvido (demo)" ? "resolved" : "open"}`;
+      updateQualitySummary();
+      applyFilters();
+    }
+
+    app.addEventListener("click", (event) => {
+      const target = event.target.closest("button, [data-kind]");
+      if (!target) return;
+      if (target.dataset.page) {
+        navigate(target.dataset.page);
+        return;
+      }
+      if (target.dataset.filterGroup) {
+        if (target.dataset.filterGroup === "pipeline") state.pipelineFilter = target.dataset.filterValue;
+        else state.filters[target.dataset.filterGroup] = target.dataset.filterValue;
+        applyFilters();
+        return;
+      }
+      if (target.matches(".stage-sample")) { navigate("detail"); return; }
+      if (target.dataset.stage !== undefined) {
+        state.stage = Number(target.dataset.stage);
+        currentPage().querySelectorAll(".stage-step").forEach((button) => {
+          const selected = button === target;
+          button.classList.toggle("selected", selected);
+          button.setAttribute("aria-pressed", String(selected));
+        });
+        applyFilters();
+        return;
+      }
+      if (target.dataset.client) {
+        openClientPlan(target.dataset.client);
+        return;
+      }
+      if (target.dataset.action === "open-proposals") { state.filters.proposal = "all"; navigate("proposals"); return; }
+      if (target.dataset.action === "open-quality") { state.filters.quality = "p0"; state.globalFilter = "all"; navigate("quality"); return; }
+      if (target.dataset.action === "open-salary") { state.proposalSent = false; navigate("salary"); return; }
+      if (target.dataset.action === "close-plan") { state.planOpen = false; currentPage().querySelector("[data-client-plan]").hidden = true; return; }
+      if (target.dataset.action === "focus-reason") { currentPage().querySelector("[data-exception-reason]").focus(); return; }
+      if (target.dataset.action === "contact") { target.textContent = "Pedido de contacto preparado (demo)"; target.disabled = true; return; }
+      if (target.dataset.action === "intervene") { target.textContent = "Intervenção registada (demo)"; target.disabled = true; return; }
+      if (target.dataset.action === "send-proposal") { state.proposalSent = true; updateSalary(); return; }
+      if (target.dataset.screen || target.closest(".frame[data-screen=quality]")) {
+        const row = target.closest("tr[data-kind]");
+        if (row && row.closest(".quality-table-wrap")) {
+          cycleIssue(row);
+          return;
+        }
+      }
+      const row = target.closest("tr[data-kind]");
+      if (row?.closest(".tower-main") && row.dataset.navigable === "true") { navigate("detail"); return; }
+      if (row?.closest(".proposal-table") && row.dataset.navigable === "true") { state.proposalSent = false; navigate("salary"); return; }
+      if (row?.closest(".clients .table-wrap") || row?.dataset.kind === "client") {
+        const clientId = row.cells[0].textContent.trim();
+        openClientPlan(clientId);
+      }
+    });
+
+    app.addEventListener("keydown", (event) => {
+      if ((event.key === "Enter" || event.key === " ") && event.target.matches('tr[data-kind][data-navigable="true"]')) {
+        event.preventDefault();
+        event.target.click();
+      }
+      if (event.key === "Escape" && state.page === "clients") {
+        state.planOpen = false;
+        currentPage().querySelector("[data-client-plan]").hidden = true;
+      }
+    });
+
+    app.addEventListener("input", (event) => {
+      if (event.target.matches("[data-global-search]")) {
+        state.search = event.target.value;
+        app.querySelectorAll("[data-global-search]").forEach((input) => { if (input !== event.target) input.value = state.search; });
+        applyFilters();
+      }
+      if (event.target.matches("[data-salary-field], [data-exception-reason]")) {
+        state.proposalSent = false;
+        updateSalary();
+      }
+    });
+    app.addEventListener("change", (event) => {
+      if (event.target.matches("[data-global-filter]")) {
+        state.globalFilter = event.target.value;
+        app.querySelectorAll("[data-global-filter]").forEach((select) => { select.value = state.globalFilter; });
+        applyFilters();
+      }
+      if (event.target.matches("[data-salary-field], [data-exception-approved]")) {
+        state.proposalSent = false;
+        updateSalary();
+      }
+      if (event.target.matches("[data-plan-step]")) saveClientPlan();
+    });
+    window.addEventListener("popstate", () => {
+      state.page = location.hash.slice(1) || "overview";
+      renderRoute();
+    });
+
+    document.querySelectorAll("[data-screen=quality] tbody tr").forEach((row, index) => { row.dataset.issueIndex = String(index); });
+    document.querySelectorAll("[data-screen=pipeline] .stage-sample").forEach((sample, index) => { sample.dataset.stageSample = String(index); });
+    renderRoute();
   </script>
 </body>
 </html>
