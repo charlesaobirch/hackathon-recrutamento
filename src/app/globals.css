@@ -4,6 +4,7 @@
   color-scheme: light;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
+  --color-bg-canvas: #f7f7f7;
 }
 * {
   box-sizing: border-box;
@@ -1811,6 +1812,7 @@ summary:focus-visible {
   font-size: 14px;
   line-height: 1.254;
   font-weight: 650;
+  overflow-wrap: anywhere;
   text-align: center;
 }
 .journey-stage > strong {
@@ -3494,7 +3496,18 @@ details:not([open]) > .exploration-popover {
   --color-accent-hover: var(--ov-green-deep);
   --color-accent-soft: var(--ov-green-soft);
   --color-fg-accent: var(--ov-green-deep);
+  --button-bg-primary: var(--ov-green);
+  --button-bg-primary-hover: var(--ov-green-deep);
+  --button-bg-ghost: #ffffff;
+  --button-border-ghost: var(--ov-line);
+  --button-fg-ghost: var(--ov-ink);
   --button-fg-primary: #ffffff;
+  --badge-fg-neutral: var(--ov-muted);
+  --badge-bg-neutral: #f0f2f0;
+  --table-border: var(--ov-line);
+  --table-header-bg: #f7f8f7;
+  --table-header-fg: var(--ov-muted);
+  --table-row-hover: #f7f8f7;
   --primitive-lime-100: var(--ov-green-soft);
   --primitive-lime-400: var(--ov-green);
   --primitive-lime-500: var(--ov-green-deep);
@@ -3554,6 +3567,10 @@ details:not([open]) > .exploration-popover {
 .app-shell .summary-metric .delta.warning {
   color: var(--ov-orange-ink);
   background: var(--ov-orange-soft);
+}
+
+.app-shell .delta.warning {
+  color: var(--ov-orange-ink);
 }
 
 /* A janela temporal usa o verde profundo como estado selecionado. */
