@@ -1087,6 +1087,157 @@ summary:focus-visible {
   border-color: var(--color-danger);
   color: var(--color-danger);
 }
+/* “Entrevistas registadas”: paleta charcoal / branco / creme / laranja da referência */
+.panel.estate-table-panel {
+  --estate-charcoal: #4c4c4c;
+  --estate-charcoal-deep: #393939;
+  --estate-cream: #fee6ce;
+  --estate-cream-strong: #fdd9b7;
+  --estate-orange: #ee7d03;
+  --estate-orange-bright: #f7b267;
+  --estate-orange-ink: #9a4f00;
+  --estate-line: #e8e8e8;
+  display: flex;
+  flex-direction: column;
+  min-height: 760px;
+  padding: 0;
+  overflow: hidden;
+  border-color: var(--estate-charcoal);
+  background: var(--estate-charcoal);
+}
+.estate-table-panel .panel-heading {
+  flex: 0 0 auto;
+  margin-bottom: 0;
+  padding: 14px 16px 12px;
+}
+.estate-table-panel .panel-heading h2,
+.estate-table-panel .panel-heading > span {
+  color: #fff;
+}
+.estate-table-panel .text-link {
+  color: var(--estate-orange-bright);
+}
+.estate-table-panel .text-link:hover {
+  color: #fff;
+}
+.estate-table-panel ::selection {
+  background: var(--estate-orange);
+  color: var(--estate-charcoal-deep);
+}
+.estate-table-panel .dataset-explorer {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: 0;
+  border-radius: 0;
+  background: #fff;
+  color: var(--estate-charcoal-deep);
+}
+.estate-table-panel .dataset-toolbar {
+  flex: 0 0 auto;
+  align-items: flex-end;
+  gap: 8px;
+  margin-bottom: 0;
+  padding: 10px 12px;
+  border-radius: 0;
+  background: var(--estate-charcoal-deep);
+}
+.estate-table-panel .dataset-picker,
+.estate-table-panel .page-size-picker {
+  color: #fff;
+  font-size: 13px;
+}
+.estate-table-panel .dataset-picker select,
+.estate-table-panel .page-size-picker select {
+  border-color: transparent;
+  background: #fff;
+}
+.estate-table-panel .dataset-search {
+  background: #fff;
+}
+.estate-table-panel input {
+  caret-color: var(--estate-orange-ink);
+}
+.estate-table-panel .dataset-status {
+  flex: 0 0 auto;
+  margin: 8px 12px;
+  color: var(--estate-charcoal-deep);
+  font-size: 14px;
+}
+.estate-table-panel .dataset-error-box {
+  margin: 0 12px;
+}
+.estate-table-panel .dataset-status b {
+  color: var(--estate-charcoal-deep);
+}
+.estate-table-panel .loading-label {
+  color: var(--estate-orange-ink);
+  font-weight: 700;
+}
+.estate-table-panel .dataset-table-scroll {
+  flex: 1 1 0;
+  min-height: 0;
+  max-height: none;
+  border: 0;
+  border-radius: 0;
+  scrollbar-color: var(--estate-orange) transparent;
+}
+.estate-table-panel .dataset-table th:first-child,
+.estate-table-panel .dataset-table th:last-child {
+  border-radius: 0;
+}
+.estate-table-panel .dataset-table {
+  height: 100%;
+  font-size: 14px;
+}
+.estate-table-panel .dataset-table th {
+  border-bottom: 0;
+  background: var(--estate-charcoal-deep);
+  color: #fff;
+  letter-spacing: 0.045em;
+}
+.estate-table-panel .dataset-table td {
+  border-bottom-color: var(--estate-line);
+  font-variant-numeric: tabular-nums;
+}
+.estate-table-panel .dataset-table tbody tr:nth-child(even) {
+  background: var(--estate-cream);
+}
+.estate-table-panel .dataset-table tbody tr:hover {
+  background: var(--estate-cream-strong);
+}
+.estate-table-panel .dataset-record-link {
+  color: var(--estate-orange-ink);
+}
+.estate-table-panel .dataset-pagination {
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 9px 12px 11px;
+  color: var(--estate-charcoal-deep);
+}
+.estate-table-panel .dataset-pagination .button-secondary {
+  border-color: var(--estate-orange);
+  color: var(--estate-charcoal-deep);
+  background: #fff;
+}
+.estate-table-panel .dataset-pagination .button-secondary:hover:not(:disabled) {
+  background: var(--estate-orange);
+  color: var(--estate-charcoal-deep);
+}
+.estate-table-panel .dataset-pagination .button-secondary:disabled {
+  border-color: var(--estate-line);
+  color: #8a8a8a;
+  background: #f7f7f7;
+}
+.estate-table-panel :is(a, button, input, select):focus-visible {
+  outline: 2px solid var(--estate-orange-ink);
+  outline-offset: 2px;
+}
+.estate-table-panel .panel-heading a:focus-visible,
+.estate-table-panel .dataset-toolbar :is(input, select):focus-visible {
+  outline-color: var(--estate-orange-bright);
+}
 .related-field-grid,
 .related-record-grid {
   display: grid;
@@ -1277,7 +1428,7 @@ summary:focus-visible {
 }
 .time-chart {
   display: grid;
-  gap: 12px;
+  gap: 10px;
 }
 .time-chart-toolbar {
   display: flex;
@@ -1288,7 +1439,8 @@ summary:focus-visible {
 }
 .time-chart-caption {
   color: var(--color-fg-secondary);
-  font-size: 13px;
+  font-size: var(--time-meta-size);
+  line-height: 1.35;
 }
 .time-view-toggle {
   display: inline-flex;
@@ -1299,13 +1451,13 @@ summary:focus-visible {
   background: var(--primitive-warm-100);
 }
 .time-view-toggle button {
-  min-height: 26px;
+  min-height: 30px;
   padding: 0 11px;
   border: 0;
   border-radius: 999px;
   background: transparent;
   color: var(--color-fg-secondary);
-  font-size: 13px;
+  font-size: var(--time-meta-size);
   font-weight: 650;
   cursor: pointer;
   transition:
@@ -1326,9 +1478,9 @@ summary:focus-visible {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 5px;
+  gap: 4px;
   width: 100%;
-  padding: 10px 8px 9px;
+  padding: 8px 8px 7px;
   border: 1px solid var(--color-border);
   border-radius: 14px;
   background: var(--color-bg-canvas);
@@ -1395,25 +1547,27 @@ summary:focus-visible {
   justify-items: center;
 }
 .time-donut-center b {
-  font-size: 22px;
+  font-size: var(--time-number-size);
   font-weight: 750;
   line-height: 1;
   font-variant-numeric: tabular-nums;
 }
 .time-donut-center small {
   color: var(--color-fg-secondary);
-  font-size: 12px;
+  font-size: var(--time-unit-size);
+  line-height: 1.2;
 }
 .time-donut-share {
   color: var(--color-fg-primary);
-  font-size: 13px;
+  font-size: var(--time-meta-size);
   font-weight: 700;
+  line-height: 1.3;
   font-variant-numeric: tabular-nums;
 }
 .time-donut-label {
   color: var(--color-fg-secondary);
-  font-size: 13px;
-  line-height: 1.25;
+  font-size: var(--time-meta-size);
+  line-height: 1.3;
 }
 .time-donut-card.time-critical .time-donut-arc {
   stroke: #ff9d9f;
@@ -1428,17 +1582,25 @@ summary:focus-visible {
   background: var(--color-danger-soft);
 }
 .time-detail {
-  min-height: 40px;
+  min-height: 44px;
   margin: 0;
-  padding: 9px 11px;
+  padding: 8px 11px;
   border: 1px solid var(--color-border);
   border-radius: 10px;
   background: var(--color-accent-soft);
   color: var(--color-fg-primary);
-  font-size: 13px;
-  line-height: 1.385;
+  font-size: var(--time-meta-size);
+  line-height: 1.4;
+}
+.time-panel .source-note {
+  margin-top: 8px;
+  font-size: var(--time-meta-size);
+  line-height: 1.4;
 }
 .pipeline-lower > .time-panel {
+  --time-number-size: 30px;
+  --time-unit-size: var(--primitive-text-2xs);
+  --time-meta-size: var(--primitive-text-xs);
   display: flex;
   flex-direction: column;
 }
