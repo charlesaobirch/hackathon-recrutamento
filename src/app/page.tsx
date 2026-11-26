@@ -74,7 +74,6 @@ function SummaryMetric({
   glyph,
   delta,
   tone,
-  highlight = false,
 }: {
   label: string;
   value: string;
@@ -82,10 +81,9 @@ function SummaryMetric({
   glyph: SummaryGlyph;
   delta?: string;
   tone?: "positive" | "warning";
-  highlight?: boolean;
 }) {
   return (
-    <article className={`summary-metric${highlight ? " is-highlight" : ""}`}>
+    <article className="summary-metric">
       <div className="summary-metric-head">
         <span className="summary-metric-label">{label}</span>
         <span className="summary-metric-icon" aria-hidden="true">
@@ -105,7 +103,9 @@ function SummaryMetric({
       </div>
       <div className="summary-metric-value">
         <strong>{value}</strong>
-        {delta ? <span className={`delta ${tone ?? "neutral"}`}>{delta}</span> : null}
+        {delta ? (
+          <span className={`delta ${tone ?? "neutral"}`}>{delta}</span>
+        ) : null}
       </div>
       <span className="summary-metric-note">{note}</span>
     </article>
@@ -139,7 +139,7 @@ async function OverviewContent({
       : null;
 
   return (
-    <div className="page-content">
+    <div className="page-content overview-page">
       <PageHeader
         title="Visão geral"
         subtitle={
@@ -177,9 +177,7 @@ async function OverviewContent({
       <Panel
         title="Resumo do período"
         meta={
-          <span className="muted">
-            {applicationPeriodDescription(period)}
-          </span>
+          <span className="muted">{applicationPeriodDescription(period)}</span>
         }
         className="summary-panel"
       >
@@ -201,7 +199,6 @@ async function OverviewContent({
             value={overview.waiting.toLocaleString("pt-PT")}
             note="Entrevista aprovada, oferta por emitir"
             glyph="clock"
-            highlight
           />
           <SummaryMetric
             label="Propostas emitidas"
@@ -226,136 +223,138 @@ async function OverviewContent({
         </div>
       </Panel>
 
-      <div className="overview-pairs">
-        <Panel
-          title="Precisa de atenção"
-          meta={
-            <Badge tone={alertCount ? "danger" : "positive"}>
-              {alertCount === 0
-                ? "Sem bloqueios"
-                : alertCount === 1
-                  ? "1 regra a rever"
-                  : `${alertCount} regras a rever`}
-            </Badge>
-          }
-          className="alerts-panel"
-        >
-          <ul className="alert-list">
-            <li>
-              <span className="alert-mark danger" />
-              <span>
-                <b>
-                  {overview.alerts.invalidVacancyApplications.toLocaleString(
-                    "pt-PT",
-                  )}{" "}
-                  candidaturas sem vaga válida
-                </b>
-                <small>Bloqueia o reporting oficial</small>
+      <div className="overview-columns">
+        <div className="overview-column overview-column--left">
+          <Panel
+            title="Precisa de atenção"
+            meta={
+              <Badge tone={alertCount ? "danger" : "positive"}>
+                {alertCount === 0
+                  ? "Sem bloqueios"
+                  : alertCount === 1
+                    ? "1 regra a rever"
+                    : `${alertCount} regras a rever`}
+              </Badge>
+            }
+            className="alerts-panel"
+          >
+            <ul className="alert-list">
+              <li>
+                <span className="alert-mark danger" />
+                <span>
+                  <b>
+                    {overview.alerts.invalidVacancyApplications.toLocaleString(
+                      "pt-PT",
+                    )}{" "}
+                    candidaturas sem vaga válida
+                  </b>
+                  <small>Bloqueia o reporting oficial</small>
+                </span>
+              </li>
+              <li>
+                <span className="alert-mark warning" />
+                <span>
+                  <b>
+                    {overview.alerts.salaryBelow.toLocaleString("pt-PT")}{" "}
+                    propostas abaixo do mínimo
+                  </b>
+                  <small>
+                    {percentage(overview.alerts.salaryBelowRate)} das ofertas
+                    com banda definida
+                  </small>
+                </span>
+              </li>
+            </ul>
+            <div className="alert-actions">
+              <Link className="inline-action" href="/qualidade">
+                Corrigir na qualidade <span>↗</span>
+              </Link>
+              <Link className="inline-action" href="/propostas">
+                Rever propostas <span>↗</span>
+              </Link>
+            </div>
+          </Panel>
+
+          <Panel
+            title="Contratações únicas"
+            meta={<Badge tone="danger">4,4% de conversão</Badge>}
+            className="chart-panel chart-panel--hires"
+          >
+            <HiringConversionChart />
+          </Panel>
+        </div>
+
+        <div className="overview-column overview-column--right">
+          <Panel
+            title="Entradas e propostas"
+            meta={
+              <span className="muted">
+                {applicationPeriodDescription(period)}
               </span>
-            </li>
-            <li>
-              <span className="alert-mark warning" />
-              <span>
-                <b>
-                  {overview.alerts.salaryBelow.toLocaleString("pt-PT")}{" "}
-                  propostas abaixo do mínimo
-                </b>
-                <small>
-                  {percentage(overview.alerts.salaryBelowRate)} das ofertas com
-                  banda definida
-                </small>
-              </span>
-            </li>
-          </ul>
-          <div className="alert-actions">
-            <Link className="inline-action" href="/qualidade">
-              Corrigir na qualidade <span>↗</span>
+            }
+            className="activity-panel"
+          >
+            <ActivityChart
+              months={overview.activity.buckets}
+              granularity={overview.activity.granularity}
+            />
+          </Panel>
+
+          <Panel
+            title="Ciclo de recrutamento"
+            meta={
+              <Badge tone="danger">
+                {waitingShare === null
+                  ? "Sem amostra"
+                  : `${percentage(waitingShare)} em espera`}
+              </Badge>
+            }
+            className="cycle-panel"
+          >
+            <div className="cycle-summary">
+              <div className="cycle-total">
+                <span>Ciclo total · mediana</span>
+                <strong>
+                  {overview.cycle.total === null
+                    ? "—"
+                    : Math.round(overview.cycle.total)}{" "}
+                  <small>dias</small>
+                </strong>
+              </div>
+              <div className="cycle-wait-highlight">
+                <b>{dayLabel(overview.cycle.waitingForOffer)}</b>
+                <span>entre a última entrevista e a proposta</span>
+              </div>
+            </div>
+            <div className="cycle-strip" aria-hidden="true">
+              <span className="cycle-first" />
+              <span className="cycle-interviews" />
+              <span className="cycle-wait" />
+              <span className="cycle-close" />
+            </div>
+            <div className="cycle-steps">
+              <div>
+                <b>3 dias</b>
+                <span>1.ª entrevista</span>
+              </div>
+              <div>
+                <b>6 dias</b>
+                <span>Entrevistas</span>
+              </div>
+              <div>
+                <b>{dayLabel(overview.cycle.waitingForOffer)}</b>
+                <span>Espera até proposta</span>
+              </div>
+              <div>
+                <b>{dayLabel(overview.cycle.proposalToHire)}</b>
+                <span>Proposta → contratação</span>
+              </div>
+            </div>
+            <Link href="/pipeline" className="inline-action">
+              Ver etapas e conversões <span>↗</span>
             </Link>
-            <Link className="inline-action" href="/propostas">
-              Rever propostas <span>↗</span>
-            </Link>
-          </div>
-        </Panel>
-
-        <Panel
-          title="Entradas e propostas"
-          meta={
-            <span className="muted">
-              {applicationPeriodDescription(period)}
-            </span>
-          }
-          className="activity-panel"
-        >
-          <ActivityChart
-            months={overview.activity.buckets}
-            granularity={overview.activity.granularity}
-          />
-        </Panel>
-      </div>
-
-      <div className="overview-pairs">
-        <Panel
-          title="Contratações únicas"
-          meta={<Badge tone="positive">4,4% de conversão</Badge>}
-          className="chart-panel chart-panel--hires"
-        >
-          <HiringConversionChart />
-        </Panel>
-
-        <Panel
-          title="Ciclo de recrutamento"
-          meta={
-            <Badge tone="danger">
-              {waitingShare === null
-                ? "Sem amostra"
-                : `${percentage(waitingShare)} em espera`}
-            </Badge>
-          }
-          className="cycle-panel"
-        >
-          <div className="cycle-summary">
-            <div className="cycle-total">
-              <span>Ciclo total · mediana</span>
-              <strong>
-                {overview.cycle.total === null
-                  ? "—"
-                  : Math.round(overview.cycle.total)}{" "}
-                <small>dias</small>
-              </strong>
-            </div>
-            <div className="cycle-wait-highlight">
-              <b>{dayLabel(overview.cycle.waitingForOffer)}</b>
-              <span>entre a última entrevista e a proposta</span>
-            </div>
-          </div>
-          <div className="cycle-strip" aria-hidden="true">
-            <span className="cycle-first" />
-            <span className="cycle-interviews" />
-            <span className="cycle-wait" />
-            <span className="cycle-close" />
-          </div>
-          <div className="cycle-steps">
-            <div>
-              <b>3 dias</b>
-              <span>1.ª entrevista</span>
-            </div>
-            <div>
-              <b>6 dias</b>
-              <span>Entrevistas</span>
-            </div>
-            <div>
-              <b>{dayLabel(overview.cycle.waitingForOffer)}</b>
-              <span>Espera até proposta</span>
-            </div>
-            <div>
-              <b>{dayLabel(overview.cycle.proposalToHire)}</b>
-              <span>Proposta → contratação</span>
-            </div>
-          </div>
-          <Link href="/pipeline" className="inline-action">
-            Ver etapas e conversões <span>↗</span>
-          </Link>
-        </Panel>
+          </Panel>
+        </div>
       </div>
 
       <Panel

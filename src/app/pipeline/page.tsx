@@ -70,7 +70,6 @@ export default function PipelinePage() {
         </Panel>
         <Panel
           title="Entrevistas registadas"
-          className="estate-table-panel"
           meta={
             <Link className="text-link" href="/dados">
               Abrir as 11 tabelas ↗

@@ -4,7 +4,7 @@ const chart = {
   left: 52,
   right: 708,
   top: 18,
-  bottom: 178,
+  bottom: 274,
 };
 
 const numberFormat = new Intl.NumberFormat("pt-PT", {
@@ -50,7 +50,7 @@ export function ActivityChart({
           <div className="activity-chart-scroll">
             <svg
               className="activity-svg"
-              viewBox="0 0 720 224"
+              viewBox="0 0 720 320"
               role="img"
               aria-labelledby="activity-chart-title activity-chart-description"
             >
@@ -96,7 +96,7 @@ export function ActivityChart({
                     <text
                       className="activity-month-label"
                       x={center}
-                      y="207"
+                      y="303"
                       textAnchor="middle"
                     >
                       {month.label}

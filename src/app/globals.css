@@ -207,6 +207,24 @@ summary:focus-visible {
   max-width: 1600px;
   margin: 0 auto;
 }
+
+/* Visão geral: um único verde-lima para todos os acentos da página. */
+.overview-page {
+  --overview-green: #c9f522;
+  --overview-green-ink: #3f4a0d;
+  --color-success: var(--overview-green-ink);
+  --color-success-soft: var(--overview-green);
+  --badge-fg-success: var(--overview-green-ink);
+  --badge-bg-success: var(--overview-green);
+  --color-accent: var(--overview-green);
+  --color-accent-hover: var(--overview-green);
+  --color-accent-soft: var(--overview-green);
+  --color-fg-accent: var(--overview-green-ink);
+  --primitive-lime-100: var(--overview-green);
+  --primitive-lime-400: var(--overview-green);
+  --primitive-lime-500: var(--overview-green-ink);
+}
+
 .page-heading {
   display: flex;
   align-items: center;
@@ -313,14 +331,21 @@ summary:focus-visible {
 
 /* Resumo da visão geral: um único card com quatro secções divididas. */
 .panel.summary-panel {
-  --summary-tile-bg: #e4f79a;
+  --summary-tile-bg: var(--color-accent);
+  --summary-tile-border: color-mix(
+    in srgb,
+    var(--color-border) 60%,
+    var(--color-border-strong)
+  );
   padding: 0;
   overflow: hidden;
+  border-color: var(--summary-tile-border);
 }
 
 .summary-panel .panel-heading {
   padding: 15px 20px 13px;
-  border-bottom: 1px solid var(--color-border);
+  margin-bottom: 0;
+  border-bottom: 1px solid var(--summary-tile-border);
 }
 
 .summary-panel .panel-heading h2 {
@@ -330,26 +355,39 @@ summary:focus-visible {
 .summary-metrics {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--summary-tile-border);
 }
 
 .summary-metric {
   position: relative;
   min-width: 0;
   padding: 18px 20px 17px;
-  border-left: 1px solid var(--color-border);
+  border: 0;
   background: var(--summary-tile-bg);
 }
 
-.summary-metric:first-child {
-  border-left: 0;
+/* Separador entre "À espera de proposta" e "Propostas emitidas": traço
+   reforçado, alinhado com o gap do grid e com a altura toda da área verde. */
+.summary-metric:nth-child(2)::after {
+  position: absolute;
+  z-index: 1;
+  background: var(--color-border-strong);
+  content: "";
 }
 
-.summary-metric.is-highlight::before {
-  position: absolute;
-  inset: 0 0 auto;
-  height: 3px;
-  background: var(--primitive-lime-500);
-  content: "";
+@media (min-width: 1101px) {
+  .summary-metric:nth-child(2)::after {
+    inset: 0 -1px 0 auto;
+    width: 2px;
+  }
+}
+
+@media (max-width: 1100px) {
+  .summary-metric:nth-child(2)::after {
+    inset: auto 0 -1px 0;
+    height: 2px;
+  }
 }
 
 .summary-metric-head {
@@ -376,11 +414,6 @@ summary:focus-visible {
   border-radius: 9px;
   color: var(--color-fg-accent);
   background: var(--color-bg-subtle);
-}
-
-.summary-metric.is-highlight .summary-metric-icon {
-  color: var(--primitive-charcoal-900);
-  background: var(--primitive-lime-400);
 }
 
 .summary-metric-value {
@@ -411,13 +444,21 @@ summary:focus-visible {
   font-size: 12px;
 }
 
+/* Só "Propostas emitidas" e "Contratações": borda visível e verde mais forte. */
+.summary-metric:nth-child(3) .delta.positive,
+.summary-metric:nth-child(4) .delta.positive {
+  border: 1px solid var(--overview-green-ink);
+  background: #b6e812;
+  color: #2b3308;
+}
+
 .attention-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
 }
 .panel.chart-panel--hires {
-  border-color: var(--color-success);
+  border-color: var(--color-accent);
 }
 .panel.chart-panel--wait {
   border-color: var(--color-danger);
@@ -439,7 +480,7 @@ summary:focus-visible {
   font-variant-numeric: tabular-nums;
 }
 .chart-panel--hires .chart-headline strong {
-  color: var(--color-success);
+  color: var(--color-fg-primary);
 }
 .chart-panel--wait .chart-headline strong {
   color: var(--color-danger);
@@ -2965,30 +3006,40 @@ details:not([open]) > .exploration-popover {
   .summary-metrics {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-
-  .summary-metric:nth-child(3) {
-    border-left: 0;
-  }
-
-  .summary-metric:nth-child(n + 3) {
-    border-top: 1px solid var(--color-border);
-  }
 }
 
-.overview-pairs {
+.overview-columns {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
   align-items: stretch;
 }
 
-.overview-pairs > .panel {
+.overview-column {
+  display: grid;
+  gap: 14px;
   min-width: 0;
+}
+
+.overview-column--left {
+  grid-template-rows: auto minmax(0, 1fr);
+}
+
+.overview-column--right {
+  grid-template-rows: auto auto;
+}
+
+.overview-column > .panel {
+  min-width: 0;
+}
+
+.alerts-panel {
+  padding: 14px 16px;
 }
 
 .alerts-panel .alert-list {
   display: grid;
-  gap: 9px;
+  gap: 12px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -2998,7 +3049,7 @@ details:not([open]) > .exploration-popover {
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  padding: 11px 12px;
+  padding: 9px 12px;
   border: 1px solid var(--color-border);
   border-radius: 12px;
   background: var(--color-bg-subtle);
@@ -3039,7 +3090,8 @@ details:not([open]) > .exploration-popover {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 4px 18px;
+  gap: 4px 16px;
+  margin-top: 8px;
 }
 
 .activity-panel {
@@ -3090,7 +3142,7 @@ details:not([open]) > .exploration-popover {
   display: block;
   width: 100%;
   height: auto;
-  max-height: 228px;
+  max-height: 260px;
   overflow: visible;
 }
 
@@ -3127,11 +3179,19 @@ details:not([open]) > .exploration-popover {
   text-align: center;
 }
 
+.chart-panel--hires .chart-block {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  justify-content: center;
+}
+
 .waffle-chart {
-  grid-template-columns: repeat(10, minmax(0, 1fr));
-  width: min(100%, 260px);
-  margin-inline: auto;
-  gap: 3px;
+  grid-template-columns: repeat(20, minmax(0, 1fr));
+  width: 100%;
+  max-width: 460px;
+  margin: 0 auto 18px;
+  gap: 4px;
 }
 
 .waffle-chart span {
@@ -3141,7 +3201,18 @@ details:not([open]) > .exploration-popover {
 
 .chart-panel--hires .chart-headline {
   justify-content: center;
+  margin-bottom: 18px;
   text-align: center;
+}
+
+.chart-panel--hires .chart-headline strong {
+  font-size: 36px;
+}
+
+.chart-panel--hires .chart-legend {
+  max-width: 420px;
+  margin-inline: auto;
+  font-size: 15px;
 }
 
 .cycle-panel .cycle-summary {
@@ -3172,8 +3243,28 @@ details:not([open]) > .exploration-popover {
 }
 
 @media (max-width: 900px) {
-  .overview-pairs {
+  .overview-columns {
     grid-template-columns: 1fr;
+  }
+
+  .overview-column {
+    display: contents;
+  }
+
+  .overview-column--left > .alerts-panel {
+    order: 1;
+  }
+
+  .overview-column--right > .activity-panel {
+    order: 2;
+  }
+
+  .overview-column--left > .chart-panel--hires {
+    order: 3;
+  }
+
+  .overview-column--right > .cycle-panel {
+    order: 4;
   }
 }
 
@@ -3286,15 +3377,6 @@ details:not([open]) > .exploration-popover {
 
   .summary-metrics {
     grid-template-columns: 1fr;
-  }
-
-  .summary-metric,
-  .summary-metric:nth-child(3) {
-    border-left: 0;
-  }
-
-  .summary-metric:not(:first-child) {
-    border-top: 1px solid var(--color-border);
   }
 
   .summary-panel .panel-heading {
