@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { DatasetExplorer } from "@/components/dataset-explorer";
+import { TimeBreakdownChart } from "@/components/time-breakdown-chart";
 import { Badge, Notice, PageHeader, Panel } from "@/components/ui";
 import { funnel } from "@/lib/recruitment";
 
@@ -60,37 +61,8 @@ export default function PipelinePage() {
         </div>
       </section>
       <div className="pipeline-lower">
-        <Panel title="Onde se acumula o tempo">
-          <div className="time-breakdown">
-            <div>
-              <span>1.ª entrevista</span>
-              <b>
-                3 <small>dias</small>
-              </b>
-              <div className="time-bar" style={{ width: "11%" }} />
-            </div>
-            <div>
-              <span>Entrevistas</span>
-              <b>
-                6 <small>dias</small>
-              </b>
-              <div className="time-bar" style={{ width: "22%" }} />
-            </div>
-            <div className="time-critical">
-              <span>Espera entre entrevista e proposta</span>
-              <b>
-                27 <small>dias</small>
-              </b>
-              <div className="time-bar" style={{ width: "100%" }} />
-            </div>
-            <div>
-              <span>Proposta → contratação</span>
-              <b>
-                3 <small>dias</small>
-              </b>
-              <div className="time-bar" style={{ width: "11%" }} />
-            </div>
-          </div>
+        <Panel title="Onde se acumula o tempo" className="time-panel">
+          <TimeBreakdownChart />
           <p className="source-note">
             As medianas por segmento são calculadas separadamente; não somam
             necessariamente a mediana global de 40 dias.
