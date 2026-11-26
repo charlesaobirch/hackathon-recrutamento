@@ -1,60 +1,67 @@
 /* ============================================================================
- * TalentFlow · design tokens
+ * Farol · design tokens
  * Arquitetura em três camadas: primitiva → semântica → componente.
- * Fonte única de verdade para o esboço (preview.html) e para o plugin Figma.
+ * Linguagem: carvão, lima e neutros quentes da identidade Farol.
+ * Fonte única de verdade para a aplicação (src/app) e para o esboço (design/).
  * ========================================================================== */
 
 :root {
   /* ---------------------------- 1. primitivas ---------------------------- */
-  --primitive-white: #ffffff;
-  --primitive-ink-950: #0b1220;
-  --primitive-ink-900: #0f172a;
-  --primitive-ink-800: #1e293b;
-  --primitive-slate-700: #334155;
-  --primitive-slate-600: #475569;
-  --primitive-slate-500: #64748b;
-  --primitive-slate-400: #94a3b8;
-  --primitive-slate-300: #cbd5e1;
-  --primitive-slate-200: #e2e8f0;
-  --primitive-slate-100: #f1f5f9;
-  --primitive-slate-50: #f8fafc;
-  --primitive-canvas: #f5f7fa;
+  --primitive-white: #f8f8f2;
 
-  --primitive-blue-50: #eff6ff;
-  --primitive-blue-100: #dbeafe;
-  --primitive-blue-600: #2563eb;
-  --primitive-blue-700: #1d4ed8;
+  --primitive-ink-950: #20221d;
+  --primitive-ink-900: #2a2c26;
+  --primitive-ink-800: #34362f;
+  --primitive-ink-700: #41433c;
 
-  --primitive-green-100: #dcfce7;
-  --primitive-green-700: #15803d;
-  --primitive-green-800: #166534;
+  --primitive-grey-700: #4f5048;
+  --primitive-grey-600: #65665e;
+  --primitive-grey-500: #77786f;
+  --primitive-grey-400: #999a90;
+  --primitive-grey-300: #d0cfc4;
+  --primitive-grey-200: #d8d7cd;
+  --primitive-grey-150: #e0dfd6;
+  --primitive-grey-100: #eeede5;
+  --primitive-grey-50: #f3f2eb;
 
-  --primitive-amber-100: #fef3c7;
-  --primitive-amber-700: #b45309;
-  --primitive-amber-800: #92400e;
+  /* Aliases herdados: mantêm os nomes antigos ligados à paleta neutra. */
+  --primitive-charcoal-950: var(--primitive-ink-950);
+  --primitive-charcoal-900: var(--primitive-ink-900);
+  --primitive-charcoal-850: var(--primitive-ink-800);
+  --primitive-charcoal-800: #34362f;
+  --primitive-charcoal-700: #41433c;
 
-  --primitive-red-100: #fee2e2;
-  --primitive-red-200: #fecaca;
-  --primitive-red-700: #b91c1c;
-  --primitive-red-800: #991b1b;
-
-
-  /* Materiais da interface inspirados na referência aprovada. */
-  --primitive-charcoal-950: #262824;
-  --primitive-charcoal-900: #292b26;
-  --primitive-charcoal-850: #34362f;
-  --primitive-charcoal-800: #41433c;
-  --primitive-charcoal-700: #4b4d44;
-  --primitive-warm-50: #f8f8f2;
-  --primitive-warm-100: #eeefe7;
+  --primitive-warm-50: var(--primitive-white);
+  --primitive-warm-100: var(--primitive-grey-50);
   --primitive-warm-200: #e6e5dc;
-  --primitive-warm-300: #d8d9cf;
-  --primitive-warm-500: #77796f;
-  --primitive-warm-700: #67695f;
-  --primitive-lime-100: #eff8c9;
-  --primitive-lime-400: #c9f522;
-  --primitive-lime-500: #b6df18;
-  --primitive-olive-700: #526412;
+  --primitive-warm-300: var(--primitive-grey-200);
+  --primitive-warm-500: var(--primitive-grey-500);
+  --primitive-warm-700: var(--primitive-grey-700);
+
+  /* Acento lima da identidade Farol. */
+  --primitive-lime-100: #f1f8cf;
+  --primitive-lime-300: #def18a;
+  --primitive-lime-400: #c8f21a;
+  --primitive-lime-500: #a8cc08;
+  --primitive-olive-700: var(--primitive-lime-400);
+
+  --primitive-blue-50: #f5f8fe;
+  --primitive-blue-100: #edf2fb;
+  --primitive-blue-600: #3566b8;
+  --primitive-blue-700: #2f5fb3;
+
+  --primitive-green-100: #e9f5ef;
+  --primitive-green-700: #1e7a4c;
+  --primitive-green-800: #17613d;
+
+  --primitive-amber-100: #fdf3e7;
+  --primitive-amber-700: #a85b08;
+  --primitive-amber-800: #894a06;
+
+  --primitive-red-100: #fef1f0;
+  --primitive-red-200: #f8dcd9;
+  --primitive-red-700: #b42318;
+  --primitive-red-800: #8f1d14;
 
   --primitive-space-1: 4px;
   --primitive-space-2: 8px;
@@ -66,52 +73,54 @@
   --primitive-space-10: 40px;
   --primitive-space-14: 56px;
 
-  --primitive-radius-sm: 8px;
-  --primitive-radius-md: 10px;
-  --primitive-radius-lg: 14px;
-  --primitive-radius-xl: 18px;
+  --primitive-radius-sm: 9px;
+  --primitive-radius-md: 12px;
+  --primitive-radius-lg: 16px;
+  --primitive-radius-xl: 20px;
   --primitive-radius-pill: 999px;
 
-  --primitive-font-sans: "Instrument Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --primitive-font-display: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
-  --primitive-text-2xs: 12px;
-  --primitive-text-xs: 12px;
+  --primitive-font-sans:
+    var(--font-ui), "Instrument Sans", ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", sans-serif;
+  --primitive-font-display: var(--primitive-font-sans);
+  --primitive-text-2xs: 11px;
+  --primitive-text-xs: 11px;
   --primitive-text-sm: 12px;
-  --primitive-text-base: 15px;
-  --primitive-text-md: 15px;
-  --primitive-text-lg: 18px;
-  --primitive-text-xl: 24px;
+  --primitive-text-base: 13px;
+  --primitive-text-md: 14px;
+  --primitive-text-lg: 17px;
+  --primitive-text-xl: 22px;
   --primitive-text-2xl: 28px;
-  --primitive-text-3xl: 40px;
+  --primitive-text-3xl: 36px;
 
   /* ---------------------------- 2. semânticas ---------------------------- */
   /* superfícies */
   --color-bg-canvas: var(--primitive-warm-200);
-  --color-bg-surface: var(--primitive-warm-50);
-  --color-bg-subtle: var(--primitive-warm-100);
-  --color-bg-muted: var(--primitive-warm-200);
-  --color-bg-inverse: var(--primitive-charcoal-900);
-  --color-bg-inverse-raised: var(--primitive-charcoal-850);
+  --color-bg-surface: var(--primitive-white);
+  --color-bg-subtle: var(--primitive-grey-50);
+  --color-bg-muted: var(--primitive-grey-100);
+  --color-bg-inverse: var(--primitive-ink-900);
+  --color-bg-inverse-raised: var(--primitive-ink-800);
 
   /* texto */
-  --color-fg-primary: var(--primitive-charcoal-900);
-  --color-fg-secondary: var(--primitive-warm-700);
-  --color-fg-muted: var(--primitive-warm-500);
-  --color-fg-subtle: var(--primitive-warm-500);
-  --color-fg-on-inverse: #ffffff;
-  --color-fg-on-inverse-muted: #e1e2d9;
-  --color-fg-accent: var(--primitive-olive-700);
+  --color-fg-primary: var(--primitive-ink-900);
+  --color-fg-secondary: var(--primitive-grey-600);
+  --color-fg-muted: var(--primitive-grey-500);
+  --color-fg-subtle: var(--primitive-grey-500);
+  --color-fg-on-inverse: var(--primitive-white);
+  --color-fg-on-inverse-muted: #d0d1c8;
+  --color-fg-accent: var(--primitive-ink-900);
 
   /* linhas */
-  --color-border: var(--primitive-warm-300);
-  --color-border-strong: var(--primitive-warm-500);
-  --color-border-inverse: var(--primitive-charcoal-700);
+  --color-border: var(--primitive-grey-200);
+  --color-border-strong: var(--primitive-grey-300);
+  --color-border-inverse: #484a42;
 
   /* acento e estados */
   --color-accent: var(--primitive-lime-400);
   --color-accent-hover: var(--primitive-lime-500);
   --color-accent-soft: var(--primitive-lime-100);
-  --color-focus: var(--primitive-olive-700);
+  --color-focus: var(--primitive-ink-900);
 
   --color-success: var(--primitive-green-700);
   --color-success-soft: var(--primitive-green-100);
@@ -139,6 +148,7 @@
 
   /* tipografia */
   --font-sans: var(--primitive-font-sans);
+  --font-display: var(--primitive-font-display);
   --text-2xs: var(--primitive-text-2xs);
   --text-xs: var(--primitive-text-xs);
   --text-sm: var(--primitive-text-sm);
@@ -149,7 +159,9 @@
   --text-2xl: var(--primitive-text-2xl);
   --text-3xl: var(--primitive-text-3xl);
 
-  --shadow-frame: 0 20px 55px -25px rgba(9, 10, 8, 0.72), 0 8px 20px -12px rgba(9, 10, 8, 0.55);
+  --shadow-frame: 0 24px 60px -32px rgb(17 18 20 / 30%);
+  --shadow-card: 0 1px 2px rgb(17 18 20 / 4%);
+  --shadow-pop: 0 18px 40px -18px rgb(17 18 20 / 22%);
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --duration-fast: 140ms;
 
@@ -158,7 +170,7 @@
   --button-radius: var(--radius-pill);
   --button-bg-primary: var(--color-accent);
   --button-bg-primary-hover: var(--color-accent-hover);
-  --button-fg-primary: var(--primitive-charcoal-900);
+  --button-fg-primary: var(--primitive-ink-900);
   --button-bg-ghost: var(--color-bg-surface);
   --button-border-ghost: var(--color-border);
   --button-fg-ghost: var(--color-fg-primary);
@@ -166,7 +178,7 @@
 
   --badge-radius: var(--radius-pill);
   --badge-height: 22px;
-  --badge-fg-danger: var(--primitive-red-700);
+  --badge-fg-danger: var(--primitive-red-800);
   --badge-bg-danger: var(--color-danger-soft);
   --badge-fg-warning: var(--primitive-amber-800);
   --badge-bg-warning: var(--color-warning-soft);
@@ -175,31 +187,40 @@
   --badge-fg-info: var(--primitive-blue-700);
   --badge-bg-info: var(--color-info-soft);
   --badge-fg-neutral: var(--color-fg-secondary);
-  --badge-bg-neutral: var(--color-bg-muted);
+  --badge-bg-neutral: var(--primitive-grey-100);
 
-  --nav-item-height: 48px;
+  --nav-item-height: 42px;
   --nav-item-radius: var(--radius-pill);
-  --nav-item-fg: #e0e1d8;
-  --nav-item-fg-active: var(--color-fg-primary);
-  --nav-item-bg-active: var(--color-bg-canvas);
+  --nav-item-fg: var(--primitive-grey-600);
+  --nav-item-fg-active: var(--primitive-white);
+  --nav-item-bg-active: var(--primitive-ink-900);
 
   --table-border: var(--color-border);
   --table-header-bg: var(--color-bg-subtle);
-  --table-header-fg: var(--color-fg-secondary);
-  --table-row-height: 54px;
+  --table-header-fg: var(--color-fg-muted);
+  --table-row-height: 58px;
   --table-row-hover: var(--color-bg-subtle);
 
-  --card-bg: var(--primitive-warm-50);
+  --card-bg: var(--primitive-white);
   --card-border: var(--color-border);
-  --card-radius: 20px;
+  --card-radius: var(--radius-lg);
   --card-bg-inverse: var(--color-bg-inverse-raised);
   --card-fg-inverse: var(--color-fg-on-inverse);
   --card-border-inverse: var(--color-border-inverse);
-  --app-frame: var(--primitive-charcoal-950);
-  --app-shell: var(--primitive-charcoal-900);
-  --app-shell-raised: var(--primitive-charcoal-800);
-  --app-header-height: 78px;
-  --app-shell-radius: 42px;
-  --app-folder-radius: 18px;
+  --app-frame: var(--color-bg-canvas);
+  --app-shell: var(--color-bg-canvas);
+  --app-shell-raised: var(--primitive-white);
+  --app-header-height: 72px;
+  --app-shell-radius: 0;
+  --app-folder-radius: var(--radius-lg);
   --app-nav-pill-radius: var(--radius-pill);
+
+  /* séries de dados */
+  --chart-primary: var(--primitive-ink-900);
+  --chart-secondary: var(--primitive-grey-300);
+  --chart-tertiary: var(--primitive-grey-150);
+  --chart-grid: var(--primitive-grey-200);
+  --chart-positive: var(--primitive-green-700);
+  --chart-warning: var(--primitive-amber-700);
+  --chart-danger: var(--primitive-red-700);
 }

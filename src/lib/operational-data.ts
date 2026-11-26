@@ -18,6 +18,37 @@ export type OperationalStage =
 export type Signal = "critical" | "attention" | "recent" | "unknown";
 export type SalaryPosition = "below" | "within" | "above" | "unknown";
 
+export type ActivityMonth = {
+  label: string;
+  applications: number;
+  proposals: number;
+  partial: boolean;
+};
+
+export type FunnelStage = {
+  key: string;
+  label: string;
+  count: number;
+  conversion: number | null;
+};
+
+export type SalaryPositionStat = {
+  position: SalaryPosition;
+  label: string;
+  total: number;
+  accepted: number;
+  rejected: number;
+  noResponse: number;
+  acceptance: number | null;
+};
+
+export type QueueAges = {
+  recent: number;
+  attention: number;
+  critical: number;
+  unknown: number;
+};
+
 export type WorklistRow = {
   id: string;
   applicationId: string;
@@ -40,7 +71,6 @@ export type WorklistRow = {
   signal: Signal;
   applicationDate: string | null;
   expectedSalary: number | null;
-  score: number | null;
   proposalId: string | null;
   offerDate: string | null;
   responseDate: string | null;
@@ -80,6 +110,11 @@ type DataSnapshot = {
   applicationRows: WorklistRow[];
   waitingRows: WorklistRow[];
   proposalRows: WorklistRow[];
+  activityMonths: ActivityMonth[];
+  recentFunnel: FunnelStage[];
+  stageMixRecent: Array<{ key: string; label: string; count: number }>;
+  queueAges: QueueAges;
+  salaryPositions: SalaryPositionStat[];
   funnel: Array<{
     key: string;
     label: string;
@@ -121,6 +156,13 @@ type DataSnapshot = {
     proposalsNoResponse: number;
     hires: number;
     waiting: number;
+    waitingRecent: number;
+    applicationsRecent: number;
+    proposalsRecent: number;
+    hiresRecent: number;
+    applicationsPrevious: number;
+    proposalsPrevious: number;
+    hiresPrevious: number;
     salaryBelow: number;
     salaryWithin: number;
     salaryAbove: number;
@@ -134,8 +176,10 @@ type WorklistOptions = {
   stage?: string;
   recruiter?: string;
   signal?: string;
+  period?: string;
   position?: string;
   status?: string;
+  client?: string;
   page?: number;
   pageSize?: number;
 };
@@ -257,6 +301,81 @@ function getSignal(daysIdle: number | null): Signal {
   return "recent";
 }
 
+function isRecentApplication(
+  applicationDate: string | null,
+  asOf: string | null,
+) {
+  return isWithinWindow(applicationDate, asOf, 0, 90);
+}
+
+function isWithinWindow(
+  value: string | null,
+  asOf: string | null,
+  fromDays: number,
+  toDays: number,
+) {
+  const date = parseDate(value);
+  const reference = parseDate(asOf);
+  if (!date || !reference) return false;
+  const days = Math.floor((reference.getTime() - date.getTime()) / 86_400_000);
+  return days >= fromDays && days < toDays;
+}
+
+function monthlyActivity(
+  asOf: string | null,
+  applications: DatasetRow[],
+  proposals: DatasetRow[],
+): ActivityMonth[] {
+  const reference = parseDate(asOf);
+  if (!reference) return [];
+
+  const months = Array.from({ length: 6 }, (_, index) => {
+    const date = new Date(
+      Date.UTC(
+        reference.getUTCFullYear(),
+        reference.getUTCMonth() - 5 + index,
+        1,
+      ),
+    );
+    const key = `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, "0")}`;
+    return {
+      key,
+      label: new Intl.DateTimeFormat("pt-PT", {
+        month: "short",
+        timeZone: "UTC",
+      })
+        .format(date)
+        .replace(".", ""),
+      applications: 0,
+      proposals: 0,
+      partial: index === 5,
+    };
+  });
+  const byMonth = new Map(months.map((month) => [month.key, month]));
+
+  for (const application of applications) {
+    const date = parseDate(application.data_candidatura);
+    if (!date) continue;
+    const key = `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, "0")}`;
+    const month = byMonth.get(key);
+    if (month) month.applications += 1;
+  }
+  for (const proposal of proposals) {
+    const date = parseDate(proposal.data_proposta);
+    if (!date) continue;
+    const key = `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, "0")}`;
+    const month = byMonth.get(key);
+    if (month) month.proposals += 1;
+  }
+
+  return months.map((month) => ({
+    label: month.label,
+    applications: month.applications,
+    proposals: month.proposals,
+    partial: month.partial,
+  }));
+}
+
 function computeSnapshot(): DataSnapshot {
   const applications = rows("candidaturas");
   const candidates = rows("candidatos");
@@ -293,6 +412,12 @@ function computeSnapshot(): DataSnapshot {
     const latest = eventDate(records, field);
     if (latest && (!asOf || latest > asOf)) asOf = latest;
   }
+  for (const application of applications) {
+    const applicationDate = parseDate(application.data_candidatura);
+    if (applicationDate && (!asOf || applicationDate > asOf)) {
+      asOf = applicationDate;
+    }
+  }
   const referenceDate = asOf;
 
   const applicationRows: WorklistRow[] = applications.map((application) => {
@@ -324,9 +449,6 @@ function computeSnapshot(): DataSnapshot {
         : maxInterviewPhase;
     const lastInterviewDate = eventDate(appInterviews, "data");
     const lastInteractionDate = eventDate(appInteractions, "data");
-    const proposalDate = eventDate(appProposals, "data_resposta")
-      ? eventDate(appProposals, "data_resposta")
-      : eventDate(appProposals, "data_proposta");
     const hireDate = eventDate(appHires, "data_contratacao");
     const latestActivity = [
       lastInterviewDate,
@@ -376,9 +498,14 @@ function computeSnapshot(): DataSnapshot {
       recruiterId,
       recruiterName: text(recruiter?.nome) || recruiterId || "Sem recrutador",
       stage,
-      reachedStages: [...reachedStages, ...(hasProposal ? ["proposta" as const] : []), ...(hasHire ? ["contratado" as const] : [])],
+      reachedStages: [
+        ...reachedStages,
+        ...(hasProposal ? ["proposta" as const] : []),
+        ...(hasHire ? ["contratado" as const] : []),
+      ],
       stageSinceDate: stageSince?.toISOString().slice(0, 10) ?? null,
-      latestInterviewDate: lastInterviewDate?.toISOString().slice(0, 10) ?? null,
+      latestInterviewDate:
+        lastInterviewDate?.toISOString().slice(0, 10) ?? null,
       latestInterviewPhase: text(latestInterview?.fase),
       latestInterviewResult: text(latestInterview?.resultado),
       lastActivityDate: latestActivity?.toISOString().slice(0, 10) ?? null,
@@ -386,7 +513,6 @@ function computeSnapshot(): DataSnapshot {
       signal: getSignal(idle),
       applicationDate: isoDate(application.data_candidatura),
       expectedSalary: number(candidate?.expectativa_salarial),
-      score: number(latestInterview?.score_tecnico),
       proposalId: offer ? text(offer.id) : null,
       offerDate: isoDate(offer?.data_proposta),
       responseDate: isoDate(offer?.data_resposta),
@@ -475,11 +601,6 @@ function computeSnapshot(): DataSnapshot {
   const proposalsIds = new Set(
     proposals.map((proposal) => text(proposal.id_candidatura)),
   );
-  const acceptedIds = new Set(
-    proposals
-      .filter((proposal) => text(proposal.estado_proposta) === "aceite")
-      .map((proposal) => text(proposal.id_candidatura)),
-  );
   const hireIds = new Set(hires.map((hire) => text(hire.id_candidatura)));
   const phaseCounts = interviewPhases.map(
     (phase) =>
@@ -517,6 +638,53 @@ function computeSnapshot(): DataSnapshot {
         ? null
         : count / funnelCounts[index - 1],
   }));
+
+  const asOfValue = asOf?.toISOString().slice(0, 10) ?? null;
+  const recentApplicationRows = applicationRows.filter((row) =>
+    isRecentApplication(row.applicationDate, asOfValue),
+  );
+  const recentPhaseCounts = interviewPhases.map(
+    (phase) =>
+      recentApplicationRows.filter((row) =>
+        reached.get(row.applicationId)?.has(phase),
+      ).length,
+  );
+  const recentFunnelCounts = [
+    recentApplicationRows.length,
+    ...recentPhaseCounts,
+    recentApplicationRows.filter((row) => proposalsIds.has(row.applicationId))
+      .length,
+    recentApplicationRows.filter((row) => hireIds.has(row.applicationId))
+      .length,
+  ];
+  const recentFunnel = recentFunnelCounts.map((count, index) => ({
+    key: funnelKeys[index],
+    label: funnelLabels[index],
+    count,
+    conversion:
+      index === 0 || !recentFunnelCounts[index - 1]
+        ? null
+        : count / recentFunnelCounts[index - 1],
+  }));
+  const stageMixRecent = (
+    [
+      "sem_entrevista",
+      ...interviewPhases,
+      "proposta",
+      "contratado",
+    ] as OperationalStage[]
+  ).map((stage) => ({
+    key: stage,
+    label: phaseLabels[stage],
+    count: recentApplicationRows.filter((row) => row.stage === stage).length,
+  }));
+  const queueAges: QueueAges = {
+    recent: 0,
+    attention: 0,
+    critical: 0,
+    unknown: 0,
+  };
+  for (const row of waitingRows) queueAges[row.signal] += 1;
 
   const uniqueHires = new Map<string, DatasetRow>();
   for (const hire of hires) {
@@ -559,7 +727,10 @@ function computeSnapshot(): DataSnapshot {
       dayDifference(interviewDates[0], applicationDate),
     );
     cycleMetrics.interviewCycle.push(
-      dayDifference(interviewDates[interviewDates.length - 1], interviewDates[0]),
+      dayDifference(
+        interviewDates[interviewDates.length - 1],
+        interviewDates[0],
+      ),
     );
     cycleMetrics.waitingForOffer.push(
       dayDifference(proposalDate, interviewDates[interviewDates.length - 1]),
@@ -571,9 +742,7 @@ function computeSnapshot(): DataSnapshot {
   const hiredCandidateIds = new Set(
     [...uniqueHires.values()]
       .map((hire) =>
-        text(
-          applicationById.get(text(hire.id_candidatura))?.id_candidato,
-        ),
+        text(applicationById.get(text(hire.id_candidatura))?.id_candidato),
       )
       .filter(Boolean),
   );
@@ -601,8 +770,8 @@ function computeSnapshot(): DataSnapshot {
       contractStatus: text(client.estado),
       hires: clientHires.length,
       retention90: knownRetention.length
-        ? knownRetention.filter((hire) => hire.retencao_90_dias === true).length /
-          knownRetention.length
+        ? knownRetention.filter((hire) => hire.retencao_90_dias === true)
+            .length / knownRetention.length
         : null,
       retentionKnown: knownRetention.length,
       performance: average(
@@ -669,7 +838,8 @@ function computeSnapshot(): DataSnapshot {
     responsesAfterHire: proposals.filter((proposal) => {
       const responseDate = parseDate(proposal.data_resposta);
       if (!responseDate) return false;
-      const appHires = hiresByApplication.get(text(proposal.id_candidatura)) ?? [];
+      const appHires =
+        hiresByApplication.get(text(proposal.id_candidatura)) ?? [];
       return appHires.some((hire) => {
         const hireDate = parseDate(hire.data_contratacao);
         return hireDate !== null && responseDate > hireDate;
@@ -686,6 +856,38 @@ function computeSnapshot(): DataSnapshot {
     }).length,
   };
 
+  const salaryPositionLabels: Record<SalaryPosition, string> = {
+    below: "Abaixo da banda",
+    within: "Dentro da banda",
+    above: "Acima da banda",
+    unknown: "Banda indisponível",
+  };
+  const salaryPositions: SalaryPositionStat[] = (
+    ["below", "within", "above", "unknown"] as SalaryPosition[]
+  ).map((position) => {
+    const rowsForPosition = proposalRows.filter(
+      (proposal) => proposal.salaryPosition === position,
+    );
+    const accepted = rowsForPosition.filter(
+      (proposal) => proposal.proposalStatus === "aceite",
+    ).length;
+    return {
+      position,
+      label: salaryPositionLabels[position],
+      total: rowsForPosition.length,
+      accepted,
+      rejected: rowsForPosition.filter(
+        (proposal) => proposal.proposalStatus === "recusada",
+      ).length,
+      noResponse: rowsForPosition.filter(
+        (proposal) => proposal.proposalStatus === "sem_resposta",
+      ).length,
+      acceptance: rowsForPosition.length
+        ? accepted / rowsForPosition.length
+        : null,
+    };
+  });
+
   const proposalStatusCounts = proposals.reduce<Record<string, number>>(
     (counts, proposal) => {
       const status = text(proposal.estado_proposta);
@@ -696,11 +898,16 @@ function computeSnapshot(): DataSnapshot {
   );
 
   return {
-    asOf: asOf?.toISOString().slice(0, 10) ?? null,
+    asOf: asOfValue,
     candidatesCount: candidates.length,
     applicationRows,
     waitingRows,
     proposalRows,
+    activityMonths: monthlyActivity(asOfValue, applications, proposals),
+    recentFunnel,
+    stageMixRecent,
+    queueAges,
+    salaryPositions,
     funnel,
     cycle: {
       firstInterview: quantile(cycleMetrics.firstInterview, 0.5),
@@ -721,6 +928,32 @@ function computeSnapshot(): DataSnapshot {
       proposalsNoResponse: proposalStatusCounts.sem_resposta ?? 0,
       hires: hireIds.size,
       waiting: waitingRows.length,
+      waitingRecent: waitingRows.filter((row) =>
+        isRecentApplication(row.applicationDate, asOfValue),
+      ).length,
+      applicationsRecent: applications.filter((application) =>
+        isRecentApplication(isoDate(application.data_candidatura), asOfValue),
+      ).length,
+      proposalsRecent: proposals.filter((proposal) =>
+        isRecentApplication(isoDate(proposal.data_proposta), asOfValue),
+      ).length,
+      hiresRecent: [...uniqueHires.values()].filter((hire) =>
+        isRecentApplication(isoDate(hire.data_contratacao), asOfValue),
+      ).length,
+      applicationsPrevious: applications.filter((application) =>
+        isWithinWindow(
+          isoDate(application.data_candidatura),
+          asOfValue,
+          90,
+          180,
+        ),
+      ).length,
+      proposalsPrevious: proposals.filter((proposal) =>
+        isWithinWindow(isoDate(proposal.data_proposta), asOfValue, 90, 180),
+      ).length,
+      hiresPrevious: [...uniqueHires.values()].filter((hire) =>
+        isWithinWindow(isoDate(hire.data_contratacao), asOfValue, 90, 180),
+      ).length,
       salaryBelow: proposalRows.filter(
         (proposal) => proposal.salaryPosition === "below",
       ).length,
@@ -760,7 +993,6 @@ function emptyWorklistRow(id: string): WorklistRow {
     signal: "unknown",
     applicationDate: null,
     expectedSalary: null,
-    score: null,
     proposalId: null,
     offerDate: null,
     responseDate: null,
@@ -779,6 +1011,19 @@ function getSnapshot() {
 
 export function getOverviewData() {
   return getSnapshot();
+}
+
+export function getRecentCandidateBoardRows() {
+  const data = getSnapshot();
+  return data.applicationRows
+    .filter((row) => isRecentApplication(row.applicationDate, data.asOf))
+    .sort((first, second) => {
+      const idleDifference = (second.daysIdle ?? -1) - (first.daysIdle ?? -1);
+      return (
+        idleDifference ||
+        first.candidateName.localeCompare(second.candidateName, "pt-PT")
+      );
+    });
 }
 
 export function getPipelineData() {
@@ -814,7 +1059,8 @@ export function getQualityIssues(): QualityIssue[] {
       count: qualityCounts.interviewScoresOver100,
       title: `${qualityCounts.interviewScoresOver100.toLocaleString("pt-PT")} scores técnicos acima do limite de 100`,
       area: "Domínio inválido",
-      action: "Confirmar escala e normalizar scores antes de comparar candidatos.",
+      action:
+        "Confirmar escala e normalizar scores antes de comparar candidatos.",
     },
     {
       id: "datas",
@@ -855,6 +1101,22 @@ export function queryWorklist(options: WorklistOptions) {
       : options.kind === "proposals"
         ? data.proposalRows
         : data.applicationRows;
+  if (options.period === "recent" && options.kind !== "proposals") {
+    matches = matches.filter((row) =>
+      isRecentApplication(row.applicationDate, data.asOf),
+    );
+  } else if (options.period === "old" && options.kind !== "proposals") {
+    matches = matches.filter((row) => {
+      if (!row.applicationDate) return true;
+      const applicationDate = parseDate(row.applicationDate);
+      const referenceDate = parseDate(data.asOf);
+      if (!applicationDate || !referenceDate) return true;
+      const daysSinceApplication = Math.floor(
+        (referenceDate.getTime() - applicationDate.getTime()) / 86_400_000,
+      );
+      return daysSinceApplication > 90;
+    });
+  }
   const search = options.search?.trim().toLocaleLowerCase("pt-PT");
   if (search) {
     matches = matches.filter((row) =>
@@ -874,7 +1136,11 @@ export function queryWorklist(options: WorklistOptions) {
         .includes(search),
     );
   }
-  if (options.stage && options.stage !== "all" && options.kind !== "proposals") {
+  if (
+    options.stage &&
+    options.stage !== "all" &&
+    options.kind !== "proposals"
+  ) {
     matches = matches.filter((row) =>
       options.stage === "sem_entrevista"
         ? row.stage === "sem_entrevista"
@@ -884,18 +1150,17 @@ export function queryWorklist(options: WorklistOptions) {
   if (options.recruiter) {
     matches = matches.filter((row) => row.recruiterId === options.recruiter);
   }
-  if (options.signal) {
+  if (options.client) {
+    matches = matches.filter((row) => row.clientId === options.client);
+  }
+  if (options.signal && options.signal !== "all") {
     matches = matches.filter((row) => row.signal === options.signal);
   }
   if (options.position) {
-    matches = matches.filter(
-      (row) => row.salaryPosition === options.position,
-    );
+    matches = matches.filter((row) => row.salaryPosition === options.position);
   }
   if (options.status) {
-    matches = matches.filter(
-      (row) => row.proposalStatus === options.status,
-    );
+    matches = matches.filter((row) => row.proposalStatus === options.status);
   }
 
   const total = matches.length;
@@ -910,10 +1175,7 @@ export function queryWorklist(options: WorklistOptions) {
   const totalPages = Math.ceil(total / pageSize);
   const requestedPage = options.page ?? 1;
   const page = Math.min(
-    Math.max(
-      1,
-      Number.isFinite(requestedPage) ? Math.trunc(requestedPage) : 1,
-    ),
+    Math.max(1, Number.isFinite(requestedPage) ? Math.trunc(requestedPage) : 1),
     Math.max(1, totalPages),
   );
 
@@ -928,18 +1190,51 @@ export function queryWorklist(options: WorklistOptions) {
     filters: {
       stages: [
         { value: "all", label: "Todas", count: data.counts.applications },
-        { value: "sem_entrevista", label: phaseLabels.sem_entrevista, count: data.applicationRows.filter((row) => row.stage === "sem_entrevista").length },
+        {
+          value: "sem_entrevista",
+          label: phaseLabels.sem_entrevista,
+          count: data.applicationRows.filter(
+            (row) => row.stage === "sem_entrevista",
+          ).length,
+        },
         ...data.funnel.slice(1, 5).map((stage) => ({
           value: stage.key,
           label: stage.label,
           count: stage.count,
         })),
-        { value: "proposta", label: phaseLabels.proposta, count: data.counts.proposals },
-        { value: "contratado", label: phaseLabels.contratado, count: data.counts.hires },
+        {
+          value: "proposta",
+          label: phaseLabels.proposta,
+          count: data.counts.proposals,
+        },
+        {
+          value: "contratado",
+          label: phaseLabels.contratado,
+          count: data.counts.hires,
+        },
       ],
-      recruiters: [...new Map(data.applicationRows.filter((row) => row.recruiterId).map((row) => [row.recruiterId, row.recruiterName])).entries()]
+      recruiters: [
+        ...new Map(
+          data.applicationRows
+            .filter((row) => row.recruiterId)
+            .map((row) => [row.recruiterId, row.recruiterName]),
+        ).entries(),
+      ]
         .map(([value, label]) => ({ value, label }))
-        .sort((first, second) => first.label.localeCompare(second.label, "pt-PT")),
+        .sort((first, second) =>
+          first.label.localeCompare(second.label, "pt-PT"),
+        ),
+      clients: [
+        ...new Map(
+          data.applicationRows
+            .filter((row) => row.clientId)
+            .map((row) => [row.clientId, row.clientName]),
+        ).entries(),
+      ]
+        .map(([value, label]) => ({ value, label }))
+        .sort((first, second) =>
+          first.label.localeCompare(second.label, "pt-PT"),
+        ),
       signals: [
         { value: "critical", label: "30+ dias" },
         { value: "attention", label: "14–29 dias" },
@@ -947,15 +1242,39 @@ export function queryWorklist(options: WorklistOptions) {
         { value: "unknown", label: "Sem data" },
       ],
       positions: [
-        { value: "below", label: "Abaixo da banda", count: data.counts.salaryBelow },
-        { value: "within", label: "Dentro da banda", count: data.counts.salaryWithin },
-        { value: "above", label: "Acima da banda", count: data.counts.salaryAbove },
-        { value: "unknown", label: "Banda indisponível", count: data.counts.salaryUnknown },
+        {
+          value: "below",
+          label: "Abaixo da banda",
+          count: data.counts.salaryBelow,
+        },
+        {
+          value: "within",
+          label: "Dentro da banda",
+          count: data.counts.salaryWithin,
+        },
+        {
+          value: "above",
+          label: "Acima da banda",
+          count: data.counts.salaryAbove,
+        },
+        {
+          value: "unknown",
+          label: "Banda indisponível",
+          count: data.counts.salaryUnknown,
+        },
       ],
-      statuses: [...new Set(data.proposalRows.map((row) => row.proposalStatus).filter((value): value is string => Boolean(value)))]
+      statuses: [
+        ...new Set(
+          data.proposalRows
+            .map((row) => row.proposalStatus)
+            .filter((value): value is string => Boolean(value)),
+        ),
+      ]
         .sort((first, second) => first.localeCompare(second, "pt-PT"))
-        .map((value) => ({ value, label: humanizeValue("estado_proposta", value) })),
+        .map((value) => ({
+          value,
+          label: humanizeValue("estado_proposta", value),
+        })),
     },
   };
 }
-

@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { OperationalWorklist } from "@/components/operational-worklist";
 import { Metric, PageHeader, Panel } from "@/components/ui";
 import { getOverviewData } from "@/lib/operational-data";
@@ -26,7 +25,9 @@ export default async function ProposalsPage({
   const params = await searchParams;
   const data = getOverviewData();
   const validBandCount =
-    data.counts.salaryBelow + data.counts.salaryWithin + data.counts.salaryAbove;
+    data.counts.salaryBelow +
+    data.counts.salaryWithin +
+    data.counts.salaryAbove;
   const belowRate = validBandCount
     ? data.counts.salaryBelow / validBandCount
     : null;
@@ -38,19 +39,9 @@ export default async function ProposalsPage({
     <div className="page-content">
       <PageHeader
         title="Propostas"
-        subtitle="Exceções salariais e estado de resposta em todos os registos."
-        action={
-          <Link className="button-primary" href="/propostas/validar">
-            Abrir validador salarial
-          </Link>
-        }
+        subtitle="Abre uma proposta para comparar oferta, banda e expectativa."
       />
-      <div className="metric-grid three-metrics">
-        <Metric
-          label="Propostas no conjunto completo"
-          value={data.counts.proposals.toLocaleString("pt-PT")}
-          note={`${data.counts.salaryUnknown.toLocaleString("pt-PT")} sem vaga/banda válida`}
-        />
+      <div className="metric-grid two-metrics">
         <Metric
           label="Abaixo do mínimo"
           value={percentage(belowRate)}

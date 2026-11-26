@@ -1,0 +1,22 @@
+FAROL — ficheiros da marca
+
+CORES
+  Carvão  #2a2c26   Lima  #c8f21a   Creme  #f8f8f2   Fundo  #e6e5dc
+
+FICHEIROS
+  farol-icon.svg / farol-icon-512.png / -192.png   ícone (fundos claros)
+  farol-icon-lime.svg                              ícone (fundos escuros)
+  apple-touch-icon.png (180)  favicon.ico (16/32/48)
+  farol-logo.svg / .png                            ícone + texto (fundos claros)
+  farol-logo-light.svg / .png                      ícone + texto (fundos escuros)
+  farol-wordmark.svg / .png (+ -light)             só o texto "farol"
+  fonts/                                           Bricolage Grotesque Bold + licença OFL
+
+TEXTO
+  O texto dos SVG/PNG está convertido em contornos com a Bricolage Grotesque Bold
+  (88 px, espaçamento -0.04em), por isso funciona em <img>, next/image e em qualquer
+  programa, sem instalar fontes. Para o logótipo, usem sempre estes ficheiros em vez de
+  escrever o texto à mão. Nos restantes textos da app, usem a Bricolage Grotesque nos títulos.
+
+NEXT.JS
+  app/icon.svg = farol-icon.svg  |  app/apple-icon.png = apple-touch-icon.png  |  app/favicon.ico = favicon.ico

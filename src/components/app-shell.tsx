@@ -1,13 +1,15 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { type ReactNode, Suspense } from "react";
 
 const items = [
-  { href: "/", label: "Visão geral", icon: "grid" },
+  { href: "/", label: "Hoje", icon: "grid" },
   { href: "/pipeline", label: "Pipeline", icon: "pipeline" },
-  { href: "/candidaturas", label: "Candidaturas", icon: "people" },
+  { href: "/espera", label: "À espera", icon: "clock" },
+  { href: "/candidaturas", label: "Candidatos", icon: "people" },
   { href: "/propostas", label: "Propostas", icon: "document" },
   { href: "/clientes", label: "Clientes", icon: "building" },
   { href: "/qualidade", label: "Qualidade", icon: "shield" },
@@ -25,10 +27,10 @@ function Icon({ name }: { name: string }) {
   const paths: Record<string, ReactNode> = {
     grid: (
       <>
-        <rect x="3.5" y="3.5" width="6" height="6" rx="1" />
-        <rect x="14.5" y="3.5" width="6" height="6" rx="1" />
-        <rect x="3.5" y="14.5" width="6" height="6" rx="1" />
-        <rect x="14.5" y="14.5" width="6" height="6" rx="1" />
+        <rect x="3.5" y="3.5" width="6" height="6" rx="1.5" />
+        <rect x="14.5" y="3.5" width="6" height="6" rx="1.5" />
+        <rect x="3.5" y="14.5" width="6" height="6" rx="1.5" />
+        <rect x="14.5" y="14.5" width="6" height="6" rx="1.5" />
       </>
     ),
     pipeline: (
@@ -67,17 +69,77 @@ function Icon({ name }: { name: string }) {
         <path d="M4 5v7c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 12v7c0 1.7 3.6 3 8 3s8-1.3 8-3v-7" />
       </>
     ),
+    search: (
+      <>
+        <circle cx="11" cy="11" r="6.5" />
+        <path d="m16 16 4 4" />
+      </>
+    ),
+    bell: (
+      <>
+        <path d="M6 9.5a6 6 0 1 1 12 0c0 4 1.5 5.5 1.5 5.5h-15S6 13.5 6 9.5Z" />
+        <path d="M10 19a2.2 2.2 0 0 0 4 0" />
+      </>
+    ),
+    clock: (
+      <>
+        <circle cx="12" cy="12" r="8.5" />
+        <path d="M12 7v5l3.5 2" />
+      </>
+    ),
   };
   return (
     <svg
       aria-hidden="true"
       viewBox="0 0 24 24"
-      width="17"
-      height="17"
+      width="18"
+      height="18"
       {...common}
     >
       {paths[name]}
     </svg>
+  );
+}
+
+function TopBar() {
+  return (
+    <header className="topbar">
+      <form className="topbar-search" action="/candidaturas" method="get">
+        <span className="topbar-search-icon">
+          <Icon name="search" />
+        </span>
+        <label className="sr-only" htmlFor="global-search">
+          Pesquisar candidato, vaga, cliente ou ID
+        </label>
+        <input
+          id="global-search"
+          name="q"
+          type="search"
+          placeholder="Pesquisar candidato, vaga, cliente ou ID"
+          autoComplete="off"
+        />
+        <kbd>↵</kbd>
+      </form>
+      <div className="topbar-actions">
+        <Link
+          className="topbar-icon-button"
+          href="/qualidade"
+          aria-label="Abrir fila de qualidade"
+        >
+          <Icon name="bell" />
+          <span className="topbar-alert-dot" aria-hidden="true" />
+        </Link>
+        <div className="user-chip">
+          <span className="user-avatar" aria-hidden="true">
+            RH
+          </span>
+          <span className="user-copy">
+            <b>Operação</b>
+            <small>Recrutamento</small>
+          </span>
+        </div>
+      </div>
+    </header>
   );
 }
 
@@ -97,57 +159,59 @@ function ShellFrame({
   return (
     <div className="app-frame">
       <div className="app-shell">
-        <header className="topbar">
-          <Link href="/" className="brand" aria-label="TalentFlow, início">
-            <span className="brand-mark">T</span>
-            <span>TalentFlow</span>
+        <aside className="sidebar" aria-label="Navegação da aplicação">
+          <Link href="/" className="brand" aria-label="Farol, início">
+            <Image
+              src="/farol-logo.svg"
+              alt="farol"
+              width={292}
+              height={88}
+              priority
+            />
           </Link>
-          <nav className="top-nav" aria-label="Navegação principal">
-            {items.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`nav-tab${active === item.href ? " is-active" : ""}`}
-                aria-current={active === item.href ? "page" : undefined}
-              >
-                <Icon name={item.icon} />
-                <span>{item.label}</span>
-              </Link>
-            ))}
-          </nav>
-          <div className="header-actions">
-            <form action="/candidaturas" method="get" className="global-search">
-              <label className="sr-only" htmlFor="global-search">
-                Pesquisar em todos os registos de candidatura
-              </label>
-              <span className="search-icon" aria-hidden="true">
-                ⌕
-              </span>
-              <input
-                id="global-search"
-                name="q"
-                type="search"
-                placeholder="Pesquisar registos…"
-              />
-            </form>
+          <div className="nav-group">
+            <span className="nav-group-label">Operação</span>
+            <nav className="sidebar-nav" aria-label="Navegação principal">
+              {items.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`nav-tab${active === item.href ? " is-active" : ""}`}
+                  aria-current={active === item.href ? "page" : undefined}
+                >
+                  <Icon name={item.icon} />
+                  <span>{item.label}</span>
+                </Link>
+              ))}
+            </nav>
+          </div>
+          <div className="sidebar-footer">
             <details className="exploration-disclosure">
               <summary>
                 <span className="exploration-dot" />
-                Modo exploratório
+                Dados exploratórios
               </summary>
               <div className="exploration-popover">
-                <b>Limitações dos dados e ações</b>
+                <b>Usar estes dados com cautela</b>
                 <ul>
-                  <li>Os nomes apresentados são fictícios.</li>
-                  <li>As etapas e métricas são derivadas dos eventos de origem.</li>
-                  <li>Correções e validações nesta interface não alteram os JSON.</li>
-                  <li>Relatórios oficiais exigem correção e validação das regras P0.</li>
+                  <li>
+                    O conjunto é demonstrativo e tem inconsistências por
+                    corrigir.
+                  </li>
+                  <li>Etapas e tempos são calculados a partir dos eventos.</li>
+                  <li>
+                    Alterações nesta interface não modificam os ficheiros JSON.
+                  </li>
+                  <li>Não usar os indicadores em reporting oficial.</li>
                 </ul>
               </div>
             </details>
           </div>
-        </header>
-        <main className="workspace">{children}</main>
+        </aside>
+        <div className="workspace-frame">
+          <TopBar />
+          <main className="workspace">{children}</main>
+        </div>
       </div>
     </div>
   );

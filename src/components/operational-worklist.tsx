@@ -22,7 +22,6 @@ type ColumnKey =
   | "recruiter"
   | "applicationDate"
   | "expectedSalary"
-  | "score"
   | "proposal"
   | "offer"
   | "band"
@@ -40,6 +39,7 @@ type WorklistResponse = {
   filters: {
     stages: FilterOption[];
     recruiters: FilterOption[];
+    clients: FilterOption[];
     signals: FilterOption[];
     positions: FilterOption[];
     statuses: FilterOption[];
@@ -57,7 +57,6 @@ const columnDefinitions: Record<ColumnKey, string> = {
   recruiter: "Recrutador",
   applicationDate: "Data de candidatura",
   expectedSalary: "Expectativa salarial",
-  score: "Score técnico original",
   proposal: "Proposta e candidato",
   offer: "Oferta",
   band: "Banda salarial",
@@ -114,7 +113,6 @@ function columnsFor(kind: WorklistKind): ColumnKey[] {
     "recruiter",
     "applicationDate",
     "expectedSalary",
-    "score",
   ];
 }
 
@@ -136,6 +134,22 @@ function resultTone(value: string) {
   if (value === "reprovado" || value === "recusada") return "danger";
   return "neutral";
 }
+
+function initials(name: string) {
+  return name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase() ?? "")
+    .join("");
+}
+
+const interviewTrack = [
+  "triagem",
+  "entrevista_tecnica",
+  "entrevista_cliente",
+  "entrevista_final",
+] as const;
 
 function FilterGroup({
   label,
@@ -178,11 +192,16 @@ function cellContent(column: ColumnKey, row: WorklistRow) {
     case "candidate":
       return (
         <Link
-          className="row-link"
+          className="row-link candidate-cell"
           href={`/candidaturas/${encodeURIComponent(row.applicationId)}`}
         >
-          <b>{row.candidateName}</b>
-          <small>{row.applicationId}</small>
+          <span className="avatar" aria-hidden="true">
+            {initials(row.candidateName)}
+          </span>
+          <span className="candidate-copy">
+            <b>{row.candidateName}</b>
+            <small>{row.applicationId}</small>
+          </span>
         </Link>
       );
     case "vacancy":
@@ -193,7 +212,37 @@ function cellContent(column: ColumnKey, row: WorklistRow) {
         </>
       );
     case "stage":
-      return <Badge tone={row.stage === "contratado" ? "positive" : "info"}>{stageLabel(row.stage)}</Badge>;
+      return (
+        <span className="cell-stack">
+          <Badge tone={row.stage === "contratado" ? "positive" : "neutral"}>
+            {stageLabel(row.stage)}
+          </Badge>
+          <span className="stage-track" aria-hidden="true">
+            {interviewTrack.map((phase) => {
+              const index = interviewTrack.indexOf(phase);
+              const isCurrent =
+                row.stage === phase ||
+                (row.stage === "proposta" && phase === "entrevista_final");
+              const isReached =
+                row.reachedStages.includes(phase) ||
+                row.stage === "proposta" ||
+                row.stage === "contratado";
+              return (
+                <i
+                  key={phase}
+                  className={
+                    isCurrent
+                      ? "is-current"
+                      : isReached && index < interviewTrack.length
+                        ? "is-done"
+                        : undefined
+                  }
+                />
+              );
+            })}
+          </span>
+        </span>
+      );
     case "latestInterviewResult":
       return row.latestInterviewResult ? (
         <span className="worklist-value-stack">
@@ -217,9 +266,7 @@ function cellContent(column: ColumnKey, row: WorklistRow) {
         </>
       );
     case "daysIdle":
-      return (
-        <Badge tone={signalTone(row.signal)}>{signalLabel(row)}</Badge>
-      );
+      return <Badge tone={signalTone(row.signal)}>{signalLabel(row)}</Badge>;
     case "recruiter":
       return (
         <>
@@ -231,8 +278,6 @@ function cellContent(column: ColumnKey, row: WorklistRow) {
       return formatDate(row.applicationDate);
     case "expectedSalary":
       return formatMoney(row.expectedSalary);
-    case "score":
-      return row.score === null ? "—" : row.score.toLocaleString("pt-PT");
     case "proposal":
       return (
         <Link
@@ -240,15 +285,65 @@ function cellContent(column: ColumnKey, row: WorklistRow) {
           href={`/propostas/${encodeURIComponent(row.id)}`}
         >
           <b>{row.id}</b>
-          <small>{row.candidateName}</small>
+          <small>Validar oferta · {row.candidateName}</small>
         </Link>
       );
     case "offer":
       return formatMoney(row.offer);
     case "band":
-      return row.salaryMin === null || row.salaryMax === null
-        ? "Banda indisponível"
-        : `${formatMoney(row.salaryMin)} – ${formatMoney(row.salaryMax)}`;
+      if (row.salaryMin === null || row.salaryMax === null) {
+        return <span className="muted">Banda indisponível</span>;
+      }
+      {
+        const min = row.salaryMin;
+        const max = row.salaryMax;
+        if (min === null || max === null) return null;
+        const position = (value: number | null) =>
+          value === null
+            ? null
+            : `${Math.min(100, Math.max(0, ((value - min) / (max - min || 1)) * 100))}%`;
+        const expectationPosition = position(row.expectedSalary);
+        const offerPosition = position(row.offer);
+        return (
+          <span
+            className="salary-band-cell"
+            role="img"
+            aria-label={`Banda ${formatMoney(min)} a ${formatMoney(max)}${row.expectedSalary === null ? "" : `; expectativa ${formatMoney(row.expectedSalary)}`}${row.offer === null ? "" : `; oferta ${formatMoney(row.offer)}`}`}
+          >
+            <span className="salary-band-range">
+              {formatMoney(min)} <i>—</i> {formatMoney(max)}
+            </span>
+            <span className="salary-band-track" aria-hidden="true">
+              <i className="salary-band-limit start" />
+              <i className="salary-band-limit end" />
+              {expectationPosition ? (
+                <i
+                  className="salary-band-marker expectation"
+                  style={{ left: expectationPosition }}
+                />
+              ) : null}
+              {offerPosition ? (
+                <i
+                  className="salary-band-marker offer"
+                  style={{ left: offerPosition }}
+                />
+              ) : null}
+            </span>
+            <span className="salary-band-legend" aria-hidden="true">
+              {expectationPosition ? (
+                <small>
+                  <i className="expectation-key" /> Expectativa
+                </small>
+              ) : null}
+              {offerPosition ? (
+                <small>
+                  <i className="offer-key" /> Oferta
+                </small>
+              ) : null}
+            </span>
+          </span>
+        );
+      }
     case "position": {
       const tone =
         row.salaryPosition === "below"
@@ -283,20 +378,26 @@ export function OperationalWorklist({
   kind,
   initialStage = "",
   initialSearch = "",
+  initialSignal = "all",
+  initialPeriod = "all",
 }: {
   kind: WorklistKind;
   initialStage?: string;
   initialSearch?: string;
+  initialSignal?: string;
+  initialPeriod?: string;
 }) {
   const [searchInput, setSearchInput] = useState(initialSearch);
   const [search, setSearch] = useState(initialSearch);
   const [stage, setStage] = useState(initialStage || "all");
   const [recruiter, setRecruiter] = useState("all");
-  const [signal, setSignal] = useState("all");
+  const [client, setClient] = useState("all");
+  const [signal, setSignal] = useState(initialSignal);
+  const [period, setPeriod] = useState(initialPeriod);
   const [position, setPosition] = useState("all");
   const [status, setStatus] = useState("all");
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(20);
+  const [pageSize, setPageSize] = useState(kind === "waiting" ? 8 : 20);
   const [visibleColumns, setVisibleColumns] = useState<ColumnKey[]>(() =>
     defaultColumns(kind),
   );
@@ -312,10 +413,13 @@ export function OperationalWorklist({
     setSearchInput(initialSearch);
     setSearch(initialSearch);
     setStage(initialStage || "all");
-  }, [initialSearch, initialStage]);
+    setSignal(initialSignal);
+    setPeriod(initialPeriod);
+  }, [initialSearch, initialStage, initialSignal, initialPeriod]);
 
   useEffect(() => {
     setVisibleColumns(defaultColumns(kind));
+    setPageSize(kind === "waiting" ? 8 : 20);
   }, [kind]);
 
   useEffect(() => {
@@ -332,11 +436,14 @@ export function OperationalWorklist({
       kind,
       page: String(page),
       pageSize: String(pageSize),
+      retry: String(retryVersion),
     });
     if (search) params.set("search", search);
     if (stage !== "all") params.set("stage", stage);
     if (recruiter !== "all") params.set("recruiter", recruiter);
+    if (client !== "all") params.set("client", client);
     if (signal !== "all") params.set("signal", signal);
+    if (period !== "all") params.set("period", period);
     if (position !== "all") params.set("position", position);
     if (status !== "all") params.set("status", status);
 
@@ -373,7 +480,9 @@ export function OperationalWorklist({
     search,
     stage,
     recruiter,
+    client,
     signal,
+    period,
     position,
     status,
     retryVersion,
@@ -403,6 +512,15 @@ export function OperationalWorklist({
     { value: "all", label: "Todos" },
     ...(result?.filters.signals ?? []),
   ];
+  const activeFilterCount = [
+    stage !== "all",
+    recruiter !== "all",
+    client !== "all",
+    signal !== "all",
+    period !== "all",
+    position !== "all",
+    status !== "all",
+  ].filter(Boolean).length;
 
   return (
     <div className="operational-worklist">
@@ -417,7 +535,7 @@ export function OperationalWorklist({
           <input
             value={searchInput}
             onChange={(event) => setSearchInput(event.target.value)}
-            placeholder="Pesquisar em todos os registos…"
+            placeholder="Pesquisar candidato, vaga ou ID…"
           />
         </label>
         <label className="page-size-picker">
@@ -429,6 +547,7 @@ export function OperationalWorklist({
               setPage(1);
             }}
           >
+            {kind === "waiting" ? <option value={8}>8</option> : null}
             <option value={20}>20</option>
             <option value={50}>50</option>
             <option value={100}>100</option>
@@ -455,54 +574,81 @@ export function OperationalWorklist({
         </details>
       </div>
 
-      <div className="worklist-filter-groups">
-        {kind !== "proposals" ? (
-          <>
-            <FilterGroup
-              label="Etapa atingida"
-              value={stage}
-              options={defaultStageOptions}
-              onChange={(value) => updateFilter(setStage, value)}
-            />
-            <FilterGroup
-              label="Recrutador"
-              value={recruiter}
-              options={[
-                { value: "all", label: "Todos" },
-                ...(result?.filters.recruiters ?? []),
-              ]}
-              onChange={(value) => updateFilter(setRecruiter, value)}
-            />
-            <FilterGroup
-              label="Tempo parado · prioridade relativa"
-              value={signal}
-              options={signalOptions}
-              onChange={(value) => updateFilter(setSignal, value)}
-            />
-          </>
-        ) : (
-          <>
-            <FilterGroup
-              label="Exceção salarial"
-              value={position}
-              options={[
-                { value: "all", label: "Todas" },
-                ...(result?.filters.positions ?? []),
-              ]}
-              onChange={(value) => updateFilter(setPosition, value)}
-            />
-            <FilterGroup
-              label="Estado da proposta"
-              value={status}
-              options={[
-                { value: "all", label: "Todos" },
-                ...(result?.filters.statuses ?? []),
-              ]}
-              onChange={(value) => updateFilter(setStatus, value)}
-            />
-          </>
-        )}
-      </div>
+      <details className="worklist-filters">
+        <summary>
+          Filtros
+          {activeFilterCount ? (
+            <span className="filter-count">{activeFilterCount}</span>
+          ) : null}
+        </summary>
+        <div className="worklist-filter-groups">
+          <FilterGroup
+            label="Cliente"
+            value={client}
+            options={[
+              { value: "all", label: "Todos" },
+              ...(result?.filters.clients ?? []),
+            ]}
+            onChange={(value) => updateFilter(setClient, value)}
+          />
+          <FilterGroup
+            label="Recrutador"
+            value={recruiter}
+            options={[
+              { value: "all", label: "Todos" },
+              ...(result?.filters.recruiters ?? []),
+            ]}
+            onChange={(value) => updateFilter(setRecruiter, value)}
+          />
+          {kind !== "proposals" ? (
+            <>
+              <FilterGroup
+                label="Data de candidatura"
+                value={period}
+                options={[
+                  { value: "recent", label: "Últimos 90 dias" },
+                  { value: "old", label: "Mais de 90 dias / sem data" },
+                  { value: "all", label: "Todo o histórico" },
+                ]}
+                onChange={(value) => updateFilter(setPeriod, value)}
+              />
+              <FilterGroup
+                label="Etapa atingida"
+                value={stage}
+                options={defaultStageOptions}
+                onChange={(value) => updateFilter(setStage, value)}
+              />
+              <FilterGroup
+                label="Tempo parado · prioridade relativa"
+                value={signal}
+                options={signalOptions}
+                onChange={(value) => updateFilter(setSignal, value)}
+              />
+            </>
+          ) : (
+            <>
+              <FilterGroup
+                label="Exceção salarial"
+                value={position}
+                options={[
+                  { value: "all", label: "Todas" },
+                  ...(result?.filters.positions ?? []),
+                ]}
+                onChange={(value) => updateFilter(setPosition, value)}
+              />
+              <FilterGroup
+                label="Estado da proposta"
+                value={status}
+                options={[
+                  { value: "all", label: "Todos" },
+                  ...(result?.filters.statuses ?? []),
+                ]}
+                onChange={(value) => updateFilter(setStatus, value)}
+              />
+            </>
+          )}
+        </div>
+      </details>
 
       <div className="dataset-status" aria-live="polite">
         {error ? (
@@ -510,11 +656,12 @@ export function OperationalWorklist({
         ) : result ? (
           <span>
             <b>{result.total.toLocaleString("pt-PT")}</b> registos encontrados
-            {search ? ` para “${search}”` : ""} · página {result.total ? result.page : 0} de{" "}
-            {result.totalPages} · dados até {formatDate(result.asOf)}
+            {search ? ` para “${search}”` : ""} · página{" "}
+            {result.total ? result.page : 0} de {result.totalPages} · dados até{" "}
+            {formatDate(result.asOf)}
           </span>
         ) : (
-          <span>A carregar o conjunto completo…</span>
+          <span>A carregar os registos correspondentes…</span>
         )}
         {loading && result ? (
           <span className="loading-label">A atualizar…</span>
@@ -540,7 +687,7 @@ export function OperationalWorklist({
                 {visibleColumns.map((column) => (
                   <th
                     className={
-                      ["offer", "band", "expectedSalary", "score", "daysIdle"].includes(
+                      ["offer", "band", "expectedSalary", "daysIdle"].includes(
                         column,
                       )
                         ? "num"
@@ -559,9 +706,12 @@ export function OperationalWorklist({
                   {visibleColumns.map((column) => (
                     <td
                       className={
-                        ["offer", "band", "expectedSalary", "score", "daysIdle"].includes(
-                          column,
-                        )
+                        [
+                          "offer",
+                          "band",
+                          "expectedSalary",
+                          "daysIdle",
+                        ].includes(column)
                           ? "num"
                           : undefined
                       }

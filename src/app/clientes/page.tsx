@@ -20,6 +20,17 @@ function rating(value: number | null) {
       }).format(value);
 }
 
+function retentionGap(value: number | null, average: number | null) {
+  if (value === null || average === null) return "Sem comparação";
+  const points = (value - average) * 100;
+  if (Math.abs(points) < 0.05) return "Igual à média global";
+  const formatted = new Intl.NumberFormat("pt-PT", {
+    maximumFractionDigits: 1,
+    signDisplay: "always",
+  }).format(points);
+  return `${formatted} p.p. face à média`;
+}
+
 export default function ClientsPage() {
   const data = getClientData();
   const clients = [...data.clients].sort(
@@ -66,7 +77,12 @@ export default function ClientsPage() {
               <tr>
                 <th>Cliente</th>
                 <th>Contratações</th>
-                <th>Retenção · 90 dias</th>
+                <th>
+                  Retenção · 90 dias
+                  <small>
+                    Média global: {percentage(data.clientTotals.retention90)}
+                  </small>
+                </th>
                 <th>Desempenho · 90 dias</th>
                 <th>Substituições</th>
                 <th>Satisfação · contexto</th>
@@ -91,14 +107,19 @@ export default function ClientsPage() {
                       {client.retentionKnown.toLocaleString("pt-PT")} valores
                       válidos
                     </small>
+                    <small className="comparison-note">
+                      {retentionGap(
+                        client.retention90,
+                        data.clientTotals.retention90,
+                      )}
+                    </small>
                   </td>
-                  <td className="num">
-                    {rating(client.performance)} / 5
-                  </td>
+                  <td className="num">{rating(client.performance)} / 5</td>
                   <td className="num">
                     <b>{client.replacements.toLocaleString("pt-PT")}</b>
                     <small>
-                      em {client.feedbackCount.toLocaleString("pt-PT")} feedbacks
+                      em {client.feedbackCount.toLocaleString("pt-PT")}{" "}
+                      feedbacks
                     </small>
                   </td>
                   <td className="num">

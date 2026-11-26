@@ -19,47 +19,21 @@ async function getRecord(table: string, id: string, signal?: AbortSignal) {
 }
 
 export function SalaryRecord({ id: initialId }: { id?: string }) {
-  const [id, setId] = useState(initialId ?? "");
+  const id = initialId ?? "";
   const [records, setRecords] = useState<{
     offer: DatasetRow;
     application: DatasetRow;
     candidate: DatasetRow | null;
     vacancy: DatasetRow | null;
   } | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(Boolean(initialId));
   const [error, setError] = useState("");
 
   useEffect(() => {
-    if (initialId) return;
-    const controller = new AbortController();
-    fetch("/api/datasets?table=propostas&page=1&pageSize=1", {
-      signal: controller.signal,
-    })
-      .then(async (response) => {
-        const result = (await response.json()) as {
-          rows: DatasetRow[];
-          error?: string;
-        };
-        if (!response.ok || !result.rows[0])
-          throw new Error(result.error ?? "Não há propostas no ficheiro.");
-        setId(String(result.rows[0].id));
-      })
-      .catch((cause: unknown) => {
-        if (!controller.signal.aborted)
-          setError(
-            cause instanceof Error
-              ? cause.message
-              : "Não foi possível obter uma proposta.",
-          );
-      })
-      .finally(() => {
-        if (!controller.signal.aborted) setLoading(false);
-      });
-    return () => controller.abort();
-  }, [initialId]);
-
-  useEffect(() => {
-    if (!id) return;
+    if (!id) {
+      setLoading(false);
+      return;
+    }
     const controller = new AbortController();
     setLoading(true);
     setError("");
@@ -105,6 +79,22 @@ export function SalaryRecord({ id: initialId }: { id?: string }) {
   const candidateName = String(
     records?.candidate?.nome_ficticio ?? "Candidato não associado",
   );
+  if (!initialId)
+    return (
+      <div className="page-content">
+        <PageHeader
+          title="Escolher proposta"
+          subtitle="A validação abre a partir do registo escolhido."
+        />
+        <Notice title="Seleciona uma proposta" tone="info">
+          Abre uma proposta na lista para comparar a oferta com a banda da vaga
+          e a expectativa do candidato.
+        </Notice>
+        <Link href="/propostas" className="button-primary">
+          Ver propostas
+        </Link>
+      </div>
+    );
   if (loading && !records)
     return (
       <div className="page-content">
@@ -165,7 +155,11 @@ export function SalaryRecord({ id: initialId }: { id?: string }) {
           <div>
             <span>Candidato</span>
             <b>{candidateName}</b>
-            <small>{String(records.candidate?.id ?? records.application.id_candidato)}</small>
+            <small>
+              {String(
+                records.candidate?.id ?? records.application.id_candidato,
+              )}
+            </small>
           </div>
           <div>
             <span>Cliente · vaga</span>
@@ -173,14 +167,14 @@ export function SalaryRecord({ id: initialId }: { id?: string }) {
               {String(records.vacancy?.id_cliente ?? "—")} ·{" "}
               {String(records.vacancy?.id ?? records.application.id_vaga)}
             </b>
-            <small>{String(records.vacancy?.titulo ?? "Vaga não encontrada")}</small>
+            <small>
+              {String(records.vacancy?.titulo ?? "Vaga não encontrada")}
+            </small>
           </div>
           <div>
             <span>Oferta original</span>
             <b>{formatMoney(records.offer.salario_oferecido)}</b>
-            <small>
-              {formatDate(records.offer.data_proposta)}
-            </small>
+            <small>{formatDate(records.offer.data_proposta)}</small>
           </div>
         </div>
       </Panel>

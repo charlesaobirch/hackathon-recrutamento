@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ActivityChart } from "@/components/activity-chart";
 import { OperationalWorklist } from "@/components/operational-worklist";
 import { Badge, Metric, PageHeader, Panel } from "@/components/ui";
 import { formatDate } from "@/lib/format";
@@ -13,230 +14,310 @@ function percentage(value: number | null) {
       }).format(value);
 }
 
-function days(value: number | null) {
-  return value === null ? "—" : `${Math.round(value)} dias`;
+function change(current: number, previous: number) {
+  if (!previous) return undefined;
+  const delta = Math.round(((current - previous) / previous) * 100);
+  return `${delta > 0 ? "+" : ""}${delta}%`;
+}
+
+function deltaTone(current: number, previous: number): "positive" | "warning" {
+  return current >= previous ? "positive" : "warning";
 }
 
 export default function OverviewPage() {
   const data = getOverviewData();
   const validSalaryOffers =
-    data.counts.salaryBelow + data.counts.salaryWithin + data.counts.salaryAbove;
+    data.counts.salaryBelow +
+    data.counts.salaryWithin +
+    data.counts.salaryAbove;
   const belowBandRate = validSalaryOffers
     ? data.counts.salaryBelow / validSalaryOffers
     : null;
-  const noResponseRate = data.counts.proposals
-    ? data.counts.proposalsNoResponse / data.counts.proposals
-    : null;
-  const hiringRate = data.counts.applications
-    ? data.counts.hires / data.counts.applications
-    : null;
   const waitingShare =
-    data.cycle.total && data.cycle.waitingForOffer
+    data.cycle.total !== null &&
+    data.cycle.total > 0 &&
+    data.cycle.waitingForOffer !== null
       ? data.cycle.waitingForOffer / data.cycle.total
       : null;
-  const cycleValues = [
-    data.cycle.firstInterview,
-    data.cycle.interviewCycle,
-    data.cycle.waitingForOffer,
-    data.cycle.proposalToHire,
+  const queue = [
+    { key: "recent", label: "0–13 dias", count: data.queueAges.recent },
+    { key: "attention", label: "14–29 dias", count: data.queueAges.attention },
+    { key: "critical", label: "30+ dias", count: data.queueAges.critical },
+    { key: "unknown", label: "Sem data", count: data.queueAges.unknown },
   ];
-  const p0Issues = [
-    data.qualityCounts.invalidVacancyApplications > 0,
+  const queueMax = Math.max(...queue.map((item) => item.count), 1);
+  const openIssues =
+    data.qualityCounts.invalidVacancyApplications > 0 ||
     data.qualityCounts.candidatesMarkedHired !==
-      data.qualityCounts.distinctHiredCandidates,
-  ].filter(Boolean).length;
+      data.qualityCounts.distinctHiredCandidates;
 
   return (
     <div className="page-content">
       <PageHeader
-        title="Torre de controlo"
-        subtitle="Prioridades e decisões reconstruídas a partir dos registos de origem."
+        title="Hoje"
+        subtitle="O que merece atenção nos últimos 90 dias, com o histórico completo a um clique."
         action={
-          <span className="data-date">
-            Dados até {formatDate(data.asOf)}
-          </span>
+          <span className="data-date">Dados até {formatDate(data.asOf)}</span>
         }
       />
-      <div className="metric-grid">
+
+      <Panel
+        title="À espera de proposta"
+        meta={
+          <Link className="text-link" href="/espera">
+            Abrir fila completa ↗
+          </Link>
+        }
+        className="priority-panel"
+      >
+        <p className="panel-intro">
+          Candidaturas com entrevista aprovada e sem proposta registada,
+          ordenadas pelo tempo desde a última atividade.
+        </p>
+        <OperationalWorklist kind="waiting" initialPeriod="recent" />
+      </Panel>
+
+      <div className="kpi-strip">
         <Metric
           label="Candidaturas"
-          value={data.counts.applications.toLocaleString("pt-PT")}
-          note={`${data.candidatesCount.toLocaleString("pt-PT")} candidatos no conjunto completo`}
+          value={data.counts.applicationsRecent.toLocaleString("pt-PT")}
+          note="Entradas nos últimos 90 dias"
+          glyph="people"
+          delta={change(
+            data.counts.applicationsRecent,
+            data.counts.applicationsPrevious,
+          )}
+          tone={deltaTone(
+            data.counts.applicationsRecent,
+            data.counts.applicationsPrevious,
+          )}
         />
         <Metric
-          label="Última entrevista → proposta"
-          value={days(data.cycle.waitingForOffer)}
-          note={`${percentage(waitingShare)} da mediana do ciclo de ${days(data.cycle.total)}`}
-          tone="danger"
+          label="À espera de proposta"
+          value={data.counts.waitingRecent.toLocaleString("pt-PT")}
+          note="Aprovadas em entrevista, sem oferta"
+          glyph="clock"
+          primary
         />
         <Metric
           label="Propostas emitidas"
-          value={data.counts.proposals.toLocaleString("pt-PT")}
-          note={`${data.counts.proposalsNoResponse.toLocaleString("pt-PT")} sem resposta (${percentage(noResponseRate)})`}
-          tone="warning"
+          value={data.counts.proposalsRecent.toLocaleString("pt-PT")}
+          note="Ofertas registadas no período"
+          glyph="document"
+          delta={change(
+            data.counts.proposalsRecent,
+            data.counts.proposalsPrevious,
+          )}
+          tone={deltaTone(
+            data.counts.proposalsRecent,
+            data.counts.proposalsPrevious,
+          )}
         />
         <Metric
-          label="Contratações por candidatura"
-          value={data.counts.hires.toLocaleString("pt-PT")}
-          note={`${percentage(hiringRate)} de conversão desde a candidatura`}
-          tone="positive"
+          label="Contratações"
+          value={data.counts.hiresRecent.toLocaleString("pt-PT")}
+          note="Aceitações concretizadas"
+          glyph="check"
+          delta={change(data.counts.hiresRecent, data.counts.hiresPrevious)}
+          tone={deltaTone(data.counts.hiresRecent, data.counts.hiresPrevious)}
         />
       </div>
 
-      <div className="overview-layout">
-        <Panel
-          title="À espera de proposta"
-          meta={
-            <Badge tone="danger">
-              {data.counts.waiting.toLocaleString("pt-PT")} candidaturas
-            </Badge>
-          }
-          className="priority-panel"
-        >
-          <p className="panel-intro">
-            Entrevista mais recente aprovada, sem proposta ou contratação
-            registada; ordenado pelo tempo desde a última ação.
-          </p>
-          <OperationalWorklist kind="waiting" />
-        </Panel>
-        <div className="overview-rail">
+      <div className="split-main">
+        <div className="stack">
           <Panel
-            title="Integridade crítica"
-            meta={<Badge tone="danger">{p0Issues} regras P0</Badge>}
+            title="Atividade registada"
+            meta={<span className="muted">Últimos 6 meses</span>}
+            className="activity-panel"
           >
-            <strong className="rail-value">
-              {data.qualityCounts.invalidVacancyApplications.toLocaleString(
-                "pt-PT",
-              )}
-            </strong>
-            <p className="panel-copy">
-              Candidaturas ligadas a vagas inexistentes. Os relatórios oficiais
-              continuam bloqueados até à correção validada na origem.
-            </p>
+            <ActivityChart months={data.activityMonths} />
+          </Panel>
+
+          <Panel
+            title="Funil dos últimos 90 dias"
+            meta={
+              <Link className="text-link" href="/pipeline">
+                Ver percurso completo ↗
+              </Link>
+            }
+          >
+            <div className="funnel">
+              {data.recentFunnel.map((stage, index) => {
+                const previousCount =
+                  index > 0 ? data.recentFunnel[index - 1].count : null;
+                const width =
+                  data.recentFunnel[0].count > 0
+                    ? (stage.count / data.recentFunnel[0].count) * 100
+                    : 0;
+                return (
+                  <Link
+                    className="funnel-row"
+                    href={
+                      stage.key === "candidaturas"
+                        ? "/candidaturas"
+                        : `/candidaturas?stage=${encodeURIComponent(stage.key)}`
+                    }
+                    key={stage.key}
+                  >
+                    <span className="funnel-label">
+                      <b>{stage.label}</b>
+                      <small>
+                        {previousCount
+                          ? `${percentage(stage.conversion)} da etapa anterior`
+                          : "entrada no período"}
+                      </small>
+                    </span>
+                    <span className="funnel-bar-wrap">
+                      <span className="funnel-bar">
+                        <span style={{ width: `${Math.max(width, 1.5)}%` }} />
+                      </span>
+                      <span className="funnel-meta">
+                        <strong>
+                          {stage.count.toLocaleString("pt-PT")} candidaturas
+                        </strong>
+                        <span>
+                          {data.counts.applicationsRecent
+                            ? percentage(
+                                stage.count / data.counts.applicationsRecent,
+                              )
+                            : "—"}{" "}
+                          do total
+                        </span>
+                      </span>
+                    </span>
+                  </Link>
+                );
+              })}
+            </div>
+          </Panel>
+        </div>
+
+        <aside className="stack" aria-label="Alertas e ritmo do processo">
+          <Panel
+            title="Requer ação"
+            meta={
+              <Badge tone={openIssues ? "danger" : "positive"}>
+                {openIssues ? "2 regras críticas" : "Sem bloqueios"}
+              </Badge>
+            }
+            className="alerts-panel"
+          >
+            <ul className="alert-list">
+              <li>
+                <span className="alert-mark danger" />
+                <span>
+                  <b>
+                    {data.qualityCounts.invalidVacancyApplications.toLocaleString(
+                      "pt-PT",
+                    )}{" "}
+                    candidaturas sem vaga válida
+                  </b>
+                  <small>Corrigir ligações antes de reporting</small>
+                </span>
+              </li>
+              <li>
+                <span className="alert-mark warning" />
+                <span>
+                  <b>
+                    {data.counts.salaryBelow.toLocaleString("pt-PT")} propostas
+                    abaixo do mínimo
+                  </b>
+                  <small>
+                    {percentage(belowBandRate)} das ofertas com banda definida
+                  </small>
+                </span>
+              </li>
+            </ul>
             <Link className="inline-action" href="/qualidade">
               Abrir fila de qualidade <span>↗</span>
             </Link>
           </Panel>
-          <Panel title="Propostas abaixo da banda">
-            <strong className="rail-value">
-              {percentage(belowBandRate)}
-            </strong>
-            <p className="panel-copy">
-              {data.counts.salaryBelow.toLocaleString("pt-PT")} propostas abaixo
-              do mínimo, entre {validSalaryOffers.toLocaleString("pt-PT")} com
-              banda válida.
-            </p>
-            <Link className="inline-action" href="/propostas">
-              Rever propostas <span>↗</span>
-            </Link>
-          </Panel>
-        </div>
-      </div>
 
-      <div className="bottom-grid">
-        <Panel
-          title="Ciclo de recrutamento"
-          meta={
-            <Badge tone="danger">
-              {percentage(waitingShare)} do ciclo em espera
-            </Badge>
-          }
-        >
-          <div className="cycle-summary">
-            <div className="cycle-total">
-              <span>Mediana · {data.cycle.sampleSize} candidaturas contratadas</span>
-              <strong>
-                {data.cycle.total ?? "—"} <small>dias</small>
-              </strong>
-            </div>
-            <div className="cycle-wait-highlight">
-              <b>{days(data.cycle.waitingForOffer)}</b>
-              <span>entre a última entrevista e a proposta</span>
-            </div>
-          </div>
-          <div className="cycle-strip" aria-label="Mediana por segmento do ciclo">
-            <span className="cycle-first" style={{ flex: cycleValues[0] ?? 1 }} />
-            <span
-              className="cycle-interviews"
-              style={{ flex: cycleValues[1] ?? 1 }}
-            />
-            <span className="cycle-wait" style={{ flex: cycleValues[2] ?? 1 }} />
-            <span className="cycle-close" style={{ flex: cycleValues[3] ?? 1 }} />
-          </div>
-          <div
-            className="cycle-steps"
-            style={{
-              gridTemplateColumns: cycleValues
-                .map((value) => `${Math.max(value ?? 1, 1)}fr`)
-                .join(" "),
-            }}
+          <Panel
+            title="Idade da fila"
+            meta={
+              <span className="muted">
+                {data.counts.waitingRecent.toLocaleString("pt-PT")} em espera
+              </span>
+            }
           >
-            <div>
-              <b>{days(data.cycle.firstInterview)}</b>
-              <span>Candidatura → 1.ª entrevista</span>
-            </div>
-            <div>
-              <b>{days(data.cycle.interviewCycle)}</b>
-              <span>Ciclo de entrevistas</span>
-            </div>
-            <div>
-              <b>{days(data.cycle.waitingForOffer)}</b>
-              <span>Espera até proposta</span>
-            </div>
-            <div>
-              <b>{days(data.cycle.proposalToHire)}</b>
-              <span>Proposta → contratação</span>
-            </div>
-          </div>
-          <p className="source-note">
-            Medianas da coorte contratada; intervalos não somam necessariamente
-            a mediana global.
-          </p>
-          <Link href="/pipeline" className="inline-action">
-            Ver etapas e conversões <span>↗</span>
-          </Link>
-        </Panel>
-        <Panel
-          title="Funil de conversão"
-          meta={
-            <Link className="text-link" href="/pipeline">
-              Abrir pipeline ↗
-            </Link>
-          }
-        >
-          <div className="mini-funnel">
-            {data.funnel.map((stage, index) => {
-              const share = data.counts.applications
-                ? stage.count / data.counts.applications
-                : 0;
-              return (
-                <div className="mini-funnel-row" key={stage.key}>
-                  <div className="mini-funnel-label">
-                    <span>{stage.label}</span>
-                    <small>{percentage(share)}</small>
-                  </div>
-                  <b>{stage.count.toLocaleString("pt-PT")}</b>
-                  <div
-                    className="mini-funnel-track"
-                    aria-label={`${stage.label}: ${stage.count.toLocaleString("pt-PT")} registos`}
-                  >
+            <div className="age-list">
+              {queue.map((bucket) => (
+                <div className={`age-item is-${bucket.key}`} key={bucket.key}>
+                  <span className="age-head">
+                    <span>{bucket.label}</span>
+                    <b>{bucket.count.toLocaleString("pt-PT")}</b>
+                  </span>
+                  <span className="age-bar">
                     <span
                       style={{
-                        width: `${data.counts.applications ? (stage.count / data.counts.applications) * 100 : 0}%`,
+                        width: `${Math.max((bucket.count / queueMax) * 100, 1)}%`,
                       }}
                     />
-                  </div>
-                  {index > 0 ? (
-                    <small className="mini-funnel-conversion">
-                      {percentage(stage.conversion)} da etapa anterior
-                    </small>
-                  ) : null}
+                  </span>
                 </div>
-              );
-            })}
-          </div>
-        </Panel>
+              ))}
+            </div>
+            <p className="chart-caption">
+              Tempo desde a última entrevista aprovada, para candidaturas
+              recentes ainda sem proposta. Os limites são relativos, não um SLA.
+            </p>
+          </Panel>
+
+          <Panel
+            title="Ciclo habitual"
+            meta={<Badge>Histórico</Badge>}
+            className="cycle-panel"
+          >
+            <div className="cycle-figure">
+              <strong>
+                {data.cycle.total === null ? "—" : Math.round(data.cycle.total)}
+              </strong>
+              <span>
+                dias, mediana até à contratação
+                <small>
+                  {data.cycle.sampleSize.toLocaleString("pt-PT")} processos
+                </small>
+              </span>
+            </div>
+            <div className="cycle-split">
+              <div>
+                <b>
+                  {data.cycle.waitingForOffer === null
+                    ? "—"
+                    : Math.round(data.cycle.waitingForOffer)}{" "}
+                  dias
+                </b>
+                <span>
+                  entrevista final → proposta · {percentage(waitingShare)}
+                </span>
+              </div>
+              <div>
+                <b>
+                  {data.cycle.proposalToHire === null
+                    ? "—"
+                    : Math.round(data.cycle.proposalToHire)}{" "}
+                  dias
+                </b>
+                <span>proposta → contratação</span>
+              </div>
+            </div>
+            <p className="source-note">
+              Medianas sobre processos contratados de todo o histórico —
+              contexto para interpretar a fila de hoje.
+            </p>
+          </Panel>
+        </aside>
       </div>
+
+      <p className="source-note archive-note">
+        O arquivo completo tem{" "}
+        {data.counts.applications.toLocaleString("pt-PT")} candidaturas e{" "}
+        {data.counts.proposals.toLocaleString("pt-PT")} propostas.{" "}
+        <Link className="text-link" href="/candidaturas?period=all">
+          Ver todo o histórico
+        </Link>
+      </p>
     </div>
   );
 }

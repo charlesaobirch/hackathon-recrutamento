@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import type { ReactNode } from "react";
 import { Bricolage_Grotesque, Instrument_Sans } from "next/font/google";
+import type { ReactNode } from "react";
 import { AppShell } from "@/components/app-shell";
 import "./globals.css";
+import "./jobgio.css";
 
 const display = Bricolage_Grotesque({
   subsets: ["latin"],
@@ -15,8 +16,8 @@ const ui = Instrument_Sans({
 
 export const metadata: Metadata = {
   title: {
-    default: "TalentFlow · Torre de Controlo",
-    template: "%s · TalentFlow",
+    default: "Farol · Recrutamento",
+    template: "%s · Farol",
   },
   description: "Acompanhamento operacional do processo de recrutamento.",
 };

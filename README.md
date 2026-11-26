@@ -19,12 +19,12 @@ Abrir `http://localhost:3000`.
 - `/candidaturas/AP…` — candidatura e todos os seus registos relacionados.
 - `/propostas` — todas as 1 065 propostas.
 - `/propostas/PR…` — comparação editável entre oferta, banda e expectativa dos dados ligados.
-- `/propostas/validar` — verificador ligado a uma proposta do ficheiro completo.
+- `/propostas/validar` — orienta para escolher uma proposta; a validação começa no registo selecionado.
 - `/clientes` — retenção, desempenho, substituições e todos os clientes.
 - `/qualidade` — anomalias prioritárias e estado local de demonstração.
 - `/dados` — explorador dos 11 ficheiros JSON, com pesquisa e paginação por tabela.
 
-Todas as páginas partilham a moldura grafite, o canvas marfim e a navegação superior com aba ativa ligada à página. Em ecrãs pequenos, a navegação desloca-se horizontalmente; não existe navbar inferior.
+Todas as páginas partilham a moldura grafite, o canvas marfim e a navegação superior com aba ativa ligada à página. A navegação principal tem cinco entradas; Candidaturas, Clientes e Dados completos ficam agrupados em “Mais”. Em ecrãs pequenos, a navegação desloca-se horizontalmente; não existe navbar inferior.
 
 ## Dados e limites
 
