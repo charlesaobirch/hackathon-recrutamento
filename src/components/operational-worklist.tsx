@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { Badge } from "@/components/ui";
+import { applicationPeriodOptions } from "@/lib/application-period";
 import {
   formatDate,
   formatMoney,
@@ -608,11 +609,7 @@ export function OperationalWorklist({
                 <FilterGroup
                   label="Data de candidatura"
                   value={period}
-                  options={[
-                    { value: "recent", label: "Últimos 90 dias" },
-                    { value: "old", label: "Mais de 90 dias / sem data" },
-                    { value: "all", label: "Todo o histórico" },
-                  ]}
+                  options={applicationPeriodOptions}
                   onChange={(value) => updateFilter(setPeriod, value)}
                 />
               ) : null}
@@ -771,8 +768,9 @@ export function OperationalWorklist({
         </div>
       </div>
       <p className="source-note">
-        A lista inclui todos os registos correspondentes. A prioridade de 14/30
-        dias é relativa ao tempo parado e não representa um SLA.
+        {kind === "proposals"
+          ? "A banda vem da vaga associada. “Sem resposta” significa que a resposta ainda não foi registada."
+          : "A lista inclui todos os registos correspondentes. A prioridade de 14 e 30 dias é relativa ao tempo parado, não é um SLA."}
       </p>
     </div>
   );
