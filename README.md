@@ -22,7 +22,6 @@ Abrir `http://localhost:3000`.
 - `/propostas/validar` — verificador ligado a uma proposta do ficheiro completo.
 - `/clientes` — retenção, desempenho, substituições e todos os clientes.
 - `/qualidade` — anomalias prioritárias e estado local de demonstração.
-- `/dados` — explorador dos 11 ficheiros JSON, com pesquisa e paginação por tabela.
 
 Todas as páginas partilham a moldura grafite, o canvas marfim e a navegação superior com aba ativa ligada à página. Em ecrãs pequenos, a navegação desloca-se horizontalmente; não existe navbar inferior.
 

@@ -115,9 +115,7 @@ function RelatedRecords({
         </div>
         {data.total > data.rows.length ? (
           <p className="source-note">
-            Mostrados {data.rows.length} registos nesta candidatura. Consulta
-            todos em <Link href="/dados">Dados</Link> e pesquisa pelo
-            identificador da candidatura.
+            Mostrados {data.rows.length} registos nesta candidatura.
           </p>
         ) : null}
       </details>

@@ -1,8 +1,9 @@
-import Link from "next/link";
 import { DatasetExplorer } from "@/components/dataset-explorer";
 import { TimeBreakdownChart } from "@/components/time-breakdown-chart";
 import { Badge, Notice, PageHeader, Panel } from "@/components/ui";
 import { funnel } from "@/lib/recruitment";
+
+const HUMANIZED_FIELDS = ["data", "fase", "resultado", "feedback"] as const;
 
 export default function PipelinePage() {
   return (
@@ -68,15 +69,12 @@ export default function PipelinePage() {
             necessariamente a mediana global de 40 dias.
           </p>
         </Panel>
-        <Panel
-          title="Entrevistas registadas"
-          meta={
-            <Link className="text-link" href="/dados">
-              Abrir as 11 tabelas ↗
-            </Link>
-          }
-        >
-          <DatasetExplorer initialTable="entrevistas" initialPageSize={10} />
+        <Panel title="Entrevistas registadas">
+          <DatasetExplorer
+            initialTable="entrevistas"
+            initialPageSize={10}
+            humanizeFields={HUMANIZED_FIELDS}
+          />
         </Panel>
       </div>
     </div>

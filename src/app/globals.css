@@ -1145,6 +1145,10 @@ summary:focus-visible {
   overflow-wrap: anywhere;
   white-space: normal;
 }
+.dataset-table .cell-date {
+  min-width: 112px;
+  white-space: nowrap;
+}
 .dataset-record-link {
   color: var(--color-fg-accent);
   font-weight: 700;
@@ -1860,7 +1864,7 @@ summary:focus-visible {
 }
 .pipeline-lower {
   display: grid;
-  grid-template-columns: minmax(260px, 0.8fr) minmax(0, 1.2fr);
+  grid-template-columns: minmax(0, 1fr);
   gap: 14px;
 }
 .time-chart {
@@ -1907,7 +1911,7 @@ summary:focus-visible {
 }
 .time-donuts {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 10px;
 }
 .time-donut-card {
@@ -2049,6 +2053,12 @@ summary:focus-visible {
 .time-panel .time-donuts {
   flex: 1;
   grid-auto-rows: minmax(0, 1fr);
+}
+
+@media (max-width: 760px) {
+  .time-panel .time-donuts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 .search-field {
@@ -3442,4 +3452,265 @@ details:not([open]) > .exploration-popover {
 .estate-table-panel .worklist-table th {
   background: var(--color-bg-subtle);
   color: var(--color-fg-primary);
+}
+
+/* Visão geral: linguagem visual da referência (superfícies claras, verde
+   operativo e laranja para atenção). Todo o escopo fica nesta página. */
+.overview-page {
+  --ov-green: #227d52;
+  --ov-green-deep: #13442d;
+  --ov-green-soft: #eaf4ee;
+  --ov-green-line: #c4ddcd;
+  --ov-green-light: #8fc7a5;
+  --ov-orange: #ee7d03;
+  --ov-orange-ink: #8a4a00;
+  --ov-orange-soft: #fff2e4;
+  --ov-ink: #141a17;
+  --ov-muted: #5d665f;
+  --ov-line: #e5e5e7;
+
+  --color-fg-primary: var(--ov-ink);
+  --color-fg-secondary: var(--ov-muted);
+  --color-fg-muted: #6b746e;
+  --color-border: var(--ov-line);
+  --color-border-strong: #c6cdc8;
+  --color-bg-subtle: #f7f8f7;
+  --color-bg-muted: #f0f2f0;
+  --color-bg-surface: #ffffff;
+  --color-focus: var(--ov-green-deep);
+  --card-bg: #ffffff;
+  --card-border: var(--ov-line);
+  --card-radius: 14px;
+
+  --color-success: var(--ov-green);
+  --color-success-soft: var(--ov-green-soft);
+  --badge-fg-success: var(--ov-green-deep);
+  --badge-bg-success: var(--ov-green-soft);
+  --color-warning: var(--ov-orange);
+  --color-warning-soft: var(--ov-orange-soft);
+  --badge-fg-warning: var(--ov-orange-ink);
+  --badge-bg-warning: var(--ov-orange-soft);
+  --color-accent: var(--ov-green);
+  --color-accent-hover: var(--ov-green-deep);
+  --color-accent-soft: var(--ov-green-soft);
+  --color-fg-accent: var(--ov-green-deep);
+  --primitive-lime-100: var(--ov-green-soft);
+  --primitive-lime-400: var(--ov-green);
+  --primitive-lime-500: var(--ov-green-deep);
+  --overview-green: var(--ov-green);
+  --overview-green-ink: var(--ov-green-deep);
+}
+
+.overview-page .page-heading h1 {
+  letter-spacing: -0.03em;
+}
+
+.overview-page .panel {
+  border-color: var(--ov-line);
+}
+
+.overview-page .panel-heading h2 {
+  letter-spacing: -0.02em;
+}
+
+/* Resumo: quatro secções claras, números verdes e ícones com tinta suave. */
+.overview-page .panel.summary-panel {
+  --summary-tile-bg: #ffffff;
+  --summary-tile-border: var(--ov-line);
+  border-color: var(--ov-line);
+}
+
+.overview-page .summary-panel .panel-heading {
+  border-bottom-color: var(--ov-line);
+}
+
+.overview-page .summary-metric-label,
+.overview-page .summary-metric-note {
+  color: var(--ov-muted);
+}
+
+.overview-page .summary-metric-icon {
+  color: var(--ov-green-deep);
+  background: var(--ov-green-soft);
+}
+
+.overview-page .summary-metric-value strong {
+  color: var(--ov-green-deep);
+  letter-spacing: -0.03em;
+}
+
+.overview-page .summary-metric:nth-child(2)::after {
+  background: var(--color-border-strong);
+}
+
+.overview-page .summary-metric:nth-child(3) .delta.positive,
+.overview-page .summary-metric:nth-child(4) .delta.positive {
+  border-color: var(--ov-green-line);
+  background: var(--ov-green-soft);
+  color: var(--ov-green-deep);
+}
+
+.overview-page .summary-metric .delta.warning {
+  color: var(--ov-orange-ink);
+  background: var(--ov-orange-soft);
+}
+
+/* A janela temporal usa o verde profundo como estado selecionado. */
+.overview-page .segmented {
+  border-color: var(--ov-line);
+  background: #ffffff;
+}
+
+.overview-page .segmented a,
+.overview-page .segmented button {
+  color: var(--ov-muted);
+  transition:
+    background-color 140ms ease-out,
+    color 140ms ease-out;
+}
+
+.overview-page .segmented a:hover,
+.overview-page .segmented button:hover {
+  color: var(--ov-green-deep);
+  background: var(--ov-green-soft);
+}
+
+.overview-page .segmented .is-active {
+  background: var(--ov-green-deep);
+  color: #ffffff;
+}
+
+/* Atenção: laranja no sinal de alerta, vermelho contido nos erros de dados. */
+.overview-page .alert-list li {
+  border-color: var(--ov-line);
+  background: #ffffff;
+}
+
+.overview-page .alert-mark.warning {
+  background: var(--ov-orange);
+}
+
+.overview-page .alert-mark.danger {
+  background: #b4483f;
+}
+
+.overview-page .inline-action,
+.overview-page .text-link {
+  color: var(--ov-green-deep);
+  transition: color 140ms ease-out;
+}
+
+/* Contratações únicas é o bloco verde da página, como no mockup. */
+.overview-page .chart-panel--hires {
+  border-color: var(--ov-green-deep);
+  background: var(--ov-green-deep);
+}
+
+.overview-page .chart-panel--hires .panel-heading h2,
+.overview-page .chart-panel--hires .chart-headline strong,
+.overview-page .chart-panel--hires .chart-legend b {
+  color: #ffffff;
+}
+
+.overview-page .chart-panel--hires .panel-heading > div {
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.overview-page .chart-panel--hires .badge {
+  color: #eaf4ee;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+/* A conversão é o sinal de atenção do card: vermelho legível sobre o verde. */
+.overview-page .chart-panel--hires .badge.danger {
+  color: #ff8a80;
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.overview-page .chart-panel--hires .chart-headline span,
+.overview-page .chart-panel--hires .chart-legend,
+.overview-page .chart-panel--hires .chart-note {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.overview-page .chart-panel--hires .waffle-chart span,
+.overview-page .chart-panel--hires .legend-swatch {
+  border-color: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.overview-page .chart-panel--hires .waffle-chart span.is-filled,
+.overview-page .chart-panel--hires .legend-swatch.is-filled {
+  border-color: var(--ov-green-light);
+  background: var(--ov-green-light);
+  box-shadow: inset 0 0 0 2px rgba(19, 68, 45, 0.32);
+}
+
+/* Ciclo: o tempo de espera é o único segmento laranja. */
+.overview-page .cycle-total strong,
+.overview-page .cycle-steps b {
+  color: var(--ov-green-deep);
+}
+
+.overview-page .cycle-strip .cycle-first,
+.overview-page .cycle-strip .cycle-close {
+  background: #dfe9e2;
+}
+
+.overview-page .cycle-strip .cycle-interviews {
+  background: var(--ov-green-light);
+}
+
+.overview-page .cycle-strip .cycle-wait {
+  background: var(--ov-orange);
+}
+
+.overview-page .cycle-wait-highlight b,
+.overview-page .cycle-steps div:nth-child(3) b {
+  color: var(--ov-orange-ink);
+}
+
+.overview-page .wait-bar-segment.is-wait,
+.overview-page .legend-swatch.is-wait {
+  border-color: var(--ov-orange);
+  background: var(--ov-orange);
+}
+
+/* Série temporal: candidaturas em verde profundo, propostas em verde claro. */
+.overview-page .activity-swatch.applications,
+.overview-page .activity-bar.applications {
+  background: var(--ov-green-deep);
+  fill: var(--ov-green-deep);
+}
+
+.overview-page .activity-swatch.proposals,
+.overview-page .activity-bar.proposals {
+  background: var(--ov-green-light);
+  fill: var(--ov-green-light);
+}
+
+.overview-page .activity-chart-scroll {
+  scrollbar-color: var(--ov-green) transparent;
+}
+
+.overview-page .trend-bar {
+  background: var(--ov-green);
+}
+
+.overview-page .trend-chart--danger .trend-bar {
+  background: var(--ov-orange);
+}
+
+/* Superfícies do browser também pertencem ao sistema visual. */
+.overview-page ::selection {
+  background: var(--ov-green-soft);
+  color: var(--ov-green-deep);
+}
+
+.overview-page input {
+  caret-color: var(--ov-green-deep);
+}
+
+.overview-page :focus-visible {
+  outline-color: var(--ov-green-deep);
 }

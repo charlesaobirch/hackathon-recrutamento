@@ -13,7 +13,6 @@ const items = [
   { href: "/propostas", label: "Propostas", icon: "document" },
   { href: "/clientes", label: "Clientes", icon: "building" },
   { href: "/qualidade", label: "Qualidade", icon: "shield" },
-  { href: "/dados", label: "Dados", icon: "database" },
 ];
 
 function Icon({ name }: { name: string }) {
@@ -61,12 +60,6 @@ function Icon({ name }: { name: string }) {
       <>
         <path d="M12 3 19 6v5c0 4.6-2.6 7.8-7 10-4.4-2.2-7-5.4-7-10V6z" />
         <path d="m9 12 2 2 4-4" />
-      </>
-    ),
-    database: (
-      <>
-        <ellipse cx="12" cy="5" rx="8" ry="3" />
-        <path d="M4 5v7c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 12v7c0 1.7 3.6 3 8 3s8-1.3 8-3v-7" />
       </>
     ),
     clock: (

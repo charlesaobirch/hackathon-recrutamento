@@ -7,6 +7,7 @@ import {
   type DatasetName,
   type DatasetRow,
 } from "@/lib/dataset-config";
+import { formatDate } from "@/lib/format";
 
 type DatasetResponse = {
   table: DatasetName;
@@ -19,11 +20,20 @@ type DatasetResponse = {
   error?: string;
 };
 
-function formatCell(value: unknown) {
+function isDateField(field: string) {
+  return /^data(_|$)/.test(field);
+}
+
+function formatCell(value: unknown, field: string, humanize = false) {
   if (value == null || value === "") return "—";
   if (typeof value === "boolean") return value ? "Sim" : "Não";
   if (typeof value === "object") return JSON.stringify(value);
-  return String(value);
+  const text = String(value);
+  if (!humanize) return text;
+  if (isDateField(field)) return formatDate(text);
+  return text
+    .replaceAll("_", " ")
+    .replace(/^./, (letter) => letter.toLocaleUpperCase("pt-PT"));
 }
 
 function fieldLabel(field: string) {
@@ -45,10 +55,12 @@ export function DatasetExplorer({
   initialTable = "candidaturas",
   showDatasetPicker = false,
   initialPageSize = 25,
+  humanizeFields = [],
 }: {
   initialTable?: DatasetName;
   showDatasetPicker?: boolean;
   initialPageSize?: number;
+  humanizeFields?: readonly string[];
 }) {
   const [table, setTable] = useState<DatasetName>(initialTable);
   const [page, setPage] = useState(1);
@@ -190,7 +202,12 @@ export function DatasetExplorer({
             <thead>
               <tr>
                 {(result?.fields ?? []).map((field) => (
-                  <th key={field}>{fieldLabel(field)}</th>
+                  <th
+                    key={field}
+                    className={isDateField(field) ? "cell-date" : undefined}
+                  >
+                    {fieldLabel(field)}
+                  </th>
                 ))}
               </tr>
             </thead>
@@ -200,9 +217,18 @@ export function DatasetExplorer({
                 return (
                   <tr key={`${String(row.id ?? "registo")}-${rowIndex}`}>
                     {result.fields.map((field) => {
-                      const value = formatCell(row[field]);
+                      const value = formatCell(
+                        row[field],
+                        field,
+                        humanizeFields.includes(field),
+                      );
                       return (
-                        <td key={field}>
+                        <td
+                          key={field}
+                          className={
+                            isDateField(field) ? "cell-date" : undefined
+                          }
+                        >
                           {href && field === "id" ? (
                             <Link className="dataset-record-link" href={href}>
                               {value}
