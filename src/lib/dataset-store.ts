@@ -63,6 +63,10 @@ export function getRecord(name: DatasetName, id: string) {
   return loadDataset(name).byId.get(id) ?? null;
 }
 
+export function getDatasetRows(name: DatasetName) {
+  return loadDataset(name).rows;
+}
+
 export function queryDataset(options: {
   table: DatasetName;
   id?: string;

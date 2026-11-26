@@ -1,11 +1,13 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { type ReactNode, Suspense } from "react";
 
 const items = [
   { href: "/", label: "Visão geral", icon: "grid" },
+  { href: "/espera", label: "À espera", icon: "clock" },
   { href: "/pipeline", label: "Pipeline", icon: "pipeline" },
   { href: "/candidaturas", label: "Candidaturas", icon: "people" },
   { href: "/propostas", label: "Propostas", icon: "document" },
@@ -25,10 +27,10 @@ function Icon({ name }: { name: string }) {
   const paths: Record<string, ReactNode> = {
     grid: (
       <>
-        <rect x="3.5" y="3.5" width="6" height="6" rx="1" />
-        <rect x="14.5" y="3.5" width="6" height="6" rx="1" />
-        <rect x="3.5" y="14.5" width="6" height="6" rx="1" />
-        <rect x="14.5" y="14.5" width="6" height="6" rx="1" />
+        <rect x="3.5" y="3.5" width="6" height="6" rx="1.5" />
+        <rect x="14.5" y="3.5" width="6" height="6" rx="1.5" />
+        <rect x="3.5" y="14.5" width="6" height="6" rx="1.5" />
+        <rect x="14.5" y="14.5" width="6" height="6" rx="1.5" />
       </>
     ),
     pipeline: (
@@ -67,13 +69,19 @@ function Icon({ name }: { name: string }) {
         <path d="M4 5v7c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 12v7c0 1.7 3.6 3 8 3s8-1.3 8-3v-7" />
       </>
     ),
+    clock: (
+      <>
+        <circle cx="12" cy="12" r="8.5" />
+        <path d="M12 7v5l3.5 2" />
+      </>
+    ),
   };
   return (
     <svg
       aria-hidden="true"
       viewBox="0 0 24 24"
-      width="17"
-      height="17"
+      width="18"
+      height="18"
       {...common}
     >
       {paths[name]}
@@ -97,32 +105,55 @@ function ShellFrame({
   return (
     <div className="app-frame">
       <div className="app-shell">
-        <header className="topbar">
-          <Link href="/" className="brand" aria-label="TalentFlow, início">
-            <span className="brand-mark">T</span>
-            <span>TalentFlow</span>
+        <aside className="sidebar" aria-label="Navegação da aplicação">
+          <Link href="/" className="brand" aria-label="Farol, início">
+            <Image
+              src="/farol-logo.svg"
+              alt="Farol"
+              width={188}
+              height={57}
+              priority
+            />
           </Link>
-          <nav className="top-nav" aria-label="Navegação principal">
-            {items.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`nav-tab${active === item.href ? " is-active" : ""}`}
-                aria-current={active === item.href ? "page" : undefined}
-              >
-                <Icon name={item.icon} />
-                <span>{item.label}</span>
-              </Link>
-            ))}
-          </nav>
-          <div className="profile">
-            <span className="avatar">AC</span>
-            <span className="profile-copy">
-              <b>Ana Costa</b>
-              <small>Recrutamento</small>
-            </span>
+          <div className="nav-group">
+            <span className="nav-group-label">Operação</span>
+            <nav className="sidebar-nav" aria-label="Navegação principal">
+              {items.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`nav-tab${active === item.href ? " is-active" : ""}`}
+                  aria-current={active === item.href ? "page" : undefined}
+                >
+                  <Icon name={item.icon} />
+                  <span>{item.label}</span>
+                </Link>
+              ))}
+            </nav>
           </div>
-        </header>
+          <div className="sidebar-footer">
+            <details className="exploration-disclosure">
+              <summary>
+                <span className="exploration-dot" />
+                Dados exploratórios
+              </summary>
+              <div className="exploration-popover">
+                <b>Usar estes dados com cautela</b>
+                <ul>
+                  <li>
+                    O conjunto é demonstrativo e tem inconsistências por
+                    corrigir.
+                  </li>
+                  <li>Etapas e tempos são calculados a partir dos eventos.</li>
+                  <li>
+                    Alterações nesta interface não modificam os ficheiros JSON.
+                  </li>
+                  <li>Não usar os indicadores em reporting oficial.</li>
+                </ul>
+              </div>
+            </details>
+          </div>
+        </aside>
         <main className="workspace">{children}</main>
       </div>
     </div>

@@ -47,12 +47,14 @@ export function Metric({
   value,
   note,
   tone = "neutral",
+  delta,
   footer,
 }: {
   label: string;
   value: string;
   note: string;
   tone?: "neutral" | "danger" | "warning" | "positive";
+  delta?: string;
   footer?: ReactNode;
 }) {
   return (
@@ -60,7 +62,9 @@ export function Metric({
       <span className="metric-label">{label}</span>
       <div className="metric-value-row">
         <strong>{value}</strong>
-        {tone !== "neutral" ? (
+        {delta ? (
+          <span className={`delta ${tone}`}>{delta}</span>
+        ) : tone !== "neutral" ? (
           <span className={`delta ${tone}`}>
             {tone === "danger"
               ? "Atenção"
