@@ -38,31 +38,35 @@ export default async function ProposalsPage({
   return (
     <div className="page-content">
       <PageHeader
-        title="Propostas"
-        subtitle="Abre uma proposta para comparar oferta, banda e expectativa."
+        title="Validação de propostas"
+        subtitle="Compara cada oferta com a banda da vaga e a expectativa do candidato antes de avançar."
       />
       <div className="metric-grid two-metrics">
         <Metric
-          label="Abaixo do mínimo"
+          label="Ofertas abaixo do mínimo"
           value={percentage(belowRate)}
           note={`${data.counts.salaryBelow.toLocaleString("pt-PT")} de ${validBandCount.toLocaleString("pt-PT")} propostas com banda válida`}
           tone="danger"
         />
         <Metric
-          label="Sem resposta"
+          label="Propostas sem resposta"
           value={percentage(noResponseRate)}
           note={`${data.counts.proposalsNoResponse.toLocaleString("pt-PT")} propostas sem resposta registada`}
           tone="warning"
         />
       </div>
       <Panel
-        title="Todas as propostas"
+        title="Propostas emitidas"
         meta={
           <span className="muted">
             {data.counts.proposals.toLocaleString("pt-PT")} registos
           </span>
         }
       >
+        <p className="panel-intro">
+          Abre uma linha para comparar a oferta com a banda da vaga e a
+          expectativa do candidato.
+        </p>
         <OperationalWorklist
           kind="proposals"
           initialSearch={firstValue(params.q)}

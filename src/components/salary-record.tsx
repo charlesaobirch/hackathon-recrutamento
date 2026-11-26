@@ -83,16 +83,18 @@ export function SalaryRecord({ id: initialId }: { id?: string }) {
     return (
       <div className="page-content">
         <PageHeader
-          title="Escolher proposta"
-          subtitle="A validação abre a partir do registo escolhido."
+          title="Validação salarial"
+          subtitle="A validação começa pela proposta que queres comparar."
         />
-        <Notice title="Seleciona uma proposta" tone="info">
+        <Notice title="Escolhe uma proposta" tone="info">
           Abre uma proposta na lista para comparar a oferta com a banda da vaga
           e a expectativa do candidato.
         </Notice>
-        <Link href="/propostas" className="button-primary">
-          Ver propostas
-        </Link>
+        <div className="detail-action-row">
+          <Link href="/propostas" className="button-primary">
+            Abrir lista de propostas
+          </Link>
+        </div>
       </div>
     );
   if (loading && !records)
@@ -124,7 +126,7 @@ export function SalaryRecord({ id: initialId }: { id?: string }) {
   return (
     <div className="page-content">
       <div className="back-row">
-        <Link href="/propostas">← Todas as propostas</Link>
+        <Link href="/propostas">← Propostas</Link>
         <span>
           {String(records.offer.id)} · {String(records.application.id)}
         </span>
@@ -186,7 +188,7 @@ export function SalaryRecord({ id: initialId }: { id?: string }) {
           initialOffer={Number(records.offer.salario_oferecido)}
         />
       ) : (
-        <Panel title="Regras de decisão">
+        <Panel title="Regras de validação">
           <p className="panel-copy">
             O envio permanece bloqueado enquanto a candidatura não tiver
             candidato e vaga associados.

@@ -52,19 +52,15 @@ export default function PipelinePage() {
   return (
     <div className="page-content">
       <PageHeader
-        title="Percurso das candidaturas"
-        subtitle="Etapas e conversões reconstruídas a partir dos eventos completos."
-        action={
-          <Badge tone="info">
-            Dados até {data.asOf ?? "sem data"}
-          </Badge>
-        }
+        title="Pipeline de recrutamento"
+        subtitle="Etapas, conversões e o ponto onde o processo trava — calculado a partir dos eventos de cada candidatura."
+        action={<Badge tone="info">Dados até {data.asOf ?? "sem data"}</Badge>}
       />
       <section className="panel journey-panel">
         <div className="panel-heading">
-          <h2>O caminho até à contratação</h2>
+          <h2>Funil por etapa</h2>
           <span className="muted">
-            Registos únicos por candidatura · selecionar uma etapa filtra a lista
+            Candidaturas únicas · clica numa etapa para filtrar
           </span>
         </div>
         <div className="journey-stages">
@@ -100,10 +96,7 @@ export default function PipelinePage() {
                 ) : (
                   <span className="stage-conversion">entrada</span>
                 )}
-                <span
-                  className="stage-bar-track"
-                  aria-hidden="true"
-                >
+                <span className="stage-bar-track" aria-hidden="true">
                   <span
                     style={{
                       width: `${(stage.count / maxCount) * 100}%`,
@@ -116,16 +109,16 @@ export default function PipelinePage() {
         </div>
         <div className="journey-foot">
           <span>
-            <i className="legend-dot lime" /> O volume usa candidaturas únicas
-            com pelo menos um evento da etapa.
+            <i className="legend-dot lime" /> Cada candidatura conta uma vez por
+            etapa atingida.
           </span>
-          <span>As etapas não dependem de etapa_atual nem de estado de origem.</span>
+          <span>Etapas derivadas dos eventos, não do estado guardado.</span>
         </div>
       </section>
 
       <div className="pipeline-lower">
         <Panel
-          title="Onde se acumula o tempo"
+          title="Tempo mediano entre etapas"
           meta={
             <Badge tone="danger">
               {data.cycle.waitingForOffer ?? "—"} dias até à proposta
@@ -153,32 +146,33 @@ export default function PipelinePage() {
             ))}
           </div>
           <p className="source-note">
-            Medianas calculadas sobre {data.cycle.sampleSize.toLocaleString("pt-PT")}{" "}
-            candidaturas contratadas. Os segmentos não somam necessariamente à
-            mediana global.
+            Medianas calculadas sobre{" "}
+            {data.cycle.sampleSize.toLocaleString("pt-PT")} candidaturas
+            contratadas. Os segmentos não somam necessariamente à mediana
+            global.
           </p>
         </Panel>
 
         <Panel
-          title="Bloqueio na entrevista final"
+          title="Gargalo na entrevista final"
           meta={<Badge tone="danger">Conversão a validar</Badge>}
         >
           <div className="pipeline-blockage">
             <div>
-              <strong>{(finalStage?.count ?? 0).toLocaleString("pt-PT")}</strong>
+              <strong>
+                {(finalStage?.count ?? 0).toLocaleString("pt-PT")}
+              </strong>
               <span>candidaturas chegaram à entrevista final</span>
             </div>
             <div>
               <strong>{data.finalStageHires.toLocaleString("pt-PT")}</strong>
-              <span>
-                contratações com entrevista final como último evento registado
-              </span>
+              <span>foram contratadas logo após a entrevista final</span>
             </div>
           </div>
           <p className="panel-copy">
-            A conversão para proposta nesta coorte é de{" "}
-            {percentage(stages[5]?.conversion ?? null)}. A contagem deriva de
-            candidaturas distintas com eventos em cada etapa.
+            Só {percentage(stages[5]?.conversion ?? null)} das candidaturas
+            nesta fase chegam a receber proposta. A contagem usa candidaturas
+            distintas com eventos em cada etapa.
           </p>
           <Link
             href="/candidaturas?stage=entrevista_final"

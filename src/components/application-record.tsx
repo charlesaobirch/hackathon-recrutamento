@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { Badge, Notice, PageHeader, Panel } from "@/components/ui";
+import type { DatasetName, DatasetRow } from "@/lib/dataset-config";
 import {
   formatDate,
   formatMoney,
@@ -10,7 +11,6 @@ import {
   parseDateValue,
   stageLabel,
 } from "@/lib/format";
-import type { DatasetName, DatasetRow } from "@/lib/dataset-config";
 
 type DatasetResponse = {
   rows: DatasetRow[];
@@ -57,9 +57,7 @@ async function readDataset(
   const response = await fetch(`/api/datasets?${params}`, { signal });
   const result = (await response.json()) as DatasetResponse;
   if (!response.ok) {
-    throw new Error(
-      result.error ?? `Não foi possível ler a tabela ${table}.`,
-    );
+    throw new Error(result.error ?? `Não foi possível ler a tabela ${table}.`);
   }
   return result;
 }
@@ -192,15 +190,16 @@ function makeTimeline(data: RelatedData): TimelineEvent[] {
   }
   for (const interview of data.interviews.rows) {
     const date = typeof interview.data === "string" ? interview.data : "";
+    const phase = stageLabel(String(interview.fase ?? ""));
     events.push({
       id: `interview-${String(interview.id)}`,
       date,
-      title: `Entrevista · ${stageLabel(String(interview.fase ?? ""))}`,
+      title: /^Entrevista/.test(phase) ? phase : `Entrevista · ${phase}`,
       detail: [
         `Resultado: ${humanizeValue("resultado", interview.resultado)}`,
         interview.score_tecnico !== null &&
         interview.score_tecnico !== undefined
-          ? `Score técnico original: ${String(interview.score_tecnico)}`
+          ? `Score técnico registado: ${String(interview.score_tecnico)}`
           : "",
       ]
         .filter(Boolean)
@@ -262,8 +261,10 @@ function makeTimeline(data: RelatedData): TimelineEvent[] {
     });
   }
   return events.sort((first, second) => {
-    const firstDate = parseDateValue(first.date)?.getTime() ?? Number.MAX_SAFE_INTEGER;
-    const secondDate = parseDateValue(second.date)?.getTime() ?? Number.MAX_SAFE_INTEGER;
+    const firstDate =
+      parseDateValue(first.date)?.getTime() ?? Number.MAX_SAFE_INTEGER;
+    const secondDate =
+      parseDateValue(second.date)?.getTime() ?? Number.MAX_SAFE_INTEGER;
     return firstDate - secondDate || first.id.localeCompare(second.id);
   });
 }
@@ -346,32 +347,34 @@ export function ApplicationRecord({ id }: { id: string }) {
           ),
         ]);
         const vacancy = vacancyResponse.rows[0] ?? null;
-        const [clientResponse, recruiterResponse, feedback] = await Promise.all([
-          vacancy
-            ? readDataset(
-                "clientes",
-                { id: String(vacancy.id_cliente) },
-                controller.signal,
-              )
-            : Promise.resolve({ rows: [], total: 0 }),
-          vacancy
-            ? readDataset(
-                "recrutadores",
-                { id: String(vacancy.id_recrutador) },
-                controller.signal,
-              )
-            : Promise.resolve({ rows: [], total: 0 }),
-          hires.rows.length
-            ? readAllDataset(
-                "feedback_clientes",
-                {
-                  inField: "id_contratacao",
-                  values: hires.rows.map((hire) => String(hire.id)).join(","),
-                },
-                controller.signal,
-              )
-            : Promise.resolve({ rows: [], total: 0 }),
-        ]);
+        const [clientResponse, recruiterResponse, feedback] = await Promise.all(
+          [
+            vacancy
+              ? readDataset(
+                  "clientes",
+                  { id: String(vacancy.id_cliente) },
+                  controller.signal,
+                )
+              : Promise.resolve({ rows: [], total: 0 }),
+            vacancy
+              ? readDataset(
+                  "recrutadores",
+                  { id: String(vacancy.id_recrutador) },
+                  controller.signal,
+                )
+              : Promise.resolve({ rows: [], total: 0 }),
+            hires.rows.length
+              ? readAllDataset(
+                  "feedback_clientes",
+                  {
+                    inField: "id_contratacao",
+                    values: hires.rows.map((hire) => String(hire.id)).join(","),
+                  },
+                  controller.signal,
+                )
+              : Promise.resolve({ rows: [], total: 0 }),
+          ],
+        );
         if (controller.signal.aborted) return;
         setData({
           application,
@@ -451,34 +454,34 @@ export function ApplicationRecord({ id }: { id: string }) {
     const secondDate = parseDateValue(second.data)?.getTime() ?? 0;
     return secondDate - firstDate;
   })[0];
-  const highestPhase = [...phases].reverse().find((phase) =>
-    reachedPhases.has(phase),
-  );
+  const highestPhase = [...phases]
+    .reverse()
+    .find((phase) => reachedPhases.has(phase));
   const currentStage = data.hires.total
     ? "contratado"
     : data.offers.total
       ? "proposta"
-      : highestPhase ?? "sem_entrevista";
+      : (highestPhase ?? "sem_entrevista");
   const stageEventDate =
     currentStage === "contratado"
-      ? data.hires.rows
+      ? (data.hires.rows
           .map((hire) => hire.data_contratacao)
           .filter((value): value is string => typeof value === "string")
           .sort((first, second) => {
             const firstDate = parseDateValue(first)?.getTime() ?? 0;
             const secondDate = parseDateValue(second)?.getTime() ?? 0;
             return secondDate - firstDate;
-          })[0] ?? null
+          })[0] ?? null)
       : currentStage === "proposta"
-        ? data.offers.rows
+        ? (data.offers.rows
             .map((offer) => offer.data_proposta)
             .filter((value): value is string => typeof value === "string")
             .sort((first, second) => {
               const firstDate = parseDateValue(first)?.getTime() ?? 0;
               const secondDate = parseDateValue(second)?.getTime() ?? 0;
               return secondDate - firstDate;
-            })[0] ?? null
-        : data.interviews.rows
+            })[0] ?? null)
+        : (data.interviews.rows
             .filter((interview) => interview.fase === currentStage)
             .map((interview) => interview.data)
             .filter((value): value is string => typeof value === "string")
@@ -486,7 +489,7 @@ export function ApplicationRecord({ id }: { id: string }) {
               const firstDate = parseDateValue(first)?.getTime() ?? 0;
               const secondDate = parseDateValue(second)?.getTime() ?? 0;
               return secondDate - firstDate;
-            })[0] ?? null;
+            })[0] ?? null);
   const daysInStage = elapsedDays(data.asOf, stageEventDate);
   const lastEvent = [...timeline]
     .filter((event) => parseDateValue(event.date))
@@ -526,7 +529,7 @@ export function ApplicationRecord({ id }: { id: string }) {
   return (
     <div className="page-content">
       <div className="back-row">
-        <Link href="/candidaturas">← Todas as candidaturas</Link>
+        <Link href="/candidaturas">← Candidaturas</Link>
         <span>{applicationId}</span>
       </div>
       <PageHeader
@@ -536,7 +539,7 @@ export function ApplicationRecord({ id }: { id: string }) {
 
       <section className="detail-summary" aria-label="Resumo da candidatura">
         <div>
-          <span>Etapa derivada</span>
+          <span>Etapa atual</span>
           <Badge tone={currentStage === "contratado" ? "positive" : "info"}>
             {stageLabel(currentStage)}
           </Badge>
@@ -547,7 +550,7 @@ export function ApplicationRecord({ id }: { id: string }) {
           <small>referência: {formatDate(data.asOf)}</small>
         </div>
         <div>
-          <span>Score técnico original</span>
+          <span>Score técnico</span>
           <strong>{hasScore ? score.toLocaleString("pt-PT") : "—"}</strong>
           <small>
             {hasScore && score > 100
@@ -557,7 +560,9 @@ export function ApplicationRecord({ id }: { id: string }) {
         </div>
         <div>
           <span>Expectativa face à banda</span>
-          <strong>{salaryValuesValid ? formatMoney(expectedSalary) : "—"}</strong>
+          <strong>
+            {salaryValuesValid ? formatMoney(expectedSalary) : "—"}
+          </strong>
           <small>
             {salaryValuesValid
               ? `${formatMoney(salaryMin)} – ${formatMoney(salaryMax)} · ${salaryPosition}`
@@ -614,10 +619,7 @@ export function ApplicationRecord({ id }: { id: string }) {
           {timeline.length ? (
             <ol className="timeline detail-timeline">
               {timeline.map((event) => (
-                <li
-                  className={`timeline-item ${event.tone}`}
-                  key={event.id}
-                >
+                <li className={`timeline-item ${event.tone}`} key={event.id}>
                   <span className="timeline-dot" />
                   <div>
                     <b>{event.title}</b>
@@ -628,7 +630,9 @@ export function ApplicationRecord({ id }: { id: string }) {
               ))}
             </ol>
           ) : (
-            <div className="empty-state">Sem eventos ligados à candidatura.</div>
+            <div className="empty-state">
+              Sem eventos ligados à candidatura.
+            </div>
           )}
         </Panel>
         <div className="detail-aside">
@@ -636,7 +640,9 @@ export function ApplicationRecord({ id }: { id: string }) {
             <dl className="detail-list">
               <div>
                 <dt>Identificador</dt>
-                <dd>{String(data.candidate?.id ?? data.application.id_candidato)}</dd>
+                <dd>
+                  {String(data.candidate?.id ?? data.application.id_candidato)}
+                </dd>
               </div>
               <div>
                 <dt>Experiência</dt>
@@ -648,7 +654,9 @@ export function ApplicationRecord({ id }: { id: string }) {
               </div>
               <div>
                 <dt>Senioridade</dt>
-                <dd>{humanizeValue("senioridade", data.candidate?.senioridade)}</dd>
+                <dd>
+                  {humanizeValue("senioridade", data.candidate?.senioridade)}
+                </dd>
               </div>
               <div>
                 <dt>Localização</dt>
@@ -660,7 +668,9 @@ export function ApplicationRecord({ id }: { id: string }) {
             <dl className="detail-list">
               <div>
                 <dt>Vaga</dt>
-                <dd>{String(data.vacancy?.titulo ?? data.application.id_vaga)}</dd>
+                <dd>
+                  {String(data.vacancy?.titulo ?? data.application.id_vaga)}
+                </dd>
               </div>
               <div>
                 <dt>Banda salarial</dt>
@@ -704,7 +714,7 @@ export function ApplicationRecord({ id }: { id: string }) {
       </div>
 
       <details className="raw-data-disclosure">
-        <summary>Campos e eventos de origem completos</summary>
+        <summary>Campos e eventos de origem</summary>
         <div className="raw-record-grid">
           <RecordFields title="Candidatura" record={data.application} />
           <RecordFields title="Candidato" record={data.candidate} />

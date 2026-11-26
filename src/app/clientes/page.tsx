@@ -45,8 +45,8 @@ export default function ClientsPage() {
   return (
     <div className="page-content">
       <PageHeader
-        title="Clientes e retenção"
-        subtitle="Comparar retenção, desempenho e substituições; satisfação é contexto."
+        title="Radar de clientes"
+        subtitle="Retenção, desempenho e substituições por cliente — satisfação serve de contexto."
       />
       <div className="metric-grid three-metrics">
         <Metric
@@ -56,7 +56,7 @@ export default function ClientsPage() {
           tone="warning"
         />
         <Metric
-          label="Desempenho médio"
+          label="Desempenho · 90 dias"
           value={`${rating(data.clientTotals.performance)} / 5`}
           note={`${data.clientTotals.hires.toLocaleString("pt-PT")} candidaturas contratadas`}
         />
@@ -68,25 +68,29 @@ export default function ClientsPage() {
         />
       </div>
       <Panel
-        title="Comparação por cliente"
+        title="Saúde por cliente"
         meta={<Badge tone="info">{clients.length} clientes</Badge>}
       >
+        <p className="panel-intro">
+          Ordenados pela retenção mais baixa. Abre o plano 30/60/90 para ver o
+          acompanhamento de cada cliente.
+        </p>
         <div className="table-scroll">
           <table className="data-table client-table">
             <thead>
               <tr>
                 <th>Cliente</th>
-                <th>Contratações</th>
-                <th>
+                <th className="num">Contratações</th>
+                <th className="num">
                   Retenção · 90 dias
                   <small>
                     Média global: {percentage(data.clientTotals.retention90)}
                   </small>
                 </th>
-                <th>Desempenho · 90 dias</th>
-                <th>Substituições</th>
-                <th>Satisfação · contexto</th>
-                <th>Acompanhamento</th>
+                <th className="num">Desempenho · 90 dias</th>
+                <th className="num">Substituições</th>
+                <th className="num">Satisfação · contexto</th>
+                <th>Plano de acompanhamento</th>
               </tr>
             </thead>
             <tbody>
@@ -128,7 +132,7 @@ export default function ClientsPage() {
                   </td>
                   <td>
                     <details className="client-plan">
-                      <summary>Plano 30/60/90</summary>
+                      <summary>Ver plano 30/60/90</summary>
                       <ol>
                         <li>
                           <b>30 dias</b> — alinhar perfil de sucesso e

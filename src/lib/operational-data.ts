@@ -1,3 +1,4 @@
+import { applicationPeriodDays } from "@/lib/application-period";
 import type { DatasetName, DatasetRow } from "@/lib/dataset-config";
 import { getDatasetRows } from "@/lib/dataset-store";
 import { humanizeValue } from "@/lib/format";
@@ -194,6 +195,25 @@ const phaseLabels: Record<string, string> = {
   contratado: "Contratado",
 };
 
+const funnelKeys = [
+  "candidaturas",
+  ...interviewPhases,
+  "proposta",
+  "contratado",
+];
+
+const funnelLabels = [
+  "Candidaturas",
+  "Triagem",
+  "Entrevista técnica",
+  "Entrevista de cliente",
+  "Entrevista final",
+  "Propostas",
+  "Contratações",
+];
+
+type ActivityGranularity = "dia" | "semana" | "mês" | "trimestre";
+
 let snapshot: DataSnapshot | null = null;
 
 function rows(name: DatasetName) {
@@ -319,6 +339,260 @@ function isWithinWindow(
   if (!date || !reference) return false;
   const days = Math.floor((reference.getTime() - date.getTime()) / 86_400_000);
   return days >= fromDays && days < toDays;
+}
+
+function uniqueHireRows() {
+  const unique = new Map<string, DatasetRow>();
+  for (const hire of rows("contratacoes")) {
+    const applicationId = text(hire.id_candidatura);
+    if (!unique.has(applicationId)) unique.set(applicationId, hire);
+  }
+  return [...unique.values()];
+}
+
+function toFunnel(counts: number[]): FunnelStage[] {
+  return counts.map((count, index) => ({
+    key: funnelKeys[index],
+    label: funnelLabels[index],
+    count,
+    conversion:
+      index === 0 || !counts[index - 1] ? null : count / counts[index - 1],
+  }));
+}
+
+function computeCycleMetrics(
+  hires: Iterable<DatasetRow>,
+  applicationById: Map<string, DatasetRow>,
+  interviewsByApplication: Map<string, DatasetRow[]>,
+  proposalsByApplication: Map<string, DatasetRow[]>,
+) {
+  const metrics: Record<
+    | "firstInterview"
+    | "interviewCycle"
+    | "waitingForOffer"
+    | "proposalToHire"
+    | "total",
+    number[]
+  > = {
+    firstInterview: [],
+    interviewCycle: [],
+    waitingForOffer: [],
+    proposalToHire: [],
+    total: [],
+  };
+  for (const hire of hires) {
+    const applicationId = text(hire.id_candidatura);
+    const application = applicationById.get(applicationId);
+    const appInterviews = interviewsByApplication.get(applicationId) ?? [];
+    const proposal = (proposalsByApplication.get(applicationId) ?? [])[0];
+    const applicationDate = parseDate(application?.data_candidatura);
+    const interviewDates = appInterviews
+      .map((interview) => parseDate(interview.data))
+      .filter((date): date is Date => date !== null)
+      .sort((first, second) => first.getTime() - second.getTime());
+    const proposalDate = parseDate(proposal?.data_proposta);
+    const hireDate = parseDate(hire.data_contratacao);
+    if (
+      !applicationDate ||
+      !interviewDates.length ||
+      !proposalDate ||
+      !hireDate
+    ) {
+      continue;
+    }
+    metrics.firstInterview.push(
+      dayDifference(interviewDates[0], applicationDate),
+    );
+    metrics.interviewCycle.push(
+      dayDifference(
+        interviewDates[interviewDates.length - 1],
+        interviewDates[0],
+      ),
+    );
+    metrics.waitingForOffer.push(
+      dayDifference(proposalDate, interviewDates[interviewDates.length - 1]),
+    );
+    metrics.proposalToHire.push(dayDifference(hireDate, proposalDate));
+    metrics.total.push(dayDifference(hireDate, applicationDate));
+  }
+  return metrics;
+}
+
+const shortMonth = new Intl.DateTimeFormat("pt-PT", {
+  month: "short",
+  timeZone: "UTC",
+});
+
+function dateKey(date: Date) {
+  return date.toISOString().slice(0, 10);
+}
+
+function shortDayLabel(date: Date) {
+  return `${String(date.getUTCDate()).padStart(2, "0")}/${String(
+    date.getUTCMonth() + 1,
+  ).padStart(2, "0")}`;
+}
+
+function addDays(date: Date, days: number) {
+  return new Date(date.getTime() + days * 86_400_000);
+}
+
+function addMonths(date: Date, months: number) {
+  return new Date(
+    Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + months, 1),
+  );
+}
+
+function countInRange(dates: Array<string | null>, start: string, end: string) {
+  let count = 0;
+  for (const value of dates) {
+    if (value !== null && value >= start && value < end) count += 1;
+  }
+  return count;
+}
+
+function activitySeries(
+  asOf: string | null,
+  applications: WorklistRow[],
+  proposals: WorklistRow[],
+  days: number | null,
+): { buckets: ActivityMonth[]; granularity: ActivityGranularity } {
+  const reference = parseDate(asOf);
+  if (!reference) return { buckets: [], granularity: "mês" };
+
+  const applicationDates = applications.map((row) => row.applicationDate);
+  const proposalDates = proposals.map((row) => row.offerDate);
+
+  if (days !== null && days <= 14) {
+    const buckets = Array.from({ length: days }, (_, index) => {
+      const day = addDays(reference, index - days + 1);
+      const key = dateKey(day);
+      const end = dateKey(addDays(day, 1));
+      return {
+        label: shortDayLabel(day),
+        applications: countInRange(applicationDates, key, end),
+        proposals: countInRange(proposalDates, key, end),
+        partial: false,
+      };
+    });
+    return { buckets, granularity: "dia" };
+  }
+
+  if (days !== null && days <= 60) {
+    const fullWeeks = Math.floor(days / 7);
+    const remainder = days - fullWeeks * 7;
+    const windowStart = addDays(reference, -(days - 1));
+    const buckets = Array.from(
+      { length: fullWeeks + (remainder ? 1 : 0) },
+      (_, index) => {
+        const start = addDays(windowStart, index * 7);
+        const partial = remainder > 0 && index === fullWeeks;
+        const end = partial ? addDays(reference, 1) : addDays(start, 7);
+        return {
+          label: shortDayLabel(start),
+          applications: countInRange(
+            applicationDates,
+            dateKey(start),
+            dateKey(end),
+          ),
+          proposals: countInRange(proposalDates, dateKey(start), dateKey(end)),
+          partial,
+        };
+      },
+    );
+    return { buckets, granularity: "semana" };
+  }
+
+  if (days !== null) {
+    const windowStart = addDays(reference, -(days - 1));
+    const months: Date[] = [];
+    let cursor = new Date(
+      Date.UTC(windowStart.getUTCFullYear(), windowStart.getUTCMonth(), 1),
+    );
+    const lastMonth = new Date(
+      Date.UTC(reference.getUTCFullYear(), reference.getUTCMonth(), 1),
+    );
+    while (cursor <= lastMonth) {
+      months.push(cursor);
+      cursor = addMonths(cursor, 1);
+    }
+    const buckets = months.map((month, index) => {
+      const end = addMonths(month, 1);
+      const clippedStart = index === 0 && dateKey(windowStart) > dateKey(month);
+      return {
+        label: shortMonth.format(month).replace(".", ""),
+        applications: countInRange(
+          applicationDates,
+          dateKey(month),
+          dateKey(end),
+        ),
+        proposals: countInRange(proposalDates, dateKey(month), dateKey(end)),
+        partial: clippedStart || index === months.length - 1,
+      };
+    });
+    return { buckets, granularity: "mês" };
+  }
+
+  const dated = [...applicationDates, ...proposalDates]
+    .filter((value): value is string => value !== null)
+    .sort();
+  const earliest = parseDate(dated[0]);
+  if (!earliest) return { buckets: [], granularity: "trimestre" };
+
+  const quarters: Date[] = [];
+  let cursor = new Date(
+    Date.UTC(
+      earliest.getUTCFullYear(),
+      Math.floor(earliest.getUTCMonth() / 3) * 3,
+      1,
+    ),
+  );
+  const clippedStart = dateKey(earliest) > dateKey(cursor);
+  const lastQuarter = new Date(
+    Date.UTC(
+      reference.getUTCFullYear(),
+      Math.floor(reference.getUTCMonth() / 3) * 3,
+      1,
+    ),
+  );
+  while (cursor <= lastQuarter) {
+    quarters.push(cursor);
+    cursor = addMonths(cursor, 3);
+  }
+  const buckets = quarters.map((quarter, index) => {
+    const end = addMonths(quarter, 3);
+    return {
+      label: `${Math.floor(quarter.getUTCMonth() / 3) + 1}T${String(
+        quarter.getUTCFullYear(),
+      ).slice(2)}`,
+      applications: countInRange(
+        applicationDates,
+        dateKey(quarter),
+        dateKey(end),
+      ),
+      proposals: countInRange(proposalDates, dateKey(quarter), dateKey(end)),
+      partial: (index === 0 && clippedStart) || index === quarters.length - 1,
+    };
+  });
+  return { buckets, granularity: "trimestre" };
+}
+
+function createPeriodScope(days: number | null) {
+  const data = getSnapshot();
+  const within = (value: string | null, from = 0) =>
+    days === null || isWithinWindow(value, data.asOf, from, from + days);
+  return {
+    data,
+    days,
+    applications: data.applicationRows.filter((row) =>
+      within(row.applicationDate),
+    ),
+    waiting: data.waitingRows.filter((row) => within(row.applicationDate)),
+    proposals: data.proposalRows.filter((row) => within(row.offerDate)),
+    hires: uniqueHireRows().filter((hire) =>
+      within(isoDate(hire.data_contratacao)),
+    ),
+  };
 }
 
 function monthlyActivity(
@@ -614,30 +888,7 @@ function computeSnapshot(): DataSnapshot {
     proposalsIds.size,
     hireIds.size,
   ];
-  const funnelKeys = [
-    "candidaturas",
-    ...interviewPhases,
-    "proposta",
-    "contratado",
-  ];
-  const funnelLabels = [
-    "Candidaturas",
-    "Triagem",
-    "Entrevista técnica",
-    "Entrevista de cliente",
-    "Entrevista final",
-    "Propostas",
-    "Contratações",
-  ];
-  const funnel = funnelCounts.map((count, index) => ({
-    key: funnelKeys[index],
-    label: funnelLabels[index],
-    count,
-    conversion:
-      index === 0 || !funnelCounts[index - 1]
-        ? null
-        : count / funnelCounts[index - 1],
-  }));
+  const funnel = toFunnel(funnelCounts);
 
   const asOfValue = asOf?.toISOString().slice(0, 10) ?? null;
   const recentApplicationRows = applicationRows.filter((row) =>
@@ -657,15 +908,7 @@ function computeSnapshot(): DataSnapshot {
     recentApplicationRows.filter((row) => hireIds.has(row.applicationId))
       .length,
   ];
-  const recentFunnel = recentFunnelCounts.map((count, index) => ({
-    key: funnelKeys[index],
-    label: funnelLabels[index],
-    count,
-    conversion:
-      index === 0 || !recentFunnelCounts[index - 1]
-        ? null
-        : count / recentFunnelCounts[index - 1],
-  }));
+  const recentFunnel = toFunnel(recentFunnelCounts);
   const stageMixRecent = (
     [
       "sem_entrevista",
@@ -697,47 +940,12 @@ function computeSnapshot(): DataSnapshot {
         latestByDate(interviewsByApplication.get(applicationId) ?? [])?.fase,
       ) === "entrevista_final",
   ).length;
-  const cycleMetrics: Record<string, number[]> = {
-    firstInterview: [],
-    interviewCycle: [],
-    waitingForOffer: [],
-    proposalToHire: [],
-    total: [],
-  };
-  for (const [applicationId, hire] of uniqueHires) {
-    const application = applicationById.get(applicationId);
-    const appInterviews = interviewsByApplication.get(applicationId) ?? [];
-    const proposal = (proposalsByApplication.get(applicationId) ?? [])[0];
-    const applicationDate = parseDate(application?.data_candidatura);
-    const interviewDates = appInterviews
-      .map((interview) => parseDate(interview.data))
-      .filter((date): date is Date => date !== null)
-      .sort((first, second) => first.getTime() - second.getTime());
-    const proposalDate = parseDate(proposal?.data_proposta);
-    const hireDate = parseDate(hire.data_contratacao);
-    if (
-      !applicationDate ||
-      !interviewDates.length ||
-      !proposalDate ||
-      !hireDate
-    ) {
-      continue;
-    }
-    cycleMetrics.firstInterview.push(
-      dayDifference(interviewDates[0], applicationDate),
-    );
-    cycleMetrics.interviewCycle.push(
-      dayDifference(
-        interviewDates[interviewDates.length - 1],
-        interviewDates[0],
-      ),
-    );
-    cycleMetrics.waitingForOffer.push(
-      dayDifference(proposalDate, interviewDates[interviewDates.length - 1]),
-    );
-    cycleMetrics.proposalToHire.push(dayDifference(hireDate, proposalDate));
-    cycleMetrics.total.push(dayDifference(hireDate, applicationDate));
-  }
+  const cycleMetrics = computeCycleMetrics(
+    uniqueHires.values(),
+    applicationById,
+    interviewsByApplication,
+    proposalsByApplication,
+  );
 
   const hiredCandidateIds = new Set(
     [...uniqueHires.values()]
@@ -1013,10 +1221,10 @@ export function getOverviewData() {
   return getSnapshot();
 }
 
-export function getRecentCandidateBoardRows() {
+export function getCandidateBoardRows(days: number) {
   const data = getSnapshot();
   return data.applicationRows
-    .filter((row) => isRecentApplication(row.applicationDate, data.asOf))
+    .filter((row) => isWithinWindow(row.applicationDate, data.asOf, 0, days))
     .sort((first, second) => {
       const idleDifference = (second.daysIdle ?? -1) - (first.daysIdle ?? -1);
       return (
@@ -1024,6 +1232,108 @@ export function getRecentCandidateBoardRows() {
         first.candidateName.localeCompare(second.candidateName, "pt-PT")
       );
     });
+}
+
+export function getApplicationPeriodSummary(period?: string) {
+  const days = applicationPeriodDays(period);
+  const scope = createPeriodScope(days);
+  return {
+    applications: scope.applications.length,
+    waiting: scope.waiting.length,
+    proposals: scope.proposals.length,
+    hires: scope.hires.length,
+  };
+}
+
+export function getOverviewPeriodData(period?: string) {
+  const days = applicationPeriodDays(period);
+  const scope = createPeriodScope(days);
+  const { data } = scope;
+  const previous =
+    days === null
+      ? null
+      : {
+          applications: data.applicationRows.filter((row) =>
+            isWithinWindow(row.applicationDate, data.asOf, days, days * 2),
+          ).length,
+          proposals: data.proposalRows.filter((row) =>
+            isWithinWindow(row.offerDate, data.asOf, days, days * 2),
+          ).length,
+          hires: uniqueHireRows().filter((hire) =>
+            isWithinWindow(
+              isoDate(hire.data_contratacao),
+              data.asOf,
+              days,
+              days * 2,
+            ),
+          ).length,
+        };
+
+  const queueAges: QueueAges = {
+    recent: 0,
+    attention: 0,
+    critical: 0,
+    unknown: 0,
+  };
+  for (const row of scope.waiting) queueAges[row.signal] += 1;
+
+  const funnelCounts = [
+    scope.applications.length,
+    ...interviewPhases.map(
+      (phase) =>
+        scope.applications.filter((row) => row.reachedStages.includes(phase))
+          .length,
+    ),
+    scope.applications.filter((row) => row.reachedStages.includes("proposta"))
+      .length,
+    scope.applications.filter((row) => row.reachedStages.includes("contratado"))
+      .length,
+  ];
+
+  const validVacancyIds = new Set(rows("vagas").map((row) => text(row.id)));
+  const pricedProposals = scope.proposals.filter(
+    (row) => row.salaryPosition !== "unknown",
+  ).length;
+  const salaryBelow = scope.proposals.filter(
+    (row) => row.salaryPosition === "below",
+  ).length;
+
+  const cycle = computeCycleMetrics(
+    scope.hires,
+    new Map(rows("candidaturas").map((row) => [text(row.id), row])),
+    groupById(rows("entrevistas")),
+    groupById(rows("propostas")),
+  );
+
+  return {
+    days,
+    applications: scope.applications.length,
+    waiting: scope.waiting.length,
+    proposals: scope.proposals.length,
+    hires: scope.hires.length,
+    previous,
+    queueAges,
+    funnel: toFunnel(funnelCounts),
+    activity: activitySeries(
+      data.asOf,
+      scope.applications,
+      scope.proposals,
+      days,
+    ),
+    alerts: {
+      invalidVacancyApplications: scope.applications.filter(
+        (row) => !validVacancyIds.has(row.vacancyId),
+      ).length,
+      salaryBelow,
+      salaryBelowRate: pricedProposals ? salaryBelow / pricedProposals : null,
+    },
+    cycle: {
+      total: quantile(cycle.total, 0.5),
+      waitingForOffer: quantile(cycle.waitingForOffer, 0.5),
+      proposalToHire: quantile(cycle.proposalToHire, 0.5),
+      sampleSize: cycle.total.length,
+    },
+  };
 }
 
 export function getPipelineData() {
@@ -1101,21 +1411,11 @@ export function queryWorklist(options: WorklistOptions) {
       : options.kind === "proposals"
         ? data.proposalRows
         : data.applicationRows;
-  if (options.period === "recent" && options.kind !== "proposals") {
+  const periodDays = applicationPeriodDays(options.period);
+  if (periodDays !== null && options.kind !== "proposals") {
     matches = matches.filter((row) =>
-      isRecentApplication(row.applicationDate, data.asOf),
+      isWithinWindow(row.applicationDate, data.asOf, 0, periodDays),
     );
-  } else if (options.period === "old" && options.kind !== "proposals") {
-    matches = matches.filter((row) => {
-      if (!row.applicationDate) return true;
-      const applicationDate = parseDate(row.applicationDate);
-      const referenceDate = parseDate(data.asOf);
-      if (!applicationDate || !referenceDate) return true;
-      const daysSinceApplication = Math.floor(
-        (referenceDate.getTime() - applicationDate.getTime()) / 86_400_000,
-      );
-      return daysSinceApplication > 90;
-    });
   }
   const search = options.search?.trim().toLocaleLowerCase("pt-PT");
   if (search) {

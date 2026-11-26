@@ -19,7 +19,8 @@ export const metadata: Metadata = {
     default: "Farol · Recrutamento",
     template: "%s · Farol",
   },
-  description: "Acompanhamento operacional do processo de recrutamento.",
+  description:
+    "Torre de controlo do recrutamento: prioridades, funil, propostas e qualidade dos dados.",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

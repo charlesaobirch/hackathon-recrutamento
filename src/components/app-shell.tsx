@@ -6,10 +6,10 @@ import { usePathname } from "next/navigation";
 import { type ReactNode, Suspense } from "react";
 
 const items = [
-  { href: "/", label: "Hoje", icon: "grid" },
-  { href: "/pipeline", label: "Pipeline", icon: "pipeline" },
+  { href: "/", label: "Visão geral", icon: "grid" },
   { href: "/espera", label: "À espera", icon: "clock" },
-  { href: "/candidaturas", label: "Candidatos", icon: "people" },
+  { href: "/pipeline", label: "Pipeline", icon: "pipeline" },
+  { href: "/candidaturas", label: "Candidaturas", icon: "people" },
   { href: "/propostas", label: "Propostas", icon: "document" },
   { href: "/clientes", label: "Clientes", icon: "building" },
   { href: "/qualidade", label: "Qualidade", icon: "shield" },
@@ -109,13 +109,13 @@ function TopBar() {
           <Icon name="search" />
         </span>
         <label className="sr-only" htmlFor="global-search">
-          Pesquisar candidato, vaga, cliente ou ID
+          Pesquisar candidatura, vaga, cliente ou ID
         </label>
         <input
           id="global-search"
           name="q"
           type="search"
-          placeholder="Pesquisar candidato, vaga, cliente ou ID"
+          placeholder="Pesquisar candidatura, vaga, cliente ou ID"
           autoComplete="off"
         />
         <kbd>↵</kbd>

@@ -10,7 +10,7 @@ export default function QualityPage() {
     <div className="page-content">
       <PageHeader
         title="Qualidade dos dados"
-        subtitle="Anomalias calculadas sobre os ficheiros completos e ordenadas por severidade."
+        subtitle="Anomalias nos ficheiros completos, por severidade, com a próxima ação para desbloquear o reporting."
       />
       <div className="metric-grid three-metrics">
         <Metric
@@ -22,15 +22,15 @@ export default function QualityPage() {
           tone="danger"
         />
         <Metric
-          label="Scores técnicos fora de escala"
+          label="Scores fora da escala"
           value={qualityCounts.interviewScoresOver100.toLocaleString("pt-PT")}
-          note="Scores superiores ao limite de 100"
+          note="Entrevistas com score acima de 100"
           tone="warning"
         />
         <Metric
-          label="Datas de entrevista em formato D/M/A"
+          label="Datas de entrevista mistas"
           value={qualityCounts.mixedInterviewDates.toLocaleString("pt-PT")}
-          note="Datas normalizadas para cálculo na interface"
+          note="Formato D/M/A convertido no cálculo"
           tone="warning"
         />
       </div>

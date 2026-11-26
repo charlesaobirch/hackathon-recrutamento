@@ -57,7 +57,7 @@ export function SalaryChecker({
 
   return (
     <div className="checker-grid">
-      <Panel title="Comparar valores" className="checker-form">
+      <Panel title="Oferta, banda e expectativa" className="checker-form">
         <div className="field-grid">
           <label>
             Expectativa do candidato
@@ -90,7 +90,7 @@ export function SalaryChecker({
             />
           </label>
           <label>
-            Valor da oferta
+            Oferta a validar
             <input
               type="number"
               min="1"
@@ -141,8 +141,8 @@ export function SalaryChecker({
             ))}
           </div>
         ) : (
-          <Notice title="Sem alertas salariais" tone="info">
-            Oferta dentro da banda e alinhada com a expectativa.
+          <Notice title="Oferta dentro da banda" tone="info">
+            A oferta está dentro da banda e alinhada com a expectativa.
           </Notice>
         )}
         {issues.length > 0 ? (
@@ -190,7 +190,7 @@ export function SalaryChecker({
           </span>
         </div>
       </Panel>
-      <Panel title="Regra de decisão">
+      <Panel title="Regras de validação">
         <div className="rule-list">
           {[
             ["Oferta dentro da banda", valid && offer >= min && offer <= max],

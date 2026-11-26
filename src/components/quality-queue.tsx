@@ -17,9 +17,7 @@ export function QualityQueue({ issues }: { issues: QualityIssue[] }) {
   const [statuses, setStatuses] = useState<Record<string, CorrectionState>>({});
   const visible = useMemo(
     () =>
-      issues.filter(
-        (issue) => filter === "Todos" || issue.priority === filter,
-      ),
+      issues.filter((issue) => filter === "Todos" || issue.priority === filter),
     [filter, issues],
   );
   const resolved = issues.filter(
@@ -76,12 +74,12 @@ export function QualityQueue({ issues }: { issues: QualityIssue[] }) {
           </div>
         </fieldset>
         <span className="muted">
-          {visible.length} regras prioritárias visíveis
+          {visible.length} regras visíveis · P0 bloqueia reporting
         </span>
       </div>
 
       <Panel
-        title="Anomalias prioritárias"
+        title="Regras de qualidade"
         meta={
           <Badge tone={openP0 ? "danger" : "warning"}>
             {openP0 ? `${openP0} P0 por validar` : "P0 revistos na demo"}
@@ -89,8 +87,8 @@ export function QualityQueue({ issues }: { issues: QualityIssue[] }) {
         }
       >
         <p className="report-blocked">
-          <b>Reporting oficial bloqueado.</b> Alterar estados nesta fila não
-          corrige a origem; o bloqueio só pode ser removido após corrigir e
+          <b>Reporting oficial bloqueado.</b> Mudar o estado nesta fila não
+          corrige a origem; o reporting só desbloqueia depois de corrigir e
           validar os dados fonte.
         </p>
         <div className="table-scroll">
@@ -131,7 +129,10 @@ export function QualityQueue({ issues }: { issues: QualityIssue[] }) {
                     </td>
                     <td>{issue.area}</td>
                     <td>
-                      <label className="sr-only" htmlFor={`quality-${issue.id}`}>
+                      <label
+                        className="sr-only"
+                        htmlFor={`quality-${issue.id}`}
+                      >
                         Estado da correção para {issue.id}
                       </label>
                       <select

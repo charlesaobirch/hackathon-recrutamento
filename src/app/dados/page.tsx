@@ -6,13 +6,13 @@ export default function DataPage() {
     <div className="page-content">
       <PageHeader
         title="Dados completos"
-        subtitle="Consulta os registos originais das 11 tabelas usadas no projeto."
+        subtitle="Consulta os registos originais das 11 tabelas do projeto, sem resumos."
         action={<Badge tone="positive">11 ficheiros ligados</Badge>}
       />
-      <Notice title="Pesquisa sobre todos os campos" tone="info">
-        Os registos são lidos dos JSON completos no servidor. A tabela mostra os
-        campos originais e percorre os resultados em páginas, sem substituir o
-        conteúdo por resumos nem corrigir os dados de origem.
+      <Notice title="Registos originais, sem alterações" tone="info">
+        Os dados são lidos dos JSON completos no servidor. A tabela mostra os
+        campos originais e pagina os resultados, sem substituir o conteúdo por
+        resumos nem corrigir a origem.
       </Notice>
       <Panel title="Explorador de tabelas">
         <DatasetExplorer initialTable="candidaturas" showDatasetPicker />

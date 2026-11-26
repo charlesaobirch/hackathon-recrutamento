@@ -840,6 +840,7 @@ summary:focus-visible {
 .dataset-record-link {
   color: var(--color-fg-accent);
   font-weight: 700;
+  white-space: nowrap;
   text-underline-offset: 3px;
 }
 .dataset-record-link:hover {

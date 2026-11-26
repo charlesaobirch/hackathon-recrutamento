@@ -3,8 +3,15 @@ import { CandidateBoard } from "@/components/candidate-board";
 import { OperationalWorklist } from "@/components/operational-worklist";
 import { PageHeader, Panel } from "@/components/ui";
 import {
-  getOverviewData,
-  getRecentCandidateBoardRows,
+  applicationPeriodDays,
+  applicationPeriodDescription,
+  applicationPeriodOptions,
+  DEFAULT_APPLICATION_PERIOD,
+  normalizeApplicationPeriod,
+} from "@/lib/application-period";
+import {
+  getApplicationPeriodSummary,
+  getCandidateBoardRows,
 } from "@/lib/operational-data";
 
 type SearchParameters = Promise<{
@@ -18,14 +25,8 @@ function firstValue(value: string | string[] | undefined) {
   return Array.isArray(value) ? value[0] : value;
 }
 
-const periodOptions = [
-  { value: "recent", label: "90 dias" },
-  { value: "old", label: "Arquivo" },
-  { value: "all", label: "Tudo" },
-];
-
 function periodHref(period: string) {
-  return period === "recent"
+  return period === DEFAULT_APPLICATION_PERIOD
     ? "/candidaturas"
     : `/candidaturas?period=${period}`;
 }
@@ -36,23 +37,19 @@ export default async function ApplicationsPage({
   searchParams: SearchParameters;
 }) {
   const params = await searchParams;
-  const period = firstValue(params.period) ?? "recent";
+  const period = normalizeApplicationPeriod(firstValue(params.period));
+  const periodDays = applicationPeriodDays(period);
   const query = firstValue(params.q);
   const view =
     firstValue(params.view) ?? (params.stage || query ? "list" : "board");
-  const data = getOverviewData();
-  const title =
-    period === "old"
-      ? "Arquivo de candidaturas"
-      : period === "all"
-        ? "Todas as candidaturas"
-        : "Candidatos";
+  const summary = getApplicationPeriodSummary(period);
+  const periodQuery =
+    period === DEFAULT_APPLICATION_PERIOD ? "" : `&period=${period}`;
+  const title = period === "all" ? "Histórico de candidaturas" : "Candidaturas";
   const subtitle =
-    period === "old"
-      ? "Processos com mais de 90 dias ou sem data registada."
-      : period === "all"
-        ? "Histórico completo, para auditoria e análise de tendência."
-        : "Trabalho recente por etapa, com o tempo parado e a próxima ação em destaque.";
+    period === "all"
+      ? "Todo o arquivo, para pesquisa e auditoria."
+      : `Quadro por etapa dos últimos ${period} dias, ordenado pelo tempo parado.`;
   return (
     <div className="page-content">
       <PageHeader
@@ -60,81 +57,83 @@ export default async function ApplicationsPage({
         subtitle={subtitle}
         action={
           <nav className="segmented" aria-label="Janela temporal">
-            {periodOptions.map((option) => (
+            {applicationPeriodOptions.map((option) => (
               <Link
                 key={option.value}
                 href={periodHref(option.value)}
+                aria-label={`Ver ${applicationPeriodDescription(option.value).toLowerCase()}`}
+                aria-current={period === option.value ? "true" : undefined}
+                title={applicationPeriodDescription(option.value)}
                 className={period === option.value ? "is-active" : undefined}
               >
-                {option.label}
+                {option.shortLabel}
               </Link>
             ))}
           </nav>
         }
       />
 
-      {period === "recent" ? (
+      {periodDays !== null ? (
         <section
           className="candidate-summary"
-          aria-label="Resumo dos últimos 90 dias"
+          aria-label={`Resumo dos últimos ${periodDays} dias`}
         >
           <div>
-            <strong>
-              {data.counts.applicationsRecent.toLocaleString("pt-PT")}
-            </strong>
-            <span>Candidaturas · 90 dias</span>
+            <strong>{summary.applications.toLocaleString("pt-PT")}</strong>
+            <span>Candidaturas · {periodDays} dias</span>
           </div>
           <div>
-            <strong>{data.counts.waitingRecent.toLocaleString("pt-PT")}</strong>
+            <strong>{summary.waiting.toLocaleString("pt-PT")}</strong>
             <span>Aguardam proposta</span>
           </div>
           <div>
-            <strong>
-              {data.counts.proposalsRecent.toLocaleString("pt-PT")}
-            </strong>
+            <strong>{summary.proposals.toLocaleString("pt-PT")}</strong>
             <span>Propostas emitidas</span>
           </div>
           <div>
-            <strong>{data.counts.hiresRecent.toLocaleString("pt-PT")}</strong>
+            <strong>{summary.hires.toLocaleString("pt-PT")}</strong>
             <span>Contratações</span>
           </div>
         </section>
       ) : null}
 
       <Panel
-        title={period === "recent" && view !== "list" ? "Etapas atuais" : title}
+        title={
+          periodDays !== null && view !== "list" ? "Quadro por etapa" : title
+        }
         meta={
-          <span className="muted">
-            {period === "recent"
-              ? "Últimos 90 dias"
-              : period === "old"
-                ? "Mais de 90 dias / sem data"
-                : "Todo o histórico"}
-          </span>
+          <span className="muted">{applicationPeriodDescription(period)}</span>
         }
       >
-        {period === "recent" && view !== "list" ? (
+        {periodDays !== null && view !== "list" ? (
           <>
             <div className="board-toolbar">
               <p>
-                Ordenadas pelo tempo desde a última atividade · selecione uma
-                pessoa para abrir o processo.
+                Ordenadas pelo tempo desde a última atividade. Clica numa pessoa
+                para abrir o processo; desliza o quadro para ver todas as
+                etapas.
               </p>
-              <Link className="view-switch" href="/candidaturas?view=list">
+              <Link
+                className="view-switch"
+                href={`/candidaturas?view=list${periodQuery}`}
+              >
                 Ver em tabela
               </Link>
             </div>
-            <CandidateBoard rows={getRecentCandidateBoardRows()} />
+            <CandidateBoard rows={getCandidateBoardRows(periodDays)} />
           </>
         ) : (
           <>
-            {period === "recent" ? (
+            {periodDays !== null ? (
               <div className="board-toolbar">
                 <p>
-                  Vista em tabela para procurar, filtrar e percorrer o histórico
-                  completo.
+                  Vista em tabela para procurar e filtrar os registos desta
+                  janela.
                 </p>
-                <Link className="view-switch" href="/candidaturas">
+                <Link
+                  className="view-switch"
+                  href={`/candidaturas?view=board${periodQuery}`}
+                >
                   Ver por etapas
                 </Link>
               </div>

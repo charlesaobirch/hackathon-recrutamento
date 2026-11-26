@@ -11,7 +11,13 @@ const numberFormat = new Intl.NumberFormat("pt-PT", {
   maximumFractionDigits: 0,
 });
 
-export function ActivityChart({ months }: { months: ActivityMonth[] }) {
+export function ActivityChart({
+  months,
+  granularity,
+}: {
+  months: ActivityMonth[];
+  granularity: string;
+}) {
   const maximum = Math.max(
     ...months.flatMap((month) => [month.applications, month.proposals]),
     1,
@@ -23,6 +29,7 @@ export function ActivityChart({ months }: { months: ActivityMonth[] }) {
   const groupWidth = months.length ? plotWidth / months.length : plotWidth;
   const barWidth = Math.min(24, groupWidth * 0.25);
   const barGap = Math.min(7, groupWidth * 0.07);
+  const hasPartial = months.some((month) => month.partial);
   const yFor = (value: number) =>
     chart.bottom - (value / axisMaximum) * plotHeight;
   const heightFor = (value: number) =>
@@ -48,11 +55,13 @@ export function ActivityChart({ months }: { months: ActivityMonth[] }) {
               aria-labelledby="activity-chart-title activity-chart-description"
             >
               <title id="activity-chart-title">
-                Candidaturas e propostas emitidas nos últimos seis meses
+                Candidaturas e propostas emitidas por {granularity}
               </title>
               <desc id="activity-chart-description">
-                Gráfico de barras agrupadas por mês. O asterisco assinala o mês
-                de corte parcial.
+                Gráfico de barras agrupadas por {granularity}.
+                {hasPartial
+                  ? " O asterisco assinala o período de corte parcial."
+                  : ""}
               </desc>
               {[0, 1, 2, 3].map((tick) => {
                 const value = axisMaximum - tick * step;
@@ -79,7 +88,7 @@ export function ActivityChart({ months }: { months: ActivityMonth[] }) {
                       height={heightFor(month.applications)}
                       rx="5"
                     >
-                      <title>{`${month.label}: ${numberFormat.format(month.applications)}${month.partial ? " · mês parcial" : ""} candidaturas`}</title>
+                      <title>{`${month.label}: ${numberFormat.format(month.applications)}${month.partial ? " · período parcial" : ""} candidaturas`}</title>
                     </rect>
                     <rect
                       className="activity-bar proposals"
@@ -89,7 +98,7 @@ export function ActivityChart({ months }: { months: ActivityMonth[] }) {
                       height={heightFor(month.proposals)}
                       rx="5"
                     >
-                      <title>{`${month.label}: ${numberFormat.format(month.proposals)}${month.partial ? " · mês parcial" : ""} propostas`}</title>
+                      <title>{`${month.label}: ${numberFormat.format(month.proposals)}${month.partial ? " · período parcial" : ""} propostas`}</title>
                     </rect>
                     <text
                       className="activity-month-label"
@@ -107,12 +116,12 @@ export function ActivityChart({ months }: { months: ActivityMonth[] }) {
           </div>
           <table className="visually-hidden">
             <caption>
-              Contagens mensais de candidaturas e propostas no conjunto
-              exploratório.
+              Contagens por {granularity} de candidaturas e propostas no
+              conjunto exploratório.
             </caption>
             <thead>
               <tr>
-                <th scope="col">Mês</th>
+                <th scope="col">Período</th>
                 <th scope="col">Candidaturas</th>
                 <th scope="col">Propostas</th>
               </tr>
@@ -133,12 +142,12 @@ export function ActivityChart({ months }: { months: ActivityMonth[] }) {
         </>
       ) : (
         <p className="activity-empty">
-          Não há datas suficientes para compor a série mensal.
+          Não há datas suficientes para compor a série temporal.
         </p>
       )}
       <figcaption className="activity-caption">
-        * Mês de corte parcial. Padrões mensais são exploratórios e não indicam
-        sazonalidade real.
+        {hasPartial ? "* Período de corte parcial. " : ""}
+        Padrões são exploratórios e não indicam sazonalidade real.
       </figcaption>
     </figure>
   );
